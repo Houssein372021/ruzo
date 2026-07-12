@@ -1,0 +1,10 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /checkout
+Disallow: /confirmation
+Disallow: /order-confirmation/
+Disallow: /favorites
+Disallow: /review/
+
+Sitemap: https://www.rüzo.com/sitemap.xml

@@ -1,0 +1,10 @@
+package com.ruzo.backend.repository;
+
+import com.ruzo.backend.entity.ProductImage;
+import java.util.UUID;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface ProductImageRepository extends JpaRepository<ProductImage, UUID> {
+
+    void deleteByProduct_Id(UUID productId);
+}

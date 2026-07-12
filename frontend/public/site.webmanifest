@@ -1,0 +1,22 @@
+{
+  "name": "Rüzo",
+  "short_name": "Rüzo",
+  "description": "RÜZO activewear at rüzo.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#F8F4EC",
+  "theme_color": "#F8F4EC",
+  "icons": [
+    {
+      "src": "/site-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}

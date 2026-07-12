@@ -1,0 +1,72 @@
+name: ruzo
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: ruzo_postgres
+
+    environment:
+      POSTGRES_DB: ruzo
+      POSTGRES_USER: ruzo_user
+      POSTGRES_PASSWORD: Ruzo2026
+
+
+    volumes:
+      - ruzo_postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ruzo_user -d ruzo"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    container_name: ruzo_backend
+
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/ruzo
+      SPRING_DATASOURCE_USERNAME: ruzo_user
+      SPRING_DATASOURCE_PASSWORD: Ruzo2026
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      RUZO_ADMIN_EMAIL: admin@ruzo.local
+      RUZO_ADMIN_PASSWORD: Ruzo@2026
+      RUZO_ADMIN_TOKEN: ruzo-admin-token
+      RUZO_UPLOADS_DIRECTORY: /app/uploads
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL:-noreply@ruzo.local}
+      BREVO_SENDER_NAME: ${BREVO_SENDER_NAME:-RUZO}
+      SITE_OWNER_EMAIL: ${SITE_OWNER_EMAIL:-housseinghannoum@803gmail.com}
+      SITE_PUBLIC_URL: ${SITE_PUBLIC_URL:-http://localhost:25173}
+
+    ports:
+      - "127.0.0.1:28080:8080"
+
+    volumes:
+      - ruzo_backend_uploads:/app/uploads
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
+    container_name: ruzo_frontend
+
+    ports:
+      - "127.0.0.1:25173:80"
+
+    depends_on:
+      - backend
+
+volumes:
+  ruzo_postgres_data:
+    name: ruzo_postgres_data
+  ruzo_backend_uploads:
+    name: ruzo_backend_uploads

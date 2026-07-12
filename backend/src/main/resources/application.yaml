@@ -1,0 +1,35 @@
+spring:
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/ruzo}
+    username: ${SPRING_DATASOURCE_USERNAME:ruzo_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:ruzo_password}
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  jpa:
+    hibernate:
+      ddl-auto: ${SPRING_JPA_HIBERNATE_DDL_AUTO:update}
+    show-sql: ${SPRING_JPA_SHOW_SQL:true}
+
+server:
+  port: ${SERVER_PORT:8080}
+
+brevo:
+  api-key: ${BREVO_API_KEY:}
+  sender-email: ${BREVO_SENDER_EMAIL:noreply@rüzo.com}
+  sender-name: ${BREVO_SENDER_NAME:RÜZO}
+
+site:
+  owner-email: ${SITE_OWNER_EMAIL:housseinghannoum@803gmail.com}
+  public-url: ${SITE_PUBLIC_URL:https://www.rüzo.com}
+
+ruzo:
+  admin:
+    email: ${RUZO_ADMIN_EMAIL:admin@ruzo.local}
+    password: ${RUZO_ADMIN_PASSWORD:Ruzo@2026}
+    token: ${RUZO_ADMIN_TOKEN:ruzo-admin-token}
+  uploads:
+    directory: ${RUZO_UPLOADS_DIRECTORY:uploads}

@@ -1,0 +1,74 @@
+name: ruzo
+
+services:
+  caddy:
+    image: caddy:2.8-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - frontend
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-ruzo}
+      POSTGRES_USER: ${POSTGRES_USER:-ruzo_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ruzo_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ruzo_user} -d ${POSTGRES_DB:-ruzo}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-ruzo}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-ruzo_user}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD}
+      SPRING_JPA_HIBERNATE_DDL_AUTO: ${SPRING_JPA_HIBERNATE_DDL_AUTO:-update}
+      SPRING_JPA_SHOW_SQL: "false"
+      RUZO_ADMIN_EMAIL: ${RUZO_ADMIN_EMAIL}
+      RUZO_ADMIN_PASSWORD: ${RUZO_ADMIN_PASSWORD}
+      RUZO_ADMIN_TOKEN: ${RUZO_ADMIN_TOKEN}
+      RUZO_UPLOADS_DIRECTORY: /app/uploads
+      BREVO_API_KEY: ${BREVO_API_KEY:-}
+      BREVO_SENDER_EMAIL: ${BREVO_SENDER_EMAIL:-noreply@rüzo.com}
+      BREVO_SENDER_NAME: ${BREVO_SENDER_NAME:-RÜZO}
+      SITE_OWNER_EMAIL: ${SITE_OWNER_EMAIL}
+      SITE_PUBLIC_URL: ${SITE_PUBLIC_URL:-https://www.rüzo.com}
+    volumes:
+      - ruzo_backend_uploads:/app/uploads
+    expose:
+      - "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: /api
+    restart: unless-stopped
+    expose:
+      - "80"
+    depends_on:
+      - backend
+
+volumes:
+  caddy_data:
+  caddy_config:
+  ruzo_postgres_data:
+  ruzo_backend_uploads:

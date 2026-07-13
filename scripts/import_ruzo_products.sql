@@ -367,6 +367,27 @@ INSERT INTO import_products (
         7,
         7,
         4
+    ),
+    (
+        13,
+        'terry-polo-set',
+        'sets',
+        'The Terry Polo Set',
+        'The Terry Polo Set',
+        'A soft white polo set with wide-leg trousers and patch pockets.',
+        'A soft white polo set with wide-leg trousers and patch pockets.',
+        'The Terry Polo Set features a short sleeve polo and matching high-waisted, wide-leg trousers with patch pockets. Crafted from a soft, textured fabric, this effortless look is available in white.',
+        'The Terry Polo Set features a short sleeve polo and matching high-waisted, wide-leg trousers with patch pockets. Crafted from a soft, textured fabric, this effortless look is available in white.',
+        'Machine wash cold on gentle cycle, wash with similar colors, and hang or lay flat to dry. Do not bleach.',
+        'Machine wash cold on gentle cycle, wash with similar colors, and hang or lay flat to dry. Do not bleach.',
+        58.00,
+        NULL,
+        'White',
+        '#F7F5EF',
+        4,
+        8,
+        8,
+        4
     );
 
 CREATE TEMP TABLE import_product_images (
@@ -413,7 +434,8 @@ INSERT INTO import_product_images (slug, image_url, sort_order) VALUES
     ('ivory-satin-trouser-set', '/products/ruzo/ivory-satin-trouser-set-02.webp', 2),
     ('ivory-satin-trouser-set', '/products/ruzo/ivory-satin-trouser-set-03.webp', 3),
     ('pearl-satin-trouser-set', '/products/ruzo/pearl-satin-trouser-set-01.webp', 1),
-    ('pearl-satin-trouser-set', '/products/ruzo/pearl-satin-trouser-set-02.webp', 2);
+    ('pearl-satin-trouser-set', '/products/ruzo/pearl-satin-trouser-set-02.webp', 2),
+    ('terry-polo-set', '/products/ruzo/terry-polo-set-01.webp', 1);
 
 INSERT INTO products (
     id,

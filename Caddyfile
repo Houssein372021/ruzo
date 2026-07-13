@@ -1,0 +1,17 @@
+# rüzo.com is an IDN domain. DNS/SSL use the punycode form: xn--rzo-hoa.com
+
+xn--rzo-hoa.com {
+  redir https://www.xn--rzo-hoa.com{uri} permanent
+}
+
+www.xn--rzo-hoa.com {
+  encode zstd gzip
+
+  header {
+    X-Content-Type-Options nosniff
+    Referrer-Policy strict-origin-when-cross-origin
+    -Server
+  }
+
+  reverse_proxy frontend:80
+}

@@ -1,13 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Search, SlidersHorizontal, X } from "lucide-react";
+import { categoriesApi } from "../../api/categories";
 import { productsApi } from "../../api/products";
 import { EmptyState } from "../../components/common/EmptyState";
 import { Seo } from "../../components/common/Seo";
 import { ProductSkeletonGrid } from "../../components/common/Skeleton";
 import { ProductCard } from "../../components/product/ProductCard";
 import { useI18n } from "../../hooks/useI18n";
-import type { Product } from "../../types";
+import type { Category, Product } from "../../types";
 import type { TranslationKey } from "../../i18n/translations";
 import { uniqueValues } from "../../utils/product";
 
@@ -50,8 +51,9 @@ const filterOptionTranslationKeys: Record<string, TranslationKey> = {
 };
 
 export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) {
-  const { t } = useI18n();
+  const { language, t } = useI18n();
   const normalizedCategorySlug = categorySlug;
+  const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [size, setSize] = useState("all");
@@ -64,11 +66,11 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
 
   useEffect(() => {
     let isMounted = true;
-    productsApi
-      .getAll()
-      .then((data) => {
+    Promise.all([productsApi.getAll(), categoriesApi.getAll()])
+      .then(([productsData, categoriesData]) => {
         if (isMounted) {
-          setProducts(data);
+          setProducts(productsData);
+          setCategories(categoriesData.filter((category) => category.isActive !== false));
         }
       })
       .finally(() => {
@@ -158,7 +160,12 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
     });
   }, [availability, categoryProducts, color, price, searchQuery, size, sort]);
 
-  const collectionName = t(titleKey);
+  const currentCategory = categories.find((category) => category.slug === normalizedCategorySlug);
+  const collectionName = currentCategory
+    ? language === "ar"
+      ? currentCategory.nameAr
+      : currentCategory.nameEn
+    : t(titleKey);
   const activeFilterCount = [
     size !== "all",
     color !== "all",

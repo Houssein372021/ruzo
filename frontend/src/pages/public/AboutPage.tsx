@@ -1,24 +1,36 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import { categoriesApi } from "../../api/categories";
 import { Seo } from "../../components/common/Seo";
 import { INSTAGRAM_URL } from "../../config/brand";
 import { useI18n } from "../../hooks/useI18n";
+import type { Category } from "../../types";
 
 const heroImage = "/products/ruzo/black-midi-dress-01.webp";
 const secondaryImage = "/products/ruzo/metallic-magenta-set-01.webp";
 const detailImage = "/products/ruzo/sheer-shirt-trouser-set-02.webp";
 
-const categoryLinks = [
-  { slug: "sets", key: "sets" },
-  { slug: "dresses", key: "dresses" },
-  { slug: "bottoms", key: "bottoms" },
-  { slug: "tops", key: "tops" },
-  { slug: "outerwear", key: "outerwear" },
-] as const;
-
 export function AboutPage() {
-  const { language, dir, t } = useI18n();
+  const { language, dir } = useI18n();
+  const [categories, setCategories] = useState<Category[]>([]);
   const isRtl = dir === "rtl";
+
+  useEffect(() => {
+    let isMounted = true;
+
+    categoriesApi.getAll().then((data) => {
+      if (isMounted) {
+        setCategories(data.filter((category) => category.isActive !== false));
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const primaryCollectionPath = categories[0] ? `/collections/${categories[0].slug}` : "/";
 
   const copy =
     language === "ar"
@@ -121,7 +133,7 @@ export function AboutPage() {
 
                 <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
                   <Link
-                    to="/collections/sets"
+                    to={primaryCollectionPath}
                     className="inline-flex min-h-12 items-center justify-center border border-[#6B0F1A] bg-[#6B0F1A] px-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF] transition hover:bg-[#080808] hover:border-[#080808]"
                   >
                     {copy.shop}
@@ -171,13 +183,13 @@ export function AboutPage() {
             </p>
             <p className="mt-5 text-sm leading-8 text-[#080808]/66">{copy.collectionCopy}</p>
             <div className="mt-8 grid gap-3">
-              {categoryLinks.map((category) => (
+              {categories.map((category) => (
                 <Link
                   key={category.slug}
                   to={`/collections/${category.slug}`}
                   className="flex items-center justify-between border-b border-[#080808]/10 py-3 text-sm font-medium text-[#080808] transition hover:text-[#6B0F1A]"
                 >
-                  <span>{t(category.key)}</span>
+                  <span>{language === "ar" ? category.nameAr : category.nameEn}</span>
                   <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
                 </Link>
               ))}

@@ -20,6 +20,8 @@ public class CategoryController {
 
     @GetMapping
     public List<Category> getCategories() {
-        return categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "sortOrder"));
+        return categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "sortOrder")).stream()
+                .filter(category -> category.getIsActive() == null || category.getIsActive())
+                .toList();
     }
 }

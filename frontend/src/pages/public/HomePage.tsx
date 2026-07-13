@@ -36,14 +36,6 @@ const composedRealityImages = [
   },
 ] as const;
 
-const categoryFallbacks = [
-  { slug: "sets", titleKey: "sets" },
-  { slug: "dresses", titleKey: "dresses" },
-  { slug: "bottoms", titleKey: "bottoms" },
-  { slug: "tops", titleKey: "tops" },
-  { slug: "outerwear", titleKey: "outerwear" },
-] as const;
-
 const categoryImageFallbacks: Record<string, string> = {
   sets: "/products/ruzo/metallic-magenta-set-01.webp",
   dresses: "/products/ruzo/black-midi-dress-01.webp",
@@ -234,14 +226,14 @@ export function HomePage() {
           composedTitle: "Composed Realities: Notes on Modern Dressing",
         };
 
-  const categoryCards = categoryFallbacks.map((fallback) => {
-    const category = categories.find((item) => item.slug === fallback.slug);
+  const categoryCards = categories.map((category) => {
     return {
-      slug: category?.slug ?? fallback.slug,
-      title: category ? (language === "ar" ? category.nameAr : category.nameEn) : t(fallback.titleKey),
-      image: category?.imageUrl ?? categoryImageFallbacks[fallback.slug] ?? null,
+      slug: category.slug,
+      title: language === "ar" ? category.nameAr : category.nameEn,
+      image: category.imageUrl ?? categoryImageFallbacks[category.slug] ?? null,
     };
   });
+  const primaryCollectionPath = categoryCards[0] ? `/collections/${categoryCards[0].slug}` : "/";
 
   const newArrivalsCarousel = useAutoCarousel(newArrivals.length);
   const collectionsCarousel = useAutoCarousel(categoryCards.length);
@@ -384,7 +376,7 @@ export function HomePage() {
               </p>
             ) : null}
             <Link
-              to="/collections/sets"
+              to={primaryCollectionPath}
               className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#6B0F1A] hover:bg-[#6B0F1A]"
             >
               {copy.discoverCollection}
@@ -404,7 +396,7 @@ export function HomePage() {
             </h2>
           </div>
           <Link
-            to="/collections/bottoms"
+            to={primaryCollectionPath}
             className="luxury-link-underline shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
           >
             {copy.viewAll}
@@ -492,7 +484,7 @@ export function HomePage() {
             </h2>
           </div>
           <Link
-            to="/collections/sets"
+            to={primaryCollectionPath}
             className="luxury-link-underline shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
           >
             {copy.viewAll}
@@ -542,6 +534,7 @@ export function HomePage() {
         </div>
       </section>
 
+      {categoryCards.length > 0 ? (
       <section className="border-y border-[#080808]/10 bg-[#FFFFFF] px-5 py-16 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-[1500px]">
           <div className="mx-auto max-w-2xl text-center">
@@ -613,6 +606,7 @@ export function HomePage() {
           </div>
         </div>
       </section>
+      ) : null}
 
       {/* <section className="grid border-y border-[#080808] bg-[#080808] text-[#FFFFFF] lg:grid-cols-[0.92fr_1.08fr]">
         <div className="relative min-h-[560px] overflow-hidden bg-[#080808]">

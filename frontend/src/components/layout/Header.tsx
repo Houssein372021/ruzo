@@ -1,36 +1,75 @@
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { Heart, Search, ShoppingBag } from "lucide-react";
+import { categoriesApi } from "../../api/categories";
 import { useI18n } from "../../hooks/useI18n";
 import { selectCartTotals, useCartStore } from "../../store/cartStore";
 import { useFavoritesStore } from "../../store/favoritesStore";
-import { TopBar } from "./TopBar";
+import type { Category } from "../../types";
+import { TopBar, type TopBarItem, type TopBarMegaMenuColumn } from "./TopBar";
+
+function getCategoryLabel(category: Category, isArabic: boolean) {
+  return isArabic ? category.nameAr : category.nameEn;
+}
 
 export function Header() {
   const { language, toggleLanguage, t } = useI18n();
   const openCart = useCartStore((state) => state.openCart);
   const cartCount = useCartStore((state) => selectCartTotals(state.items).quantity);
   const favoriteCount = useFavoritesStore((state) => state.items.length);
+  const [categories, setCategories] = useState<Category[]>([]);
   const isArabic = language === "ar";
-  const navItems = [
+
+  useEffect(() => {
+    let isMounted = true;
+
+    categoriesApi.getAll().then((data) => {
+      if (isMounted) {
+        setCategories(data.filter((category) => category.isActive !== false));
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const categoryLinks = useMemo(
+    () =>
+      categories.map((category) => ({
+        to: `/collections/${category.slug}`,
+        label: getCategoryLabel(category, isArabic),
+      })),
+    [categories, isArabic],
+  );
+
+  const categoryColumn: TopBarMegaMenuColumn | null =
+    categoryLinks.length > 0
+      ? {
+          title: isArabic ? "الملابس" : "Ready to wear",
+          links: categoryLinks,
+        }
+      : null;
+
+  const collectionsColumn: TopBarMegaMenuColumn | null =
+    categoryLinks.length > 0
+      ? {
+          title: t("collectionsNav"),
+          links: categoryLinks,
+        }
+      : null;
+
+  const navItems: TopBarItem[] = [
     {
-      to: "/collections/sets",
+      to: categoryLinks[0]?.to ?? "/",
       label: t("shop"),
       megaMenu: [
-        {
-          title: isArabic ? "الملابس" : "Ready to wear",
-          links: [
-            { to: "/collections/sets", label: t("sets"), description: isArabic ? "أطقم ساتان وقطع متناسقة" : "Satin sets and coordinated looks" },
-            { to: "/collections/dresses", label: t("dresses"), description: isArabic ? "فساتين قصيرة وطويلة" : "Mini, midi, and evening silhouettes" },
-            { to: "/collections/bottoms", label: t("bottoms"), description: isArabic ? "تنانير وسراويل" : "Skirts, trousers, and relaxed bottoms" },
-            { to: "/collections/tops", label: t("tops"), description: isArabic ? "قمصان وتوبات" : "Statement tops and soft layers" },
-            { to: "/collections/outerwear", label: t("outerwear"), description: isArabic ? "طبقات خارجية خفيفة" : "Light outerwear and sheer shirts" },
-          ],
-        },
+        ...(categoryColumn ? [categoryColumn] : []),
         {
           title: isArabic ? "اكتشفي" : "Discover",
           links: [
-            { to: "/collections/sets", label: t("newArrivals"), description: isArabic ? "آخر قطع RÜZO" : "The newest RÜZO pieces" },
-            { to: "/collections/dresses", label: t("bestSellers"), description: isArabic ? "القطع الأكثر طلباً" : "Customer favorite silhouettes" },
+            { to: categoryLinks[0]?.to ?? "/", label: t("newArrivals"), description: isArabic ? "آخر قطع RÜZO" : "The newest RÜZO pieces" },
+            { to: categoryLinks[0]?.to ?? "/", label: t("bestSellers"), description: isArabic ? "القطع الأكثر طلبا" : "Customer favorite silhouettes" },
             { to: "/about", label: isArabic ? "قصة RÜZO" : "The RÜZO story", description: isArabic ? "عن العلامة" : "Beirut womenswear, softly polished" },
           ],
         },
@@ -46,40 +85,9 @@ export function Header() {
       ],
     },
     {
-      to: "/collections/sets",
+      to: categoryLinks[0]?.to ?? "/",
       label: t("collectionsNav"),
-      megaMenu: [
-        {
-          title: t("collectionsNav"),
-          links: [
-            { to: "/collections/sets", label: t("sets"), description: "Metallic Magenta, Lemon Satin, Ivory, Pearl" },
-            { to: "/collections/dresses", label: t("dresses"), description: "Black Midi, Red Halter, White Mini, Floral" },
-            { to: "/collections/bottoms", label: t("bottoms"), description: "Skirts and trouser-led sets" },
-            { to: "/collections/tops", label: t("tops"), description: "Satin tops, contrast sets, and soft layers" },
-            { to: "/collections/outerwear", label: t("outerwear"), description: "Sheer shirts and polished layers" },
-          ],
-        },
-        {
-          title: isArabic ? "حسب الإطلالة" : "Shop the edit",
-          links: [
-            { to: "/products/metallic-magenta-set", label: "Metallic Magenta Edit" },
-            { to: "/products/lemon-satin-set", label: "Lemon Satin Edit" },
-            { to: "/products/black-satin-short-set", label: "Black Satin Edit" },
-            { to: "/products/sheer-shirt-trouser-set", label: "Sheer Layer Edit" },
-            { to: "/products/pearl-satin-trouser-set", label: "Pearl Satin Edit" },
-          ],
-        },
-        {
-          title: isArabic ? "فساتين" : "Dress focus",
-          links: [
-            { to: "/products/black-midi-dress", label: "Black Midi Dress" },
-            { to: "/products/red-halter-dress", label: "Red Halter Dress" },
-            { to: "/products/white-mini-dress", label: "White Mini Dress" },
-            { to: "/products/pink-floral-mini-dress", label: "Pink Floral Mini Dress" },
-            { to: "/products/taupe-fitted-maxi-dress", label: "Taupe Fitted Maxi Dress" },
-          ],
-        },
-      ],
+      megaMenu: collectionsColumn ? [collectionsColumn] : undefined,
     },
     { to: "/about", label: t("aboutNav") },
   ];

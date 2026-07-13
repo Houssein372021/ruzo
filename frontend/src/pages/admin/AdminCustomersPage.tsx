@@ -63,7 +63,7 @@ export function AdminCustomersPage() {
         title={t("customers")}
         action={
           <label className="relative">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b725f]" />
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A2638]" />
             <input
               value={search}
               onChange={(event) => setSearch(event.target.value)}
@@ -90,7 +90,7 @@ export function AdminCustomersPage() {
               <tr key={customer.id}>
                 <td>
                   <div className="font-semibold">{customer.name}</div>
-                  <div className="text-xs text-[#8b725f]">{customer.phone}</div>
+                  <div className="text-xs text-[#8A2638]">{customer.phone}</div>
                 </td>
                 <td>{customer.email}</td>
                 <td>{customer.ordersCount}</td>
@@ -123,19 +123,19 @@ export function AdminCustomersPage() {
       </AdminPanel>
 
       {selectedCustomer ? (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#111111]/45 px-4 py-8">
-          <div className="mx-auto w-full max-w-4xl border border-[#ded2c5] bg-[#fbf7f1] shadow-2xl">
-            <div className="flex items-start justify-between gap-6 bg-[#4B2E24] px-6 py-6 text-[#F8F4EC] sm:px-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#080808]/45 px-4 py-8">
+          <div className="mx-auto w-full max-w-4xl border border-[#E6D9DE] bg-[#FFFFFF] shadow-2xl">
+            <div className="flex items-start justify-between gap-6 bg-[#6B0F1A] px-6 py-6 text-[#FFFFFF] sm:px-8">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.42em]">{t("customers")}</p>
                 <h2 className="mt-4 font-display text-2xl">{selectedCustomer.name}</h2>
-                <p className="mt-2 text-sm text-[#eadfce]">
+                <p className="mt-2 text-sm text-[#F4E8EB]">
                   {[selectedCustomer.email, selectedCustomer.phone].filter(Boolean).join(" / ")}
                 </p>
               </div>
               <button
                 type="button"
-                className="grid h-11 w-11 place-items-center border border-[#eadfce]/45 text-[#F8F4EC] transition hover:bg-[#F8F4EC]/10"
+                className="grid h-11 w-11 place-items-center border border-[#F4E8EB]/45 text-[#FFFFFF] transition hover:bg-[#FFFFFF]/10"
                 onClick={() => setSelectedCustomer(null)}
                 aria-label={t("cancel")}
               >
@@ -150,33 +150,33 @@ export function AdminCustomersPage() {
                 <SummaryBox label={t("last")} value={formatCustomerDate(selectedCustomer.lastOrder)} />
               </div>
 
-              <section className="border border-[#ded2c5] bg-white">
-                <div className="border-b border-[#ded2c5] px-5 py-4">
+              <section className="border border-[#E6D9DE] bg-white">
+                <div className="border-b border-[#E6D9DE] px-5 py-4">
                   <h3 className="font-display text-xl">{t("viewOrders")}</h3>
                 </div>
-                <div className="divide-y divide-[#eee3d7]">
+                <div className="divide-y divide-[#EEE3E6]">
                   {(selectedCustomer.orders ?? []).length === 0 ? (
-                    <p className="px-5 py-5 text-sm text-[#6d6258]">{t("noOrders")}</p>
+                    <p className="px-5 py-5 text-sm text-[#5F5659]">{t("noOrders")}</p>
                   ) : (
                     selectedCustomer.orders?.map((order) => (
                       <div key={order.id} className="grid gap-4 px-5 py-4 lg:grid-cols-[1fr_auto_auto] lg:items-start">
                         <div>
                           <p className="font-semibold">{order.orderNumber}</p>
-                          <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#8b725f]">
+                          <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#8A2638]">
                             {formatCustomerDate(order.createdAt)} · {order.status}
                           </p>
-                          <p className="mt-2 text-sm leading-6 text-[#6d6258]">
+                          <p className="mt-2 text-sm leading-6 text-[#5F5659]">
                             {(order.products ?? []).join(", ") || "-"}
                           </p>
                         </div>
                         <div className="text-sm lg:text-center">
-                          <p className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("quantity")}</p>
+                          <p className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("quantity")}</p>
                           <p className="mt-1 font-semibold">
                             {(order.items ?? []).reduce((sum, item) => sum + item.quantity, 0)}
                           </p>
                         </div>
                         <div className="text-sm lg:min-w-28 lg:text-right">
-                          <p className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("total")}</p>
+                          <p className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("total")}</p>
                           <p className="mt-1 font-semibold">{formatCurrency(order.total, language)}</p>
                         </div>
                       </div>
@@ -205,8 +205,8 @@ export function AdminCustomersPage() {
 
 function SummaryBox({ label, value }: { label: string; value: string }) {
   return (
-    <div className="border border-[#ded2c5] bg-white p-4">
-      <p className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{label}</p>
+    <div className="border border-[#E6D9DE] bg-white p-4">
+      <p className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{label}</p>
       <p className="mt-2 font-semibold">{value}</p>
     </div>
   );

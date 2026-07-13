@@ -18,18 +18,18 @@ export function ConfirmationPage() {
       />
       <section className="grid min-h-[70vh] place-items-center px-4 text-center">
         <div className="max-w-xl">
-          <CheckCircle2 className="mx-auto h-14 w-14 text-[#4B2E24]" />
-          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-[#8b725f]">Rüzo</p>
+          <CheckCircle2 className="mx-auto h-14 w-14 text-[#6B0F1A]" />
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">Rüzo</p>
           <h1 className="mt-3 text-4xl font-semibold">{t("confirmation")}</h1>
-          <p className="mt-4 text-sm text-[#6d6258]">
-            {t("orderNumber")}: <span className="font-semibold text-[#111111]">{orderNumber}</span>
+          <p className="mt-4 text-sm text-[#080808]/66">
+            {t("orderNumber")}: <span className="font-semibold text-[#080808]">{orderNumber}</span>
           </p>
-          <p className="mx-auto mt-6 max-w-md text-sm leading-7 text-[#6d6258]">
+          <p className="mx-auto mt-6 max-w-md text-sm leading-7 text-[#080808]/66">
             {t("confirmationEmailCopy")}
           </p>
           <Link
             to="/"
-            className="mt-8 inline-flex bg-[#4B2E24] px-7 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#F8F4EC] transition hover:bg-[#3a2118]"
+            className="mt-8 inline-flex bg-[#6B0F1A] px-7 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808]"
           >
             {t("backHome")}
           </Link>

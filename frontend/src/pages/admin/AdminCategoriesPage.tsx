@@ -92,7 +92,7 @@ export function AdminCategoriesPage() {
           title={t("categories")}
           action={
             <label className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b725f]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A2638]" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
@@ -119,7 +119,7 @@ export function AdminCategoriesPage() {
                       <img
                         src={category.imageUrl ?? ""}
                         alt=""
-                        className="h-12 w-12 bg-[#e7ded2] object-cover"
+                        className="h-12 w-12 bg-[#EDE6E8] object-cover"
                       />
                       <span className="font-semibold">
                         {language === "ar" ? category.nameAr : category.nameEn}
@@ -211,7 +211,7 @@ function AdminInput({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8b725f]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
         {label}
       </span>
       <input

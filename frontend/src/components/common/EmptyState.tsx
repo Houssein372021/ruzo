@@ -13,14 +13,14 @@ export function EmptyState({ title, copy, actionTo, actionLabel }: EmptyStatePro
   const { dir, t } = useI18n();
 
   return (
-    <div className="mx-auto flex min-h-[340px] max-w-xl flex-col items-center justify-center px-6 text-center">
-      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b725f]">Rüzo</p>
-      <h2 className="mt-4 text-3xl font-semibold text-[#111111]">{title}</h2>
-      {copy ? <p className="mt-3 text-sm leading-7 text-[#6d6258]">{copy}</p> : null}
+    <div className="mx-auto flex min-h-[340px] max-w-xl flex-col items-center justify-center border border-[#080808]/10 bg-[#FFFFFF] px-6 text-center">
+      <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">RÜZO</p>
+      <h2 className="mt-4 text-3xl font-semibold text-[#080808]">{title}</h2>
+      {copy ? <p className="mt-3 text-sm leading-7 text-[#080808]/66">{copy}</p> : null}
       {actionTo ? (
         <Link
           to={actionTo}
-          className="mt-8 inline-flex items-center gap-2 bg-[#4B2E24] px-6 py-3 text-sm font-semibold text-[#F8F4EC] transition hover:bg-[#3a2118]"
+          className="mt-8 inline-flex items-center gap-2 bg-[#6B0F1A] px-6 py-3 text-sm font-semibold text-[#FFFFFF] transition hover:bg-[#080808]"
         >
           {actionLabel ?? t("continueShopping")}
           <ArrowRight className={dir === "rtl" ? "h-4 w-4 rotate-180" : "h-4 w-4"} />

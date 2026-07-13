@@ -72,7 +72,7 @@ export function AdminReviewsPage() {
         action={
           <div className="flex flex-col gap-3 sm:flex-row">
             <label className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b725f]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A2638]" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
@@ -110,11 +110,11 @@ export function AdminReviewsPage() {
               <tr key={review.id}>
                 <td>
                   <p className="font-semibold">{review.productName}</p>
-                  <p className="mt-1 text-xs text-[#8b725f]">{review.orderNumber}</p>
+                  <p className="mt-1 text-xs text-[#8A2638]">{review.orderNumber}</p>
                 </td>
                 <td>
                   <p>{review.customerName}</p>
-                  <p className="mt-1 text-xs text-[#8b725f]">{review.customerEmail}</p>
+                  <p className="mt-1 text-xs text-[#8A2638]">{review.customerEmail}</p>
                 </td>
                 <td>
                   <StarRating value={review.rating} />
@@ -122,7 +122,7 @@ export function AdminReviewsPage() {
                 <td>{review.status ? t(reviewStatusTranslationKeys[review.status]) : "-"}</td>
                 <td className="min-w-72">
                   {review.title ? <p className="font-semibold">{review.title}</p> : null}
-                  <p className="mt-1 text-sm leading-6 text-[#6d6258]">{review.body}</p>
+                  <p className="mt-1 text-sm leading-6 text-[#5F5659]">{review.body}</p>
                 </td>
                 <td>
                   <div className="flex gap-2">

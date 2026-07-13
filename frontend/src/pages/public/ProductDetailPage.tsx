@@ -305,7 +305,7 @@ export function ProductDetailPage() {
                   src={activeMobileMedia.url}
                   controls
                   playsInline
-                  className="mx-auto aspect-[3/4] max-h-[520px] w-full bg-[#111111] object-contain"
+                  className="mx-auto aspect-[3/4] max-h-[520px] w-full bg-[#080808] object-contain"
                 />
               ) : null}
               {mobileMediaItems.length > 1 ? (
@@ -314,7 +314,7 @@ export function ProductDetailPage() {
                     type="button"
                     aria-label={t("previousImage")}
                     onClick={() => goToMobileImage(-1)}
-                    className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#6d6258]/85 text-white shadow-sm transition hover:bg-[#4b2e24]"
+                    className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#080808]/85 text-white shadow-sm transition hover:bg-[#6B0F1A]"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </button>
@@ -322,7 +322,7 @@ export function ProductDetailPage() {
                     type="button"
                     aria-label={t("nextImage")}
                     onClick={() => goToMobileImage(1)}
-                    className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#6d6258]/85 text-white shadow-sm transition hover:bg-[#4b2e24]"
+                    className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#080808]/85 text-white shadow-sm transition hover:bg-[#6B0F1A]"
                   >
                     <ChevronRight className="h-5 w-5" />
                   </button>
@@ -336,15 +336,15 @@ export function ProductDetailPage() {
                   <button
                     key={item.id}
                     type="button"
-                    className={`aspect-square min-w-0 border bg-[#e7ded2] p-0.5 transition ${
-                      selectedImage === item.url ? "border-[#111111]" : "border-transparent"
+                    className={`aspect-square min-w-0 border bg-[#FFFFFF] p-0.5 transition ${
+                      selectedImage === item.url ? "border-[#080808]" : "border-transparent"
                     }`}
                     onClick={() => setSelectedImage(item.url)}
                   >
                     {item.type === "image" ? (
                       <img src={item.url} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <span className="grid h-full w-full place-items-center bg-[#4B2E24] text-[10px] font-semibold uppercase tracking-display text-[#F8F4EC]">
+                      <span className="grid h-full w-full place-items-center bg-[#6B0F1A] text-[10px] font-semibold uppercase tracking-display text-[#FFFFFF]">
                         {t("video")}
                       </span>
                     )}
@@ -361,8 +361,8 @@ export function ProductDetailPage() {
               <button
                 key={image.id}
                 type="button"
-                className={`w-20 shrink-0 border bg-[#e7ded2] ${
-                  selectedImage === image.imageUrl ? "border-[#111111]" : "border-transparent"
+                className={`w-20 shrink-0 border bg-[#FFFFFF] ${
+                  selectedImage === image.imageUrl ? "border-[#080808]" : "border-transparent"
                 }`}
                 onClick={() => scrollToMedia(image.imageUrl)}
               >
@@ -372,8 +372,8 @@ export function ProductDetailPage() {
             {product.videoUrl ? (
               <button
                 type="button"
-                className={`w-20 shrink-0 border bg-[#4B2E24] text-[10px] font-semibold uppercase tracking-display text-[#F8F4EC] ${
-                  selectedImage === product.videoUrl ? "border-[#4B2E24]" : "border-transparent"
+                className={`w-20 shrink-0 border bg-[#6B0F1A] text-[10px] font-semibold uppercase tracking-display text-[#FFFFFF] ${
+                  selectedImage === product.videoUrl ? "border-[#6B0F1A]" : "border-transparent"
                 }`}
                 onClick={() => scrollToMedia(product.videoUrl)}
               >
@@ -390,8 +390,8 @@ export function ProductDetailPage() {
                 }}
                 initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
-                className={`snap-start overflow-hidden bg-[#e7ded2] ring-1 transition ${
-                  selectedImage === image.imageUrl ? "ring-[#4B2E24]" : "ring-transparent"
+                className={`snap-start overflow-hidden bg-[#FFFFFF] ring-1 transition ${
+                  selectedImage === image.imageUrl ? "ring-[#6B0F1A]" : "ring-transparent"
                 }`}
               >
                 <img
@@ -410,8 +410,8 @@ export function ProductDetailPage() {
                 }}
                 initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
-                className={`snap-start overflow-hidden bg-[#111111] ring-1 transition ${
-                  selectedImage === product.videoUrl ? "ring-[#4B2E24]" : "ring-transparent"
+                className={`snap-start overflow-hidden bg-[#080808] ring-1 transition ${
+                  selectedImage === product.videoUrl ? "ring-[#6B0F1A]" : "ring-transparent"
                 }`}
               >
                 <video
@@ -428,18 +428,18 @@ export function ProductDetailPage() {
         </div>
 
         <aside className="lg:sticky lg:top-32 lg:self-start">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b725f]">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">
             {product.category ? (language === "ar" ? product.category.nameAr : product.category.nameEn) : "Rüzo"}
           </p>
           <div className="mt-3">
-            <h1 className="font-display text-4xl leading-tight text-[#111111] sm:text-5xl">
+            <h1 className="font-display text-4xl leading-tight text-[#080808] sm:text-5xl">
               {getProductName(product, language)}
             </h1>
           </div>
           {(product.reviewCount ?? 0) > 0 ? (
             <div className="mt-4 flex items-center gap-2">
               <StarRating value={product.avgRating ?? 0} />
-              <span className="text-xs text-[#8b725f]">
+              <span className="text-xs text-[#6B0F1A]">
                 {t("basedOnReviews", { count: String(product.reviewCount ?? 0) })}
               </span>
             </div>
@@ -447,19 +447,19 @@ export function ProductDetailPage() {
           <div className="mt-3 flex items-baseline gap-3 text-2xl">
             <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
             {product.salePrice ? (
-              <span className="text-base text-[#8b725f] line-through">
+              <span className="text-base text-[#6B0F1A] line-through">
                 {formatCurrency(product.price, language)}
               </span>
             ) : null}
           </div>
-          {shortDescription ? <p className="mt-5 text-sm leading-8 text-[#6d6258]">{shortDescription}</p> : null}
+          {shortDescription ? <p className="mt-5 text-sm leading-8 text-[#080808]/66">{shortDescription}</p> : null}
 
           <div className="mt-9 space-y-7">
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#111111]">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
                 {t("color")}:{" "}
                 {selectedColor ? (
-                  <span className="font-medium tracking-[0.18em] text-[#8b725f]">
+                  <span className="font-medium tracking-[0.18em] text-[#6B0F1A]">
                     {selectedColor.toUpperCase()}
                   </span>
                 ) : null}
@@ -473,10 +473,10 @@ export function ProductDetailPage() {
                       type="button"
                       title={color}
                       aria-label={t("colorOption", { color })}
-                      className={`h-10 w-10 rounded-full border border-[#d8cbbd] ring-1 transition ${
+                      className={`h-10 w-10 rounded-full border border-[#080808]/14 ring-1 transition ${
                         selectedColor === color
-                          ? "ring-[#4B2E24] ring-offset-2 ring-offset-[#F8F4EC]"
-                          : "ring-transparent hover:ring-[#4B2E24]"
+                          ? "ring-[#6B0F1A] ring-offset-2 ring-offset-[#FFFFFF]"
+                          : "ring-transparent hover:ring-[#6B0F1A]"
                       }`}
                       style={{ backgroundColor: variant?.colorHex ?? color }}
                       onClick={() => {
@@ -494,7 +494,7 @@ export function ProductDetailPage() {
             </div>
 
             <div>
-              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#111111]">
+              <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
                 {t("size")}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -504,8 +504,8 @@ export function ProductDetailPage() {
                     type="button"
                     className={`h-11 min-w-11 border px-5 text-sm transition ${
                       selectedSize === sizeOption
-                        ? "border-[#4B2E24] bg-[#4B2E24] text-[#F8F4EC]"
-                        : "border-[#d8cbbd] hover:border-[#4B2E24]"
+                        ? "border-[#6B0F1A] bg-[#6B0F1A] text-[#FFFFFF]"
+                        : "border-[#080808]/14 hover:border-[#6B0F1A]"
                     }`}
                     onClick={() => setSelectedSize(sizeOption)}
                   >
@@ -514,7 +514,7 @@ export function ProductDetailPage() {
                 ))}
               </div>
               {selectedVariant ? (
-                <p className="mt-3 text-xs font-medium uppercase tracking-[0.16em] text-[#8b725f]">
+                <p className="mt-3 text-xs font-medium uppercase tracking-[0.16em] text-[#6B0F1A]">
                   {t("stock")}: {selectedVariant.stock}
                 </p>
               ) : null}
@@ -525,7 +525,7 @@ export function ProductDetailPage() {
               <button
                 type="button"
                 disabled={!selectedVariant || selectedVariant.stock <= 0}
-                className="flex h-[52px] min-w-0 items-center justify-center bg-[#4B2E24] px-4 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#F8F4EC] transition hover:bg-[#3a2118] max-[420px]:px-2 max-[420px]:text-[0.64rem] max-[420px]:tracking-[0.08em]"
+                className="flex h-[52px] min-w-0 items-center justify-center bg-[#6B0F1A] px-4 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808] max-[420px]:px-2 max-[420px]:text-[0.64rem] max-[420px]:tracking-[0.08em]"
                 onClick={handleAddToCart}
               >
                 {t("addToCart")}
@@ -533,15 +533,15 @@ export function ProductDetailPage() {
               <button
                 type="button"
                 aria-label={t("favorites")}
-                className="grid h-[52px] w-[52px] place-items-center border border-[#d8cbbd] bg-transparent text-[#111111] transition hover:border-[#4B2E24] hover:text-[#4B2E24]"
+                className="grid h-[52px] w-[52px] place-items-center border border-[#080808]/14 bg-transparent text-[#080808] transition hover:border-[#6B0F1A] hover:text-[#6B0F1A]"
                 onClick={() => toggleFavorite(favoriteItem)}
               >
-                <Heart className={isFavorite ? "h-5 w-5 fill-[#4B2E24] text-[#4B2E24]" : "h-5 w-5"} />
+                <Heart className={isFavorite ? "h-5 w-5 fill-[#6B0F1A] text-[#6B0F1A]" : "h-5 w-5"} />
               </button>
             </div>
           </div>
 
-          <div className="mt-10 divide-y divide-[#ded2c5] border-y border-[#ded2c5]">
+          <div className="mt-10 divide-y divide-[#080808]/10 border-y border-[#080808]/10">
             {[
               { id: "details", label: t("details"), copy: description || t("productDetailsFallback") },
               { id: "fabric", label: t("fabricCare"), copy: fabricCareCopy },
@@ -550,7 +550,7 @@ export function ProductDetailPage() {
               <div key={item.id}>
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between py-4 text-xs font-medium uppercase tracking-[0.24em] text-[#3f3128]"
+                  className="flex w-full items-center justify-between py-4 text-xs font-medium uppercase tracking-[0.24em] text-[#24191D]"
                   onClick={() => setOpenAccordion(openAccordion === item.id ? "" : item.id)}
                 >
                   {item.label}
@@ -559,7 +559,7 @@ export function ProductDetailPage() {
                   />
                 </button>
                 {openAccordion === item.id ? (
-                  <p className="pb-5 text-sm leading-7 text-[#6d6258]">{item.copy}</p>
+                  <p className="pb-5 text-sm leading-7 text-[#080808]/66">{item.copy}</p>
                 ) : null}
               </div>
             ))}

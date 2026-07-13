@@ -18,9 +18,10 @@ type CollectionPageProps = {
 
 const collectionTitleKeys: Record<string, TranslationKey> = {
   sets: "sets",
-  "sport-bras": "sportsBras",
-  "sports-bras": "sportsBras",
+  dresses: "dresses",
   bottoms: "bottoms",
+  tops: "tops",
+  outerwear: "outerwear",
 };
 
 export function DynamicCollectionPage() {
@@ -50,7 +51,7 @@ const filterOptionTranslationKeys: Record<string, TranslationKey> = {
 
 export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) {
   const { t } = useI18n();
-  const normalizedCategorySlug = categorySlug === "sports-bras" ? "sport-bras" : categorySlug;
+  const normalizedCategorySlug = categorySlug;
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [size, setSize] = useState("all");
@@ -247,12 +248,12 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
         }}
       />
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        <div className="flex flex-col justify-between gap-6 border-b border-[#ded2c5] pb-8 lg:flex-row lg:items-end">
+        <div className="flex flex-col justify-between gap-6 border-b border-[#080808]/10 pb-8 lg:flex-row lg:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b725f]">{t("collectionEyebrow")}</p>
-            <h1 className="mt-3 text-4xl font-semibold text-[#111111] sm:text-5xl">{collectionName}</h1>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">{t("collectionEyebrow")}</p>
+            <h1 className="mt-3 text-4xl font-semibold text-[#080808] sm:text-5xl">{collectionName}</h1>
           </div>
-          <div className="hidden items-center gap-2 text-sm text-[#6d6258] lg:flex">
+          <div className="hidden items-center gap-2 text-sm text-[#080808]/62 lg:flex">
             <SlidersHorizontal className="h-4 w-4" />
             {t("productsCount", { count: String(filteredProducts.length) })}
           </div>
@@ -261,20 +262,20 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
         <div className="mt-5 max-w-3xl">
           <label className="relative block">
             <span className="sr-only">{t("searchProducts")}</span>
-            <Search className="pointer-events-none absolute top-1/2 h-5 w-5 -translate-y-1/2 text-[#8b725f] [inset-inline-start:1rem]" />
+            <Search className="pointer-events-none absolute top-1/2 h-5 w-5 -translate-y-1/2 text-[#6B0F1A] [inset-inline-start:1rem]" />
             <input
               type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder={t("searchProducts")}
-              className="h-14 w-full border border-[#d8cbbd] bg-[#fbf7f1] px-4 text-base text-[#111111] outline-none transition placeholder:text-[#aa9a8b] focus:border-[#4b2e24] focus:bg-white focus:shadow-[0_0_0_3px_rgba(75,46,36,0.08)] [padding-inline-end:3rem] [padding-inline-start:3rem] sm:h-16 sm:text-lg"
+              className="h-14 w-full border border-[#080808]/14 bg-[#FFFFFF] px-4 text-base text-[#080808] outline-none transition placeholder:text-[#080808]/42 focus:border-[#6B0F1A] focus:bg-white focus:shadow-[0_0_0_3px_rgba(107,15,26,0.12)] [padding-inline-end:3rem] [padding-inline-start:3rem] sm:h-16 sm:text-lg"
             />
             {searchQuery ? (
               <button
                 type="button"
                 aria-label={t("clearSearch")}
                 onClick={() => setSearchQuery("")}
-                className="absolute top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center border border-transparent text-[#8b725f] transition hover:border-[#d8cbbd] hover:bg-[#efe4d6] [inset-inline-end:0.75rem]"
+                className="absolute top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center border border-transparent text-[#6B0F1A] transition hover:border-[#080808]/16 hover:bg-[#080808]/5 [inset-inline-end:0.75rem]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -283,19 +284,19 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
         </div>
 
         <div className="mt-5 flex items-center justify-between gap-4 lg:hidden">
-          <div className="flex items-center gap-2 text-sm text-[#6d6258]">
+          <div className="flex items-center gap-2 text-sm text-[#080808]/62">
             <SlidersHorizontal className="h-4 w-4" />
             {t("productsCount", { count: String(filteredProducts.length) })}
           </div>
           <button
             type="button"
             onClick={() => setIsFilterOpen(true)}
-            className="inline-flex h-11 items-center justify-center gap-2 border border-[#4b2e24] bg-[#4b2e24] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#f8f4ec] transition hover:bg-[#3a2118]"
+            className="inline-flex h-11 items-center justify-center gap-2 border border-[#6B0F1A] bg-[#6B0F1A] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#FFFFFF] transition hover:border-[#080808] hover:bg-[#080808]"
           >
             <SlidersHorizontal className="h-4 w-4" />
             <span>{t("filters")}</span>
             {activeFilterCount > 0 ? (
-              <span className="grid h-5 min-w-5 place-items-center bg-[#f8f4ec] px-1 text-xs text-[#4b2e24]">
+              <span className="grid h-5 min-w-5 place-items-center bg-[#FFFFFF] px-1 text-xs text-[#6B0F1A]">
                 {activeFilterCount}
               </span>
             ) : null}
@@ -334,14 +335,14 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
             className="absolute inset-0 h-full w-full bg-black/35"
             onClick={() => setIsFilterOpen(false)}
           />
-          <div className="absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-lg bg-[#f8f3eb] px-4 pb-6 pt-4 shadow-2xl">
-            <div className="mx-auto h-1 w-10 bg-[#cbbca9]" />
+          <div className="absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-lg bg-[#FFFFFF] px-4 pb-6 pt-4 shadow-2xl">
+            <div className="mx-auto h-1 w-10 bg-[#6B0F1A]" />
             <div className="mt-5 flex items-center justify-between gap-4">
               <div>
-                <h2 id="collection-filters-title" className="text-2xl font-semibold text-[#111111]">
+                <h2 id="collection-filters-title" className="text-2xl font-semibold text-[#080808]">
                   {t("filters")}
                 </h2>
-                <p className="mt-1 text-sm text-[#6d6258]">
+                <p className="mt-1 text-sm text-[#080808]/62">
                   {t("productsCount", { count: String(filteredProducts.length) })}
                 </p>
               </div>
@@ -349,7 +350,7 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
                 type="button"
                 aria-label={t("closeFilters")}
                 onClick={() => setIsFilterOpen(false)}
-                className="grid h-10 w-10 place-items-center border border-[#d8cbbd] bg-[#fbf7f1] text-[#4b2e24] transition hover:bg-[#efe4d6]"
+                className="grid h-10 w-10 place-items-center border border-[#080808]/14 bg-[#FFFFFF] text-[#6B0F1A] transition hover:border-[#6B0F1A]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -362,14 +363,14 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
                 type="button"
                 onClick={resetFilters}
                 disabled={activeFilterCount === 0}
-                className="h-12 border border-[#d8cbbd] bg-[#f8f4ec] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#4b2e24] transition enabled:hover:border-[#4b2e24] enabled:hover:bg-[#efe4d6] disabled:cursor-not-allowed disabled:text-[#b2a493]"
+                className="h-12 border border-[#080808]/14 bg-[#FFFFFF] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#6B0F1A] transition enabled:hover:border-[#6B0F1A] disabled:cursor-not-allowed disabled:text-[#080808]/35"
               >
                 {t("clearFilters")}
               </button>
               <button
                 type="button"
                 onClick={() => setIsFilterOpen(false)}
-                className="h-12 bg-[#4b2e24] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#f8f4ec] transition hover:bg-[#3a2118]"
+                className="h-12 bg-[#6B0F1A] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#FFFFFF] transition hover:bg-[#080808]"
               >
                 {t("showProducts", { count: String(filteredProducts.length) })}
               </button>
@@ -393,13 +394,13 @@ function FilterSelect({ label, value, options, onChange }: FilterSelectProps) {
 
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#8b725f]">
+      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#6B0F1A]">
         {label}
       </span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full border border-[#d8cbbd] bg-white px-3 text-sm outline-none"
+        className="h-11 w-full border border-[#080808]/14 bg-white px-3 text-sm outline-none transition focus:border-[#6B0F1A] focus:shadow-[0_0_0_3px_rgba(107,15,26,0.12)]"
       >
         {options.map((option) => (
           <option key={option} value={option}>

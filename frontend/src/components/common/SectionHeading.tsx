@@ -16,12 +16,12 @@ export function SectionHeading({ eyebrow, title, copy }: SectionHeadingProps) {
       className="mx-auto max-w-2xl text-center"
     >
       {eyebrow ? (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-display text-[#8b725f]">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">
           {eyebrow}
         </p>
       ) : null}
-      <h2 className="font-display text-4xl text-[#111111] sm:text-5xl">{title}</h2>
-      {copy ? <p className="mt-4 text-sm leading-7 text-[#6d6258] sm:text-base">{copy}</p> : null}
+      <h2 className="font-display text-4xl text-[#080808] sm:text-5xl">{title}</h2>
+      {copy ? <p className="mt-4 text-sm leading-7 text-[#080808]/66 sm:text-base">{copy}</p> : null}
     </motion.div>
   );
 }

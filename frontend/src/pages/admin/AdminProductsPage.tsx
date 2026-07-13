@@ -361,7 +361,7 @@ export function AdminProductsPage() {
           title={t("products")}
           action={
             <label className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b725f]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A2638]" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
@@ -386,7 +386,7 @@ export function AdminProductsPage() {
                 <tr key={product.id}>
                   <td>
                     <div className="font-semibold">{language === "ar" ? product.nameAr : product.nameEn}</div>
-                    <div className="text-xs text-[#8b725f]">{product.slug}</div>
+                    <div className="text-xs text-[#8A2638]">{product.slug}</div>
                   </td>
                   <td>
                     {product.category
@@ -475,7 +475,7 @@ export function AdminProductsPage() {
 
             <FormSection title={t("productImages")} actionLabel={t("addImage")} onAdd={addImage}>
               {form.images.map((image, index) => (
-                <div key={`${index}-${image.sortOrder}`} className="grid gap-3 border border-[#ded2c5] p-3">
+                <div key={`${index}-${image.sortOrder}`} className="grid gap-3 border border-[#E6D9DE] p-3">
                   <div className="grid grid-cols-[1fr_40px] gap-2">
                     <AdminInput
                       label={t("sortOrder")}
@@ -503,7 +503,7 @@ export function AdminProductsPage() {
 
             <FormSection title={t("variants")} actionLabel={t("addVariant")} onAdd={addVariant}>
               {form.variants.map((variant, index) => (
-                <div key={index} className="grid gap-3 border border-[#ded2c5] p-3">
+                <div key={index} className="grid gap-3 border border-[#E6D9DE] p-3">
                   <div className="grid grid-cols-[1fr_1fr_40px] gap-2">
                     <AdminInput
                       label={t("variantColor")}
@@ -595,7 +595,7 @@ type AdminInputProps = {
 function AdminInput({ label, value, onChange, type = "text" }: AdminInputProps) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8b725f]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
         {label}
       </span>
       <input
@@ -611,7 +611,7 @@ function AdminInput({ label, value, onChange, type = "text" }: AdminInputProps) 
 function AdminTextarea({ label, value, onChange }: AdminInputProps) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8b725f]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
         {label}
       </span>
       <textarea
@@ -636,7 +636,7 @@ function AdminSelect({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8b725f]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
         {label}
       </span>
       <select
@@ -662,9 +662,9 @@ function FormSection({
   children: ReactNode;
 }) {
   return (
-    <section className="grid gap-3 border-t border-[#ded2c5] pt-4">
+    <section className="grid gap-3 border-t border-[#E6D9DE] pt-4">
       <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#111111]">{title}</h3>
+        <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#080808]">{title}</h3>
         <button type="button" className="admin-secondary-button" onClick={onAdd}>
           <Plus className="h-4 w-4" />
           {actionLabel}

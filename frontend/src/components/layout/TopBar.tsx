@@ -33,39 +33,44 @@ export function TopBar({
   const positionClass = fixed ? "fixed inset-x-0 top-0" : "sticky top-0";
 
   return (
-    <header className={`${positionClass} z-40 border-b border-[#ded2c5]/60 bg-[#F8F4EC]/75 backdrop-blur-md`}>
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-center justify-between gap-6 px-5 lg:px-10">
-        {hasMobileMenu ? (
-          <button
-            type="button"
-            aria-label={t("menu")}
-            className="-ms-2 p-2 lg:hidden"
-            onClick={() => setIsMenuOpen((value) => !value)}
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        ) : (
-          <span className="h-9 w-9 lg:hidden" aria-hidden="true" />
-        )}
+    <header className={`${positionClass} z-40 border-b border-[#080808]/10 bg-[#FFFFFF] text-[#080808] shadow-[0_1px_0_rgba(8,8,8,0.04)]`}>
+      <div className="mx-auto grid h-[70px] w-full max-w-[1500px] grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 lg:px-8">
+        <div className="flex min-w-0 items-center gap-4">
+          {hasMobileMenu ? (
+            <button
+              type="button"
+              aria-label={t("menu")}
+              className="-ms-2 grid h-10 w-10 place-items-center text-[#080808] transition hover:text-[#6B0F1A] lg:hidden"
+              onClick={() => setIsMenuOpen((value) => !value)}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          ) : null}
 
-        <Link to={brandTo} className="font-display text-center text-2xl leading-none tracking-[0.3em] text-[#4B2E24]">
-          <span className="block uppercase">RÜZO</span>
+          {navItems.length > 0 ? (
+            <nav className="hidden items-center gap-8 text-[11px] uppercase tracking-[0.22em] lg:flex">
+              {navItems.map((item) => (
+                <TopBarNavLink key={item.to} item={item} />
+              ))}
+            </nav>
+          ) : null}
+        </div>
+
+        <Link
+          to={brandTo}
+          className="font-display text-center text-[1.9rem] uppercase leading-none tracking-[0.18em] text-[#6B0F1A] transition hover:text-[#080808] sm:text-[2.25rem]"
+        >
+          RÜZO
           {eyebrow ? (
-            <span className="mt-1 block font-sans text-[0.6rem] uppercase tracking-[0.28em] text-[#8b725f]">
+            <span className="mt-1 block font-sans text-[0.6rem] uppercase tracking-[0.24em] text-[#080808]/60">
               {eyebrow}
             </span>
           ) : null}
         </Link>
 
-        {navItems.length > 0 ? (
-          <nav className="hidden items-center gap-8 text-[12px] uppercase tracking-display lg:flex">
-            {navItems.map((item) => (
-              <TopBarNavLink key={item.to} item={item} />
-            ))}
-          </nav>
-        ) : null}
-
-        <div className="flex min-w-9 items-center justify-end gap-1 text-[12px] text-[#111111]">{actions}</div>
+        <div className="flex min-w-0 items-center justify-end text-[#080808]">
+          {actions}
+        </div>
       </div>
 
       <AnimatePresence>
@@ -75,9 +80,9 @@ export function TopBar({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.18, ease: "easeOut" }}
-            className="border-t border-[#ded2c5]/60 bg-[#F8F4EC] lg:hidden"
+            className="border-t border-[#080808]/10 bg-[#FFFFFF] text-[#080808] lg:hidden"
           >
-            <nav className="flex flex-col gap-1 px-5 py-4 text-sm uppercase tracking-display">
+            <nav className="flex flex-col gap-1 px-5 py-4 text-sm uppercase tracking-[0.22em]">
               {navItems.map((item) => (
                 <TopBarNavLink
                   key={item.to}
@@ -86,7 +91,7 @@ export function TopBar({
                   onClick={() => setIsMenuOpen(false)}
                 />
               ))}
-              {mobileActions ? <div className="mt-2 border-t border-[#ded2c5]/60 pt-4">{mobileActions}</div> : null}
+              {mobileActions ? <div className="mt-2 border-t border-[#080808]/10 pt-4">{mobileActions}</div> : null}
             </nav>
           </motion.div>
         ) : null}
@@ -113,10 +118,10 @@ function TopBarNavLink({
       className={({ isActive }) =>
         isMobile
           ? `py-2 transition-colors ${
-              isActive ? "text-[#4B2E24]" : "text-[#111111]/80 hover:text-[#4B2E24]"
+              isActive ? "text-[#6B0F1A]" : "text-[#080808]/70 hover:text-[#6B0F1A]"
             }`
           : `flex shrink-0 items-center gap-2 whitespace-nowrap transition-colors ${
-              isActive ? "text-[#4B2E24]" : "text-[#111111]/70 hover:text-[#4B2E24]"
+              isActive ? "text-[#6B0F1A]" : "text-[#080808]/68 hover:text-[#6B0F1A]"
             }`
       }
     >

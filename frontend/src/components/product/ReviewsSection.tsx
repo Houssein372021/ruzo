@@ -44,27 +44,27 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
   }, [reviews]);
 
   return (
-    <section className="border-t border-[#ded2c5] py-16">
+    <section className="border-t border-[#080808]/10 py-16">
       <div className="grid gap-10 md:grid-cols-[280px_1fr]">
         <div>
           <h2 className="font-display text-3xl">{t("reviews")}</h2>
           <div className="mt-5 flex items-baseline gap-3">
             <span className="font-display text-5xl">{summary.average.toFixed(1)}</span>
-            <span className="text-xs font-semibold uppercase tracking-display text-[#8b725f]">/ 5</span>
+            <span className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">/ 5</span>
           </div>
           <StarRating value={summary.average} size={18} className="mt-2" />
-          <p className="mt-2 text-xs text-[#6d6258]">
+          <p className="mt-2 text-xs text-[#080808]/66">
             {t("basedOnReviews", { count: String(summary.count) })}
           </p>
-          <p className="mt-6 text-sm leading-6 text-[#6d6258]">{t("verifiedReviewNotice")}</p>
+          <p className="mt-6 text-sm leading-6 text-[#080808]/66">{t("verifiedReviewNotice")}</p>
         </div>
 
         <div>
-          {isUnavailable ? <p className="mb-5 bg-white px-4 py-3 text-sm text-[#6d6258]">{t("apiUnavailable")}</p> : null}
+          {isUnavailable ? <p className="mb-5 bg-white px-4 py-3 text-sm text-[#080808]/66">{t("apiUnavailable")}</p> : null}
           {reviews.length === 0 ? (
-            <p className="text-sm text-[#6d6258]">{t("noReviews")}</p>
+            <p className="text-sm text-[#080808]/66">{t("noReviews")}</p>
           ) : (
-            <ul className="divide-y divide-[#ded2c5]">
+            <ul className="divide-y divide-[#080808]/10">
               {reviews.map((review) => (
                 <li key={review.id} className="py-6">
                   <div className="flex items-center justify-between gap-4">
@@ -72,19 +72,19 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
                       <StarRating value={review.rating} />
                       <span className="text-sm font-semibold">{review.customerName}</span>
                       {review.verifiedPurchase ? (
-                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#8b725f]">
+                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]">
                           {t("verifiedPurchase")}
                         </span>
                       ) : null}
                     </div>
                     {review.createdAt ? (
-                      <time className="text-xs text-[#8b725f]">
+                      <time className="text-xs text-[#6B0F1A]">
                         {new Date(review.createdAt).toLocaleDateString()}
                       </time>
                     ) : null}
                   </div>
                   {review.title ? <p className="mt-3 text-sm font-semibold">{review.title}</p> : null}
-                  <p className="mt-2 text-sm leading-7 text-[#6d6258]">{review.body}</p>
+                  <p className="mt-2 text-sm leading-7 text-[#080808]/66">{review.body}</p>
                 </li>
               ))}
             </ul>

@@ -118,7 +118,7 @@ export function AdminOrdersPage() {
         action={
           <div className="flex flex-col gap-3 sm:flex-row">
             <label className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8b725f]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A2638]" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
@@ -215,17 +215,17 @@ export function AdminOrdersPage() {
       </AdminPanel>
 
       {selectedOrder ? (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#111111]/45 px-4 py-8">
-          <div className="mx-auto w-full max-w-4xl border border-[#ded2c5] bg-[#fbf7f1] shadow-2xl">
-            <div className="flex items-start justify-between gap-6 bg-[#4B2E24] px-6 py-6 text-[#F8F4EC] sm:px-8">
+        <div className="fixed inset-0 z-50 overflow-y-auto bg-[#080808]/45 px-4 py-8">
+          <div className="mx-auto w-full max-w-4xl border border-[#E6D9DE] bg-[#FFFFFF] shadow-2xl">
+            <div className="flex items-start justify-between gap-6 bg-[#6B0F1A] px-6 py-6 text-[#FFFFFF] sm:px-8">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-[0.42em]">RÜZO</p>
                 <h2 className="mt-4 font-display text-2xl">{selectedOrder.orderNumber}</h2>
-                <p className="mt-2 text-sm text-[#eadfce]">{t(orderStatusTranslationKeys[selectedOrder.status])}</p>
+                <p className="mt-2 text-sm text-[#F4E8EB]">{t(orderStatusTranslationKeys[selectedOrder.status])}</p>
               </div>
               <button
                 type="button"
-                className="grid h-11 w-11 place-items-center border border-[#eadfce]/45 text-[#F8F4EC] transition hover:bg-[#F8F4EC]/10"
+                className="grid h-11 w-11 place-items-center border border-[#F4E8EB]/45 text-[#FFFFFF] transition hover:bg-[#FFFFFF]/10"
                 onClick={() => setSelectedOrder(null)}
                 aria-label={t("cancel")}
               >
@@ -235,10 +235,10 @@ export function AdminOrdersPage() {
 
             <div className="grid gap-7 px-6 py-7 sm:px-8">
               <div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-                <section className="border border-[#ded2c5] bg-white p-5">
+                <section className="border border-[#E6D9DE] bg-white p-5">
                   <div className="mb-5 flex items-center justify-between gap-4">
                     <div>
-                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8b725f]">
+                      <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8A2638]">
                         {t("customerInfo")}
                       </p>
                       <h3 className="mt-1 text-lg font-semibold">{selectedOrder.customerName}</h3>
@@ -248,7 +248,7 @@ export function AdminOrdersPage() {
                         href={whatsappUrl(selectedOrder.customerPhone)}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex h-10 items-center gap-2 border border-[#4B2E24] px-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#4B2E24] transition hover:bg-[#4B2E24] hover:text-[#F8F4EC]"
+                        className="inline-flex h-10 items-center gap-2 border border-[#6B0F1A] px-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#6B0F1A] transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF]"
                       >
                         <MessageCircle className="h-4 w-4" />
                         {t("whatsapp")}
@@ -258,52 +258,52 @@ export function AdminOrdersPage() {
 
                   <dl className="grid gap-4 text-sm sm:grid-cols-2">
                     <div className="flex gap-3">
-                      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#8b725f]" />
+                      <Mail className="mt-0.5 h-4 w-4 shrink-0 text-[#8A2638]" />
                       <div>
-                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("email")}</dt>
+                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("email")}</dt>
                         <dd className="mt-1 wrap-break-word font-medium">{displayText(selectedOrder.email)}</dd>
                       </div>
                     </div>
                     <div className="flex gap-3">
-                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#8b725f]" />
+                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#8A2638]" />
                       <div>
-                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("phone")}</dt>
+                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("phone")}</dt>
                         <dd className="mt-1 font-medium">{displayText(selectedOrder.phone)}</dd>
                       </div>
                     </div>
                     <div className="flex gap-3 sm:col-span-2">
-                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8b725f]" />
+                      <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#8A2638]" />
                       <div>
-                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("address")}</dt>
+                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("address")}</dt>
                         <dd className="mt-1 font-medium">{displayText(selectedOrder.address)}</dd>
                       </div>
                     </div>
                   </dl>
                 </section>
 
-                <section className="border border-[#ded2c5] bg-white p-5">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8b725f]">
+                <section className="border border-[#E6D9DE] bg-white p-5">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8A2638]">
                     {t("details")}
                   </p>
                   <dl className="mt-5 grid gap-4 text-sm">
                     <div className="flex gap-3">
-                      <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-[#8b725f]" />
+                      <CalendarDays className="mt-0.5 h-4 w-4 shrink-0 text-[#8A2638]" />
                       <div>
-                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">Date</dt>
+                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">Date</dt>
                         <dd className="mt-1 font-medium">{formatOrderDate(selectedOrder.createdAt)}</dd>
                       </div>
                     </div>
-                    <div className="flex justify-between gap-4 border-t border-[#eee3d7] pt-4">
-                      <dt className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">Payment</dt>
+                    <div className="flex justify-between gap-4 border-t border-[#EEE3E6] pt-4">
+                      <dt className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">Payment</dt>
                       <dd className="text-right font-medium">{displayText(selectedOrder.paymentMethod)}</dd>
                     </div>
-                    <div className="flex justify-between gap-4 border-t border-[#eee3d7] pt-4">
-                      <dt className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("whatsapp")}</dt>
+                    <div className="flex justify-between gap-4 border-t border-[#EEE3E6] pt-4">
+                      <dt className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("whatsapp")}</dt>
                       <dd className="text-right font-medium">{displayText(selectedOrder.whatsapp ?? selectedOrder.customerPhone)}</dd>
                     </div>
                     {selectedOrder.reviewToken ? (
-                      <div className="border-t border-[#eee3d7] pt-4">
-                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("reviewLink")}</dt>
+                      <div className="border-t border-[#EEE3E6] pt-4">
+                        <dt className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("reviewLink")}</dt>
                         <dd className="mt-2 grid gap-2">
                           <input
                             readOnly
@@ -312,16 +312,16 @@ export function AdminOrdersPage() {
                           />
                           <button
                             type="button"
-                            className="inline-flex w-fit items-center gap-2 border border-[#4B2E24] px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#4B2E24] transition hover:bg-[#4B2E24] hover:text-[#F8F4EC]"
+                            className="inline-flex w-fit items-center gap-2 border border-[#6B0F1A] px-3 py-2 text-xs font-semibold uppercase tracking-[0.14em] text-[#6B0F1A] transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF]"
                             onClick={() => navigator.clipboard?.writeText(reviewLink(selectedOrder.reviewToken))}
                           >
                             <Copy className="h-4 w-4" />
                             {t("copy")}
                           </button>
                           {selectedOrder.status !== "DELIVERED" ? (
-                            <p className="text-xs leading-5 text-[#8b725f]">{t("reviewLinkAfterDeliveryAdmin")}</p>
+                            <p className="text-xs leading-5 text-[#8A2638]">{t("reviewLinkAfterDeliveryAdmin")}</p>
                           ) : null}
-                          <p className="text-xs leading-5 text-[#8b725f]">
+                          <p className="text-xs leading-5 text-[#8A2638]">
                             {selectedOrder.reviewRequestSentAt ? t("reviewEmailSent") : t("reviewEmailNotSent")}
                           </p>
                         </dd>
@@ -331,28 +331,28 @@ export function AdminOrdersPage() {
                 </section>
               </div>
 
-              <section className="border border-[#ded2c5] bg-white">
-                <div className="flex items-center justify-between border-b border-[#ded2c5] px-5 py-4">
+              <section className="border border-[#E6D9DE] bg-white">
+                <div className="flex items-center justify-between border-b border-[#E6D9DE] px-5 py-4">
                   <h3 className="font-display text-xl">{t("products")}</h3>
-                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8b725f]">
+                  <span className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
                     {(selectedOrder.items ?? []).length} {t("products")}
                   </span>
                 </div>
-                <div className="divide-y divide-[#eee3d7]">
+                <div className="divide-y divide-[#EEE3E6]">
                   {(selectedOrder.items ?? []).map((item) => (
                     <div key={item.id} className="grid gap-4 px-5 py-4 sm:grid-cols-[1fr_auto_auto] sm:items-center">
                       <div>
                         <p className="font-semibold">{item.productName}</p>
-                        <p className="mt-1 text-sm text-[#8b725f]">
+                        <p className="mt-1 text-sm text-[#8A2638]">
                           {[item.color, item.size].filter(Boolean).join(" / ") || "-"}
                         </p>
                       </div>
                       <div className="text-sm sm:text-center">
-                        <p className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("quantity")}</p>
+                        <p className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("quantity")}</p>
                         <p className="mt-1 font-semibold">{item.quantity}</p>
                       </div>
                       <div className="text-sm sm:min-w-28 sm:text-right">
-                        <p className="text-xs uppercase tracking-[0.14em] text-[#8b725f]">{t("total")}</p>
+                        <p className="text-xs uppercase tracking-[0.14em] text-[#8A2638]">{t("total")}</p>
                         <p className="mt-1 font-semibold">{formatCurrency(item.totalPrice, language)}</p>
                       </div>
                     </div>
@@ -361,14 +361,14 @@ export function AdminOrdersPage() {
               </section>
 
               <div className="grid gap-5 lg:grid-cols-[1fr_20rem]">
-                <section className="border border-[#ded2c5] bg-white p-5">
-                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8b725f]">
+                <section className="border border-[#E6D9DE] bg-white p-5">
+                  <p className="text-[0.68rem] font-semibold uppercase tracking-[0.18em] text-[#8A2638]">
                     {t("notes")}
                   </p>
                   <p className="mt-3 text-sm leading-6">{displayText(selectedOrder.notes)}</p>
                 </section>
 
-                <section className="border border-[#ded2c5] bg-white p-5">
+                <section className="border border-[#E6D9DE] bg-white p-5">
                   <dl className="grid gap-3 text-sm">
                     <div className="flex justify-between gap-4">
                       <dt>{t("subtotal")}</dt>
@@ -378,7 +378,7 @@ export function AdminOrdersPage() {
                       <dt>{t("delivery")}</dt>
                       <dd className="font-medium">{formatCurrency(selectedOrder.deliveryFee ?? 0, language)}</dd>
                     </div>
-                    <div className="flex justify-between gap-4 border-t border-[#ded2c5] pt-4 text-lg font-semibold">
+                    <div className="flex justify-between gap-4 border-t border-[#E6D9DE] pt-4 text-lg font-semibold">
                       <dt>{t("total")}</dt>
                       <dd>{formatCurrency(selectedOrder.total, language)}</dd>
                     </div>

@@ -37,7 +37,7 @@ export function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f1e8dc]">
+    <div className="min-h-screen bg-[#F4EEF0]">
       <Seo
         title="Admin Login | Rüzo"
         description="Rüzo admin login."
@@ -46,24 +46,24 @@ export function AdminLoginPage() {
       />
       <TopBar eyebrow={t("admin")} navItems={[]} actions={<AdminLanguageButton />} />
       <main className="grid min-h-[calc(100vh-4rem)] place-items-center px-4 py-10">
-        <section className="w-full max-w-[384px] border border-[#ded2c5] bg-[#fbf7f1] px-8 py-9">
+        <section className="w-full max-w-[384px] border border-[#E6D9DE] bg-[#FFFFFF] px-8 py-9">
           <div className="text-center">
             <p className="text-xl uppercase tracking-[0.34em]">RÜZO</p>
-            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[#8b725f]">{t("admin")}</p>
+            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[#8A2638]">{t("admin")}</p>
           </div>
           <form className="mt-7 grid gap-5" onSubmit={handleSubmit(onSubmit)}>
-            <p className="font-display text-lg text-[#111111]">{t("adminLogin")}</p>
+            <p className="font-display text-lg text-[#080808]">{t("adminLogin")}</p>
             <input
               type="email"
               placeholder="admin@ruzo.local"
               {...register("email", { required: true })}
-              className="admin-input min-h-11 bg-[#f8f4ec]"
+              className="admin-input min-h-11 bg-[#FFFFFF]"
             />
             <input
               type="password"
               placeholder="Ruzo@2026"
               {...register("password", { required: true })}
-              className="admin-input min-h-11 bg-[#f8f4ec]"
+              className="admin-input min-h-11 bg-[#FFFFFF]"
             />
             {error ? <p className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
             <button

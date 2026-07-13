@@ -28,8 +28,8 @@ export function ContactPage() {
         path="/contact"
       />
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-10">
-        <p className="text-xs font-semibold uppercase tracking-display text-[#8b725f]">{t("contact")}</p>
-        <h1 className="font-display mt-5 max-w-4xl text-5xl leading-tight text-[#111111]">
+        <p className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">{t("contact")}</p>
+        <h1 className="font-display mt-5 max-w-4xl text-5xl leading-tight text-[#080808]">
           {t("contactHeading")}
         </h1>
 
@@ -38,9 +38,9 @@ export function ContactPage() {
             const Icon = item.icon;
             const content = (
               <>
-                <Icon className="h-6 w-6 text-[#4B2E24]" />
-                <p className="font-display mt-7 text-xl text-[#111111]">{item.label}</p>
-                <p className="mt-3 text-sm text-[#4B2E24]">{item.value}</p>
+                <Icon className="h-6 w-6 text-[#6B0F1A]" />
+                <p className="font-display mt-7 text-xl text-[#080808]">{item.label}</p>
+                <p className="mt-3 text-sm text-[#6B0F1A]">{item.value}</p>
               </>
             );
 
@@ -51,7 +51,7 @@ export function ContactPage() {
                   href={item.href}
                   target={item.href.startsWith("http") ? "_blank" : undefined}
                   rel={item.href.startsWith("http") ? "noreferrer" : undefined}
-                  className="block bg-white p-7 transition hover:-translate-y-1 hover:shadow-sm"
+                  className="block border border-[#080808]/10 bg-white p-7 transition hover:-translate-y-1 hover:border-[#6B0F1A]"
                 >
                   {content}
                 </a>
@@ -59,7 +59,7 @@ export function ContactPage() {
             }
 
             return (
-              <div key={item.label} className="bg-white p-7">
+              <div key={item.label} className="border border-[#080808]/10 bg-white p-7">
                 {content}
               </div>
             );

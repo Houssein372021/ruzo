@@ -32,7 +32,7 @@ export function CartDrawer() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[70] bg-[#111111]/45"
+          className="fixed inset-0 z-[70] bg-[#080808]/45"
         >
           <button
             type="button"
@@ -45,14 +45,14 @@ export function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "spring", damping: 30, stiffness: 220 }}
-            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col bg-[#F8F4EC] shadow-2xl"
+            className="absolute right-0 top-0 flex h-full w-full max-w-md flex-col border-l border-[#080808]/10 bg-[#FFFFFF] shadow-2xl"
           >
-            <div className="flex items-center justify-between border-b border-[#ded2c5] px-6 py-5">
+            <div className="flex items-center justify-between border-b border-[#080808]/10 px-6 py-5">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-display text-[#8b725f]">
+                <p className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">
                   {t("cart")}
                 </p>
-                <h2 className="font-display mt-1 text-2xl text-[#111111]">
+                <h2 className="font-display mt-1 text-2xl text-[#080808]">
                   {quantity} {quantity === 1 ? t("itemSingular") : t("itemPlural")}
                 </h2>
               </div>
@@ -69,12 +69,12 @@ export function CartDrawer() {
             {items.length === 0 ? (
               <div className="grid flex-1 place-items-center px-8 text-center">
                 <div>
-                  <ShoppingBag className="mx-auto h-10 w-10 text-[#8b725f]" />
+                  <ShoppingBag className="mx-auto h-10 w-10 text-[#6B0F1A]" />
                   <p className="mt-4 text-lg font-semibold">{t("emptyCart")}</p>
                   <Link
                     to="/collections/sets"
                     onClick={closeCart}
-                    className="mt-6 inline-flex bg-[#4B2E24] px-6 py-3 text-sm font-semibold text-[#F8F4EC]"
+                    className="mt-6 inline-flex bg-[#6B0F1A] px-6 py-3 text-sm font-semibold text-[#FFFFFF]"
                   >
                     {t("continueShopping")}
                   </Link>
@@ -82,17 +82,17 @@ export function CartDrawer() {
               </div>
             ) : (
               <>
-                <div className="border-b border-[#ded2c5] bg-[#D8C3A5]/35 px-6 py-4">
-                  <p className="mb-2 text-xs text-[#6d6258]">
+                <div className="border-b border-[#080808]/10 bg-[#080808] px-6 py-4">
+                  <p className="mb-2 text-xs text-[#FFFFFF]/72">
                     {remaining > 0
                       ? t("freeDeliveryRemaining", {
                           amount: formatCurrency(remaining, language),
                         })
                       : t("freeDeliveryUnlocked")}
                   </p>
-                  <div className="h-0.5 overflow-hidden bg-[#ded2c5]">
+                  <div className="h-0.5 overflow-hidden bg-[#FFFFFF]/18">
                     <div
-                      className="h-full bg-[#4B2E24] transition-all duration-500"
+                      className="h-full bg-[#6B0F1A] transition-all duration-500"
                       style={{ width: `${freeDeliveryProgress}%` }}
                     />
                   </div>
@@ -105,15 +105,15 @@ export function CartDrawer() {
                         <img
                           src={item.imageUrl ?? ""}
                           alt={language === "ar" ? item.nameAr : item.nameEn}
-                          className="aspect-[3/4] w-full bg-[#e7ded2] object-cover"
+                          className="aspect-[3/4] w-full border border-[#080808]/10 bg-[#FFFFFF] object-cover"
                         />
                         <div>
                           <div className="flex items-start justify-between gap-3">
                             <div>
-                              <p className="text-sm font-semibold text-[#111111]">
+                              <p className="text-sm font-semibold text-[#080808]">
                                 {language === "ar" ? item.nameAr : item.nameEn}
                               </p>
-                              <p className="mt-1 text-xs text-[#7d7167]">
+                              <p className="mt-1 text-xs text-[#080808]/62">
                                 {[item.color, item.size].filter(Boolean).join(" / ")}
                               </p>
                             </div>
@@ -128,7 +128,7 @@ export function CartDrawer() {
                             />
                             <button
                               type="button"
-                              className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8b725f]"
+                              className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]"
                               onClick={() => removeItem(item.lineId)}
                             >
                               {t("remove")}
@@ -140,7 +140,7 @@ export function CartDrawer() {
                   </div>
                 </div>
 
-                <div className="border-t border-[#ded2c5] bg-white px-6 py-5">
+                <div className="border-t border-[#080808]/10 bg-white px-6 py-5">
                   <div className="grid gap-2 text-sm">
                     <div className="flex justify-between">
                       <span>{t("subtotal")}</span>
@@ -152,7 +152,7 @@ export function CartDrawer() {
                         {deliveryFee === 0 ? t("free") : formatCurrency(DELIVERY_FEE, language)}
                       </span>
                     </div>
-                    <div className="flex justify-between border-t border-[#ded2c5] pt-3 text-base font-semibold">
+                    <div className="flex justify-between border-t border-[#080808]/10 pt-3 text-base font-semibold">
                       <span>{t("total")}</span>
                       <span>{formatCurrency(total, language)}</span>
                     </div>
@@ -160,7 +160,7 @@ export function CartDrawer() {
                   <Link
                     to="/checkout"
                     onClick={closeCart}
-                    className="mt-5 flex h-12 items-center justify-center bg-[#4B2E24] text-sm font-semibold uppercase tracking-[0.18em] text-[#F8F4EC] transition hover:bg-[#3a2118]"
+                    className="mt-5 flex h-12 items-center justify-center bg-[#6B0F1A] text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808]"
                   >
                     {t("checkout")}
                   </Link>

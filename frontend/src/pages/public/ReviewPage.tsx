@@ -81,25 +81,25 @@ export function ReviewPage() {
         robots="noindex,nofollow"
       />
       <div className="mx-auto max-w-3xl text-center">
-        <p className="text-xs font-semibold uppercase tracking-display text-[#8b725f]">RÜZO</p>
+        <p className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">RÜZO</p>
         <h1 className="mt-4 font-display text-4xl sm:text-5xl">{t("writeReview")}</h1>
-        <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#6d6258]">{t("reviewPageIntro")}</p>
+        <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#080808]/66">{t("reviewPageIntro")}</p>
       </div>
 
-      {isLoading ? <p className="mt-8 text-sm text-[#6d6258]">{t("loading")}</p> : null}
+      {isLoading ? <p className="mt-8 text-sm text-[#080808]/66">{t("loading")}</p> : null}
       {message ? (
-        <p className="mx-auto mt-6 max-w-3xl border border-[#ded2c5] bg-white px-4 py-3 text-sm text-[#6d6258]">
+        <p className="mx-auto mt-6 max-w-3xl border border-[#080808]/10 bg-white px-4 py-3 text-sm text-[#080808]/66">
           {message}
         </p>
       ) : null}
 
       {invitation && !invitation.reviewOpen ? (
-        <div className="mx-auto mt-8 max-w-3xl border border-[#ded2c5] bg-white p-6 sm:p-8">
+        <div className="mx-auto mt-8 max-w-3xl border border-[#080808]/10 bg-white p-6 sm:p-8">
           <h2 className="font-display text-2xl">{invitation.orderNumber}</h2>
-          <p className="mt-3 text-sm leading-7 text-[#6d6258]">{t("reviewAfterDelivery")}</p>
+          <p className="mt-3 text-sm leading-7 text-[#080808]/66">{t("reviewAfterDelivery")}</p>
           <Link
             to="/"
-            className="mt-6 inline-flex bg-[#4B2E24] px-5 py-3 text-xs font-semibold uppercase tracking-display text-[#F8F4EC]"
+            className="mt-6 inline-flex bg-[#6B0F1A] px-5 py-3 text-xs font-semibold uppercase tracking-display text-[#FFFFFF] transition hover:bg-[#080808]"
           >
             {t("home")}
           </Link>
@@ -107,15 +107,15 @@ export function ReviewPage() {
       ) : null}
 
       {invitation?.reviewOpen ? (
-        <form className="mx-auto mt-8 grid max-w-3xl gap-7 border border-[#ded2c5] bg-white p-5 sm:p-8" onSubmit={handleSubmit}>
-          <div className="border-b border-[#eee3d7] pb-5">
-            <p className="text-xs font-semibold uppercase tracking-display text-[#8b725f]">{invitation.orderNumber}</p>
+        <form className="mx-auto mt-8 grid max-w-3xl gap-7 border border-[#080808]/10 bg-white p-5 sm:p-8" onSubmit={handleSubmit}>
+          <div className="border-b border-[#080808]/10 pb-5">
+            <p className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">{invitation.orderNumber}</p>
             <h2 className="mt-2 font-display text-3xl">{selectedProduct?.productName ?? t("products")}</h2>
-            <p className="mt-3 text-sm leading-6 text-[#6d6258]">{t("reviewApprovalNotice")}</p>
+            <p className="mt-3 text-sm leading-6 text-[#080808]/66">{t("reviewApprovalNotice")}</p>
           </div>
 
           <div className="grid gap-3">
-            <p className="text-xs font-semibold uppercase tracking-display text-[#8b725f]">{t("products")}</p>
+            <p className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">{t("products")}</p>
             <div className="grid gap-3 sm:grid-cols-2">
               {invitation.products.map((product) => (
                 <ProductChoice
@@ -130,7 +130,7 @@ export function ReviewPage() {
 
           <div className="grid gap-5">
             <div>
-              <p className="mb-2 text-xs font-semibold uppercase tracking-display text-[#8b725f]">{t("rating")}</p>
+              <p className="mb-2 text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">{t("rating")}</p>
               <InteractiveStars value={rating} onChange={setRating} />
             </div>
 
@@ -153,7 +153,7 @@ export function ReviewPage() {
             <button
               type="submit"
               disabled={isSubmitting || !selectedProductId}
-              className="w-full bg-[#4B2E24] px-6 py-3 text-xs font-semibold uppercase tracking-display text-[#F8F4EC] transition hover:bg-[#3a2118] disabled:opacity-50 sm:w-fit"
+              className="w-full bg-[#6B0F1A] px-6 py-3 text-xs font-semibold uppercase tracking-display text-[#FFFFFF] transition hover:bg-[#080808] disabled:opacity-50 sm:w-fit"
             >
               {isSubmitting ? t("loading") : t("submitReview")}
             </button>
@@ -177,14 +177,14 @@ function ProductChoice({
     <button
       type="button"
       className={`flex min-h-24 items-center gap-3 border p-3 text-left transition ${
-        selected ? "border-[#4B2E24] bg-[#f8f4ec]" : "border-[#ded2c5] hover:border-[#8b725f]"
+        selected ? "border-[#6B0F1A] bg-[#FFFFFF]" : "border-[#080808]/10 hover:border-[#6B0F1A]"
       }`}
       onClick={onSelect}
     >
       {product.imageUrl ? (
-        <img src={product.imageUrl} alt="" className="h-16 w-16 bg-[#f1e8dc] object-cover" />
+        <img src={product.imageUrl} alt="" className="h-16 w-16 bg-[#080808]/5 object-cover" />
       ) : (
-        <span className="h-16 w-16 bg-[#f1e8dc]" />
+        <span className="h-16 w-16 bg-[#080808]/5" />
       )}
       <span className="text-sm font-semibold">{product.productName}</span>
     </button>

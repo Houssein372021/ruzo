@@ -150,7 +150,7 @@ export function CheckoutPage() {
       <Seo title="Checkout | Rüzo" description="Rüzo checkout." path="/checkout" robots="noindex,nofollow" />
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#8b725f]">{t("checkoutEyebrow")}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">{t("checkoutEyebrow")}</p>
           <h1 className="mt-3 text-4xl font-semibold">{t("customerInfo")}</h1>
 
           <form className="mt-8 grid gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -192,26 +192,26 @@ export function CheckoutPage() {
             <textarea {...register("notes")} className="checkout-input min-h-28 py-3" />
           </CheckoutInput>
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#8b725f]">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#6B0F1A]">
               {t("paymentMethod")}
             </p>
-            <label className="flex min-h-20 items-start gap-3 border border-[#d8cbbd] bg-[#fbf7f1] p-4 text-[#4b2e24] transition has-[:checked]:border-[#4b2e24] has-[:checked]:bg-[#f8f4ec]">
+            <label className="flex min-h-20 items-start gap-3 border border-[#080808]/14 bg-[#FFFFFF] p-4 text-[#6B0F1A] transition has-[:checked]:border-[#6B0F1A] has-[:checked]:bg-[#FFFFFF]">
               <input
                 type="radio"
                 value="cash-on-delivery"
                 {...register("paymentMethod", { required: requiredMessage })}
-                className="mt-1 accent-[#4B2E24]"
+                className="mt-1 accent-[#6B0F1A]"
               />
               <span>
                 <span className="block text-sm font-semibold">{t("cashOnDelivery")}</span>
-                <span className="mt-1 block text-sm leading-6 text-[#6d6258]">
+                <span className="mt-1 block text-sm leading-6 text-[#080808]/66">
                   {t("cashOnDeliveryCheckoutCopy")}
                 </span>
               </span>
             </label>
           </div>
-          <label className="flex items-center gap-2 text-sm text-[#6d6258]">
-            <input type="checkbox" {...register("saveDetails")} className="accent-[#4B2E24]" />
+          <label className="flex items-center gap-2 text-sm text-[#080808]/66">
+            <input type="checkbox" {...register("saveDetails")} className="accent-[#6B0F1A]" />
             {t("saveDetails")}
           </label>
 
@@ -219,7 +219,7 @@ export function CheckoutPage() {
           <button
             type="submit"
             disabled={formState.isSubmitting}
-            className="h-14 bg-[#4B2E24] text-sm font-semibold uppercase tracking-[0.18em] text-[#F8F4EC] transition hover:bg-[#3a2118] disabled:opacity-60"
+            className="h-14 bg-[#6B0F1A] text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808] disabled:opacity-60"
           >
             {formState.isSubmitting ? t("loading") : t("placeOrder")}
           </button>
@@ -234,7 +234,7 @@ export function CheckoutPage() {
               <img src={item.imageUrl ?? ""} alt="" className="aspect-[3/4] object-cover" />
               <div>
                 <p className="text-sm font-semibold">{language === "ar" ? item.nameAr : item.nameEn}</p>
-                <p className="mt-1 text-xs text-[#6d6258]">
+                <p className="mt-1 text-xs text-[#080808]/66">
                   {[item.color, item.size].filter(Boolean).join(" / ")} x {item.quantity}
                 </p>
                 <p className="mt-2 text-sm font-semibold">
@@ -244,7 +244,7 @@ export function CheckoutPage() {
             </div>
           ))}
         </div>
-        <div className="mt-6 space-y-3 border-t border-[#ded2c5] pt-5 text-sm">
+        <div className="mt-6 space-y-3 border-t border-[#080808]/10 pt-5 text-sm">
           <div className="flex justify-between">
             <span>{t("subtotal")}</span>
             <span>{formatCurrency(totals.subtotal, language)}</span>
@@ -257,7 +257,7 @@ export function CheckoutPage() {
             <span>{t("paymentMethod")}</span>
             <span className="text-right">{t("cashOnDelivery")}</span>
           </div>
-          <div className="flex justify-between border-t border-[#ded2c5] pt-3 text-lg font-semibold">
+          <div className="flex justify-between border-t border-[#080808]/10 pt-3 text-lg font-semibold">
             <span>{t("total")}</span>
             <span>{formatCurrency(totals.total, language)}</span>
           </div>
@@ -277,7 +277,7 @@ type CheckoutInputProps = {
 function CheckoutInput({ label, error, children }: CheckoutInputProps) {
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#8b725f]">
+      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#6B0F1A]">
         {label}
       </span>
       {children}

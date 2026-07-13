@@ -21,11 +21,11 @@ export function QuantityStepper({
     variant === "product" ? "h-[52px] grid-cols-[40px_42px_40px]" : "h-11 grid-cols-[44px_48px_44px]";
 
   return (
-    <div className={`inline-grid ${dimensions} border border-[#d8cbbd] bg-white`}>
+    <div className={`inline-grid ${dimensions} border border-[#080808]/14 bg-white`}>
       <button
         type="button"
         aria-label={t("decreaseQuantity")}
-        className="grid place-items-center transition hover:bg-[#F8F4EC]"
+        className="grid place-items-center transition hover:bg-[#080808]/5"
         onClick={() => onChange(Math.max(value - 1, min))}
       >
         <Minus className="h-4 w-4" />
@@ -34,7 +34,7 @@ export function QuantityStepper({
       <button
         type="button"
         aria-label={t("increaseQuantity")}
-        className="grid place-items-center transition hover:bg-[#F8F4EC]"
+        className="grid place-items-center transition hover:bg-[#080808]/5"
         onClick={() => onChange(Math.min(value + 1, max))}
       >
         <Plus className="h-4 w-4" />

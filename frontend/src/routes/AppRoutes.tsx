@@ -26,15 +26,13 @@ export function AppRoutes() {
         <Route element={<PublicLayout />}>
           <Route index element={<HomePage />} />
           <Route path="sets" element={<CollectionPage categorySlug="sets" titleKey="sets" />} />
-          <Route
-            path="sport-bras"
-            element={<CollectionPage categorySlug="sport-bras" titleKey="sportsBras" />}
-          />
-          <Route path="sports-bras" element={<Navigate to="/collections/sport-bras" replace />} />
+          <Route path="dresses" element={<CollectionPage categorySlug="dresses" titleKey="dresses" />} />
           <Route
             path="bottoms"
             element={<CollectionPage categorySlug="bottoms" titleKey="bottoms" />}
           />
+          <Route path="tops" element={<CollectionPage categorySlug="tops" titleKey="tops" />} />
+          <Route path="outerwear" element={<CollectionPage categorySlug="outerwear" titleKey="outerwear" />} />
           <Route path="collections/:slug" element={<DynamicCollectionPage />} />
           <Route path="products/:slug" element={<ProductDetailPage />} />
           <Route path="favorites" element={<FavoritesPage />} />

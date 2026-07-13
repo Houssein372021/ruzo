@@ -6,7 +6,7 @@ import { Header } from "../components/layout/Header";
 
 export function PublicLayout() {
   return (
-    <div className="min-h-screen flex flex-col bg-[#F8F4EC] text-[#111111]">
+    <div className="min-h-screen flex flex-col bg-[#FFFFFF] text-[#080808]">
       <AnnouncementBar />
       <Header />
       <main className="flex-1">

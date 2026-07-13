@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Ban, ChevronLeft, ChevronRight, CreditCard, Headphones, Package } from "lucide-react";
+import { ArrowRight, Ban, ChevronLeft, ChevronRight, CreditCard, Headphones, Leaf, Package, Shirt, Truck } from "lucide-react";
 import { categoriesApi } from "../../api/categories";
 import { productsApi } from "../../api/products";
 import { Seo } from "../../components/common/Seo";
@@ -17,11 +17,23 @@ const heroVideoWebmUrl = "/hero-ruzo.webm";
 const heroPosterUrl = "/hero-ruzo-poster.webp";
 const storyImageUrl = "/products/ruzo/metallic-magenta-set-01.webp";
 
-const storyFeatureImages = [
-  { src: "/products/ruzo/metallic-magenta-set-01.webp", titleKey: "sets", className: "sm:row-span-2" },
-  { src: "/products/ruzo/black-midi-dress-01.webp", titleKey: "dresses", className: "" },
-  { src: "/products/ruzo/black-satin-short-set-02.webp", titleKey: "tops", className: "" },
-  { src: "/products/ruzo/sheer-shirt-trouser-set-02.webp", titleKey: "outerwear", className: "" },
+const composedRealityImages = [
+  {
+    src: "/home/composed-realities-01.webp",
+    alt: "RÜZO taupe dress portrait by the coastline",
+  },
+  {
+    src: "/home/composed-realities-02.webp",
+    alt: "RÜZO red satin dress detail",
+  },
+  {
+    src: "/home/composed-realities-03.webp",
+    alt: "RÜZO summer dress portrait at a Beirut market",
+  },
+  {
+    src: "/home/composed-realities-04.webp",
+    alt: "RÜZO yellow satin set detail at a cafe",
+  },
 ] as const;
 
 const categoryFallbacks = [
@@ -155,6 +167,7 @@ export function HomePage() {
   // }, [bestSellers, newArrivals, products]);
 
   const isRtl = dir === "rtl";
+  const heroCopy = t("heroCopy");
 
   const copy =
     language === "ar"
@@ -186,6 +199,8 @@ export function HomePage() {
           detailCopy:
             "من القصات إلى التغليف، نركز على الجودة والوضوح وتجربة شراء تشعرين معها بالثقة.",
           productFallback: "منتجات مختارة",
+          composedEyebrow: "افتتاحية",
+          composedTitle: "وقائع مؤلفة: ملاحظات حول الأناقة العصرية",
         }
       : {
           discoverCollection: "Discover the collection",
@@ -215,6 +230,8 @@ export function HomePage() {
           detailCopy:
             "From fit to packaging, Rüzo focuses on quality, clarity, and a shopping experience made to feel considered.",
           productFallback: "Selected pieces",
+          composedEyebrow: "Editorial",
+          composedTitle: "Composed Realities: Notes on Modern Dressing",
         };
 
   const categoryCards = categoryFallbacks.map((fallback) => {
@@ -256,6 +273,43 @@ export function HomePage() {
       copy: t("finalSaleCopy"),
     },
   ];
+
+  const brandAssurances =
+    language === "ar"
+      ? [
+          {
+            icon: Truck,
+            title: "شحن عالمي",
+            copy: "نوصل طلبك إلى بابك",
+          },
+          {
+            icon: Shirt,
+            title: "خامات فاخرة",
+            copy: "اختيار دقيق لأجود الخامات",
+          },
+          {
+            icon: Leaf,
+            title: "صناعة مسؤولة",
+            copy: "مصممة بعناية ومسؤولية",
+          },
+        ]
+      : [
+          {
+            icon: Truck,
+            title: "Worldwide Shipping",
+            copy: "Delivering to your doorstep",
+          },
+          {
+            icon: Shirt,
+            title: "Premium Materials",
+            copy: "Finest quality materials selected",
+          },
+          {
+            icon: Leaf,
+            title: "Ethically Made",
+            copy: "Crafted with care and responsibility",
+          },
+        ];
 
   return (
     <div className="bg-[#FFFFFF]">
@@ -314,22 +368,24 @@ export function HomePage() {
         </video>
         <div className="absolute inset-0 bg-[#080808]/34" />
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(to_top,rgba(8,8,8,0.82),rgba(107,15,26,0.2),rgba(8,8,8,0))]" />
-        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-104px)] max-w-[1500px] items-end justify-center px-5 pb-12 text-center sm:pb-16 lg:px-8">
+        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-104px)] max-w-[1500px] items-end justify-center px-5 pb-14 text-center sm:pb-20 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-4xl text-[#FFFFFF]"
+            className="max-w-5xl text-[#FFFFFF]"
           >
-            <h1 className="font-display text-[4.4rem] leading-[0.88] text-balance sm:text-[7rem] lg:text-[8.5rem]">
+            <h1 className="mx-auto max-w-5xl font-display text-[3.45rem] leading-[0.96] text-balance drop-shadow-[0_18px_48px_rgba(8,8,8,0.48)] sm:text-[5.8rem] lg:text-[7.15rem]">
               {t("heroTitle")}
             </h1>
-            <p className="mx-auto mt-5 max-w-xl text-sm font-medium leading-7 text-[#FFFFFF]/86 sm:text-base">
-              {t("heroCopy")}
-            </p>
+            {heroCopy ? (
+              <p className="mx-auto mt-5 max-w-xl text-sm font-medium leading-7 text-[#FFFFFF]/86 sm:text-base">
+                {heroCopy}
+              </p>
+            ) : null}
             <Link
               to="/collections/sets"
-              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] transition hover:border-[#6B0F1A] hover:bg-[#6B0F1A]"
+              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#6B0F1A] hover:bg-[#6B0F1A]"
             >
               {copy.discoverCollection}
             </Link>
@@ -337,106 +393,90 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-[#080808]/10 bg-[#FFFFFF]">
-        <div className="mx-auto grid max-w-[1500px] gap-10 px-5 py-16 sm:py-24 lg:grid-cols-[0.72fr_1.28fr] lg:px-8">
-          <div className="flex flex-col justify-between border-t border-[#080808] pt-5">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6B0F1A]">
-                RÜZO edit
-              </p>
-              <p className="mt-4 max-w-sm text-sm leading-7 text-[#080808]/66">
-                {copy.storyMeta}
-              </p>
-            </div>
-            <div className="mt-8 flex flex-wrap gap-2">
-              {categoryCards.map((category) => (
-                <Link
-                  key={category.slug}
-                  to={`/collections/${category.slug}`}
-                  className="border border-[#080808]/12 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#080808] transition hover:border-[#6B0F1A] hover:bg-[#6B0F1A] hover:text-[#FFFFFF]"
-                >
-                  {category.title}
-                </Link>
-              ))}
-            </div>
+      <section className="mx-auto max-w-[1500px] px-5 py-16 sm:py-20 lg:px-8">
+        <div className="flex items-end justify-between gap-5">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]">
+              {copy.trendingTitle}
+            </p>
+            <h2 className="font-display mt-2 text-3xl text-[#080808] sm:text-4xl">
+              {t("bestSellers")}
+            </h2>
           </div>
-          <motion.h2
-            initial={{ opacity: 0, y: 18 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-80px" }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
-            className="font-display text-4xl leading-[1.08] text-[#080808] sm:text-6xl lg:text-7xl"
+          <Link
+            to="/collections/bottoms"
+            className="luxury-link-underline shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
           >
-            {copy.manifesto}
-          </motion.h2>
+            {copy.viewAll}
+          </Link>
+        </div>
+
+        <div className="mt-9">
+          {isLoading ? (
+            <ProductSkeletonGrid />
+          ) : bestSellers.length > 0 ? (
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-700 ease-out"
+                  style={{
+                    transform: `translateX(-${bestSellersCarousel.index * (100 / bestSellersCarousel.visibleCount)}%)`,
+                  }}
+                >
+                  {bestSellers.map((product) => (
+                    <div key={product.id} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {bestSellersCarousel.canScroll ? (
+                <>
+                  <button
+                    type="button"
+                    aria-label={productPreviousLabel}
+                    onClick={bestSellersCarousel.previous}
+                    className="absolute left-0 top-[42%] z-10 grid h-11 w-11 -translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:-translate-x-4"
+                  >
+                    <ChevronLeft className="h-6 w-6 stroke-[2.2]" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={productNextLabel}
+                    onClick={bestSellersCarousel.next}
+                    className="absolute right-0 top-[42%] z-10 grid h-11 w-11 translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:translate-x-4"
+                  >
+                    <ChevronRight className="h-6 w-6 stroke-[2.2]" />
+                  </button>
+                </>
+              ) : null}
+            </div>
+          ) : (
+            <p className="border border-[#080808]/10 px-5 py-10 text-center text-sm text-[#080808]/66">
+              {t("noProducts")}
+            </p>
+          )}
         </div>
       </section>
 
-      <section className="grid border-y border-[#080808]/10 bg-[#FFFFFF] lg:grid-cols-[1.08fr_0.92fr]">
-        <div className="grid min-h-[640px] grid-cols-1 gap-px bg-[#080808]/12 sm:grid-cols-2">
-          {storyFeatureImages.map((image) => (
-            <Link
-              key={image.src}
-              to={`/collections/${categoryFallbacks.find((category) => category.titleKey === image.titleKey)?.slug ?? "sets"}`}
-              className={`group relative min-h-[320px] overflow-hidden bg-[#080808] ${image.className}`}
-            >
-              <img
-                src={image.src}
-                alt=""
-                loading="lazy"
-                className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
-              />
-              <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.66),rgba(8,8,8,0.04))]" />
-              <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF]">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/72">
-                  RÜZO
-                </p>
-                <p className="font-display mt-1 text-3xl">{t(image.titleKey)}</p>
-              </div>
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center px-5 py-16 sm:px-10 lg:px-16">
-          <div className="max-w-xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-[#6B0F1A]">
-              {copy.storyLabel}
-            </p>
-            <h2 className="font-display mt-5 text-5xl leading-tight text-[#080808] sm:text-6xl">
-              {copy.storyTitle}
-            </h2>
-            <p className="mt-6 text-sm leading-8 text-[#080808]/68 sm:text-base">
-              {copy.storyCopy}
-            </p>
-            <div className="mt-8 grid gap-3 border-y border-[#080808]/10 py-5">
-              {categoryCards.slice(0, 5).map((category) => (
-                <Link
-                  key={category.slug}
-                  to={`/collections/${category.slug}`}
-                  className="flex items-center justify-between gap-4 text-sm font-medium text-[#080808] transition hover:text-[#6B0F1A]"
-                >
-                  <span>{category.title}</span>
-                  <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
-                </Link>
-              ))}
-            </div>
-            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
-              <Link
-                to="/about"
-                className="luxury-link-underline inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
-              >
-                {copy.readMore}
-                <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
-              </Link>
-              <a
-                href={INSTAGRAM_URL}
-                target="_blank"
-                rel="noreferrer"
-                className="luxury-link-underline inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]"
-              >
-                {t("instagram")}
-                <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
-              </a>
-            </div>
+      <section className="border-b border-[#080808]/10 bg-[#FFFFFF] px-3 py-14 sm:px-5 sm:py-16 lg:px-5">
+        <div className="mx-auto max-w-[1880px]">
+          <h2 className="text-center text-xl font-medium uppercase leading-tight tracking-[0.03em] text-[#080808] sm:text-2xl lg:text-3xl">
+            {copy.composedTitle}
+          </h2>
+
+          <div className="mt-12 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            {composedRealityImages.map((image) => (
+              <figure key={image.src} className="bg-[#F7F3F0]">
+                <img
+                  src={image.src}
+                  alt={image.alt}
+                  loading="lazy"
+                  className="product-image h-auto w-full object-contain"
+                />
+              </figure>
+            ))}
           </div>
         </div>
       </section>
@@ -574,73 +614,6 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1500px] px-5 py-16 sm:py-20 lg:px-8">
-        <div className="flex items-end justify-between gap-5">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]">
-              {copy.trendingTitle}
-            </p>
-            <h2 className="font-display mt-2 text-3xl text-[#080808] sm:text-4xl">
-              {t("bestSellers")}
-            </h2>
-          </div>
-          <Link
-            to="/collections/bottoms"
-            className="luxury-link-underline shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
-          >
-            {copy.viewAll}
-          </Link>
-        </div>
-
-        <div className="mt-9">
-          {isLoading ? (
-            <ProductSkeletonGrid />
-          ) : bestSellers.length > 0 ? (
-            <div className="relative">
-              <div className="overflow-hidden">
-                <div
-                  className="flex transition-transform duration-700 ease-out"
-                  style={{
-                    transform: `translateX(-${bestSellersCarousel.index * (100 / bestSellersCarousel.visibleCount)}%)`,
-                  }}
-                >
-                  {bestSellers.map((product) => (
-                    <div key={product.id} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
-                      <ProductCard product={product} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {bestSellersCarousel.canScroll ? (
-                <>
-                  <button
-                    type="button"
-                    aria-label={language === "ar" ? "المنتج السابق" : "Previous product"}
-                    onClick={bestSellersCarousel.previous}
-                    className="absolute left-0 top-[42%] z-10 grid h-11 w-11 -translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:-translate-x-4"
-                  >
-                    <ChevronLeft className="h-6 w-6 stroke-[2.2]" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={language === "ar" ? "المنتج التالي" : "Next product"}
-                    onClick={bestSellersCarousel.next}
-                    className="absolute right-0 top-[42%] z-10 grid h-11 w-11 translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:translate-x-4"
-                  >
-                    <ChevronRight className="h-6 w-6 stroke-[2.2]" />
-                  </button>
-                </>
-              ) : null}
-            </div>
-          ) : (
-            <p className="border border-[#080808]/10 px-5 py-10 text-center text-sm text-[#080808]/66">
-              {t("noProducts")}
-            </p>
-          )}
-        </div>
-      </section>
-
       {/* <section className="grid border-y border-[#080808] bg-[#080808] text-[#FFFFFF] lg:grid-cols-[0.92fr_1.08fr]">
         <div className="relative min-h-[560px] overflow-hidden bg-[#080808]">
           <img
@@ -695,6 +668,23 @@ export function HomePage() {
                     {promise.title}
                   </h3>
                   <p className="mt-3 text-sm leading-7 text-[#080808]/68">{promise.copy}</p>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+        <div className="mx-auto max-w-[1500px] border-t border-[#080808]/10 px-5 pb-16 pt-10 sm:pb-20 lg:px-8">
+          <div className="grid gap-10 text-center sm:grid-cols-3">
+            {brandAssurances.map((assurance) => {
+              const Icon = assurance.icon;
+
+              return (
+                <div key={assurance.title} className="mx-auto max-w-xs">
+                  <Icon className="mx-auto h-8 w-8 stroke-[1.5] text-[#080808]" />
+                  <h3 className="mt-6 text-base font-semibold uppercase leading-6 text-[#080808]">
+                    {assurance.title}
+                  </h3>
+                  <p className="mt-2 text-base uppercase leading-6 text-[#080808]/82">{assurance.copy}</p>
                 </div>
               );
             })}

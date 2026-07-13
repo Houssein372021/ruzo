@@ -5,21 +5,88 @@ import { selectCartTotals, useCartStore } from "../../store/cartStore";
 import { useFavoritesStore } from "../../store/favoritesStore";
 import { TopBar } from "./TopBar";
 
-const navItems = [
-  { to: "/collections/sets", key: "shop" },
-  { to: "/collections/bottoms", key: "collectionsNav" },
-  { to: "/about", key: "aboutNav" },
-] as const;
-
 export function Header() {
   const { language, toggleLanguage, t } = useI18n();
   const openCart = useCartStore((state) => state.openCart);
   const cartCount = useCartStore((state) => selectCartTotals(state.items).quantity);
   const favoriteCount = useFavoritesStore((state) => state.items.length);
+  const isArabic = language === "ar";
+  const navItems = [
+    {
+      to: "/collections/sets",
+      label: t("shop"),
+      megaMenu: [
+        {
+          title: isArabic ? "الملابس" : "Ready to wear",
+          links: [
+            { to: "/collections/sets", label: t("sets"), description: isArabic ? "أطقم ساتان وقطع متناسقة" : "Satin sets and coordinated looks" },
+            { to: "/collections/dresses", label: t("dresses"), description: isArabic ? "فساتين قصيرة وطويلة" : "Mini, midi, and evening silhouettes" },
+            { to: "/collections/bottoms", label: t("bottoms"), description: isArabic ? "تنانير وسراويل" : "Skirts, trousers, and relaxed bottoms" },
+            { to: "/collections/tops", label: t("tops"), description: isArabic ? "قمصان وتوبات" : "Statement tops and soft layers" },
+            { to: "/collections/outerwear", label: t("outerwear"), description: isArabic ? "طبقات خارجية خفيفة" : "Light outerwear and sheer shirts" },
+          ],
+        },
+        {
+          title: isArabic ? "اكتشفي" : "Discover",
+          links: [
+            { to: "/collections/sets", label: t("newArrivals"), description: isArabic ? "آخر قطع RÜZO" : "The newest RÜZO pieces" },
+            { to: "/collections/dresses", label: t("bestSellers"), description: isArabic ? "القطع الأكثر طلباً" : "Customer favorite silhouettes" },
+            { to: "/about", label: isArabic ? "قصة RÜZO" : "The RÜZO story", description: isArabic ? "عن العلامة" : "Beirut womenswear, softly polished" },
+          ],
+        },
+        {
+          title: isArabic ? "قطع مختارة" : "Featured pieces",
+          links: [
+            { to: "/products/metallic-magenta-set", label: "Metallic Magenta Set" },
+            { to: "/products/black-midi-dress", label: "Black Midi Dress" },
+            { to: "/products/lemon-satin-set", label: "Lemon Satin Set" },
+            { to: "/products/red-halter-dress", label: "Red Halter Dress" },
+          ],
+        },
+      ],
+    },
+    {
+      to: "/collections/sets",
+      label: t("collectionsNav"),
+      megaMenu: [
+        {
+          title: t("collectionsNav"),
+          links: [
+            { to: "/collections/sets", label: t("sets"), description: "Metallic Magenta, Lemon Satin, Ivory, Pearl" },
+            { to: "/collections/dresses", label: t("dresses"), description: "Black Midi, Red Halter, White Mini, Floral" },
+            { to: "/collections/bottoms", label: t("bottoms"), description: "Skirts and trouser-led sets" },
+            { to: "/collections/tops", label: t("tops"), description: "Satin tops, contrast sets, and soft layers" },
+            { to: "/collections/outerwear", label: t("outerwear"), description: "Sheer shirts and polished layers" },
+          ],
+        },
+        {
+          title: isArabic ? "حسب الإطلالة" : "Shop the edit",
+          links: [
+            { to: "/products/metallic-magenta-set", label: "Metallic Magenta Edit" },
+            { to: "/products/lemon-satin-set", label: "Lemon Satin Edit" },
+            { to: "/products/black-satin-short-set", label: "Black Satin Edit" },
+            { to: "/products/sheer-shirt-trouser-set", label: "Sheer Layer Edit" },
+            { to: "/products/pearl-satin-trouser-set", label: "Pearl Satin Edit" },
+          ],
+        },
+        {
+          title: isArabic ? "فساتين" : "Dress focus",
+          links: [
+            { to: "/products/black-midi-dress", label: "Black Midi Dress" },
+            { to: "/products/red-halter-dress", label: "Red Halter Dress" },
+            { to: "/products/white-mini-dress", label: "White Mini Dress" },
+            { to: "/products/pink-floral-mini-dress", label: "Pink Floral Mini Dress" },
+            { to: "/products/taupe-fitted-maxi-dress", label: "Taupe Fitted Maxi Dress" },
+          ],
+        },
+      ],
+    },
+    { to: "/about", label: t("aboutNav") },
+  ];
 
   return (
     <TopBar
-      navItems={navItems.map((item) => ({ to: item.to, label: t(item.key) }))}
+      navItems={navItems}
       actions={
         <div className="flex flex-col items-end gap-1.5">
           <div className="hidden items-center gap-2 text-[10px] font-medium uppercase tracking-[0.08em] text-[#080808]/65 lg:flex">
@@ -28,10 +95,10 @@ export function Header() {
             <span>{t("lebanon")}</span>
           </div>
 
-          <div className="flex items-center gap-3 text-[#080808]">
+          <div className="flex items-center gap-1 text-[#080808] sm:gap-3">
             <button
               type="button"
-              className="grid h-7 min-w-7 place-items-center border border-[#080808]/12 px-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition hover:border-[#6B0F1A] hover:text-[#6B0F1A]"
+              className="grid h-7 min-w-7 place-items-center border border-[#080808]/12 px-1 text-[10px] font-semibold uppercase tracking-[0.12em] transition hover:border-[#6B0F1A] hover:text-[#6B0F1A] sm:px-2 sm:text-[11px] sm:tracking-[0.18em]"
               onClick={toggleLanguage}
               aria-label={t("switchLanguage")}
             >
@@ -40,16 +107,16 @@ export function Header() {
             <button
               type="button"
               aria-label={t("search")}
-              className="grid h-7 w-7 place-items-center transition-colors hover:text-[#6B0F1A]"
+              className="grid h-7 w-6 place-items-center transition-colors hover:text-[#6B0F1A] sm:w-7"
             >
-              <Search className="h-[18px] w-[18px]" />
+              <Search className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
             </button>
             <Link
               to="/favorites"
               aria-label={t("favorites")}
-              className="relative grid h-7 w-7 place-items-center transition-colors hover:text-[#6B0F1A]"
+              className="relative grid h-7 w-6 place-items-center transition-colors hover:text-[#6B0F1A] sm:w-7"
             >
-              <Heart className="h-[18px] w-[18px]" />
+              <Heart className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
               {favoriteCount > 0 ? (
                 <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#6B0F1A] px-1 text-[10px] leading-none text-[#FFFFFF]">
                   {favoriteCount}
@@ -59,10 +126,10 @@ export function Header() {
             <button
               type="button"
               aria-label={t("cart")}
-              className="relative grid h-7 w-7 place-items-center transition-colors hover:text-[#6B0F1A]"
+              className="relative grid h-7 w-6 place-items-center transition-colors hover:text-[#6B0F1A] sm:w-7"
               onClick={openCart}
             >
-              <ShoppingBag className="h-[18px] w-[18px]" />
+              <ShoppingBag className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
               {cartCount > 0 ? (
                 <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#6B0F1A] px-1 text-[10px] leading-none text-[#FFFFFF]">
                   {cartCount}

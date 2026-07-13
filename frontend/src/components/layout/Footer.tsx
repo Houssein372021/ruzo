@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 // import { Gem, Leaf, Mail, Truck } from "lucide-react";
-import { Gem, Leaf, Truck } from "lucide-react";
+// import { Gem, Leaf, Truck } from "lucide-react";
 import { InstagramIcon } from "../common/InstagramIcon";
 import { INSTAGRAM_HANDLE, INSTAGRAM_URL } from "../../config/brand";
 import { useI18n } from "../../hooks/useI18n";
@@ -8,52 +8,12 @@ import { useI18n } from "../../hooks/useI18n";
 export function Footer() {
   const { t } = useI18n();
 
-  const footerColumns = [
-    {
-      title: t("menu"),
-      links: [
-        { to: "/about", label: t("about") },
-        { to: "/contact", label: t("contact") },
-        { to: "/favorites", label: t("favorites") },
-      ],
-    },
-    {
-      title: t("usefulLinks"),
-      links: [
-        { to: "/about", label: t("brandJournal") },
-        { to: "/contact", label: t("storeLocator") },
-        { to: "/contact", label: t("shippingReturns") },
-      ],
-    },
-    {
-      title: t("shop"),
-      links: [
-        { to: "/collections/sets", label: t("sets") },
-        { to: "/collections/dresses", label: t("dresses") },
-        { to: "/collections/bottoms", label: t("bottoms") },
-        { to: "/collections/tops", label: t("tops") },
-        { to: "/collections/outerwear", label: t("outerwear") },
-      ],
-    },
+  const menuLinks = [
+    { to: "/about", label: t("about") },
+    { to: "/contact", label: t("contact") },
   ];
 
-  const serviceItems = [
-    {
-      icon: Truck,
-      title: t("worldwideShipping"),
-      copy: t("worldwideShippingCopy"),
-    },
-    {
-      icon: Gem,
-      title: t("premiumMaterials"),
-      copy: t("premiumMaterialsCopy"),
-    },
-    {
-      icon: Leaf,
-      title: t("consideredDetails"),
-      copy: t("consideredDetailsCopy"),
-    },
-  ];
+
 
   return (
     <footer className="border-t border-[#FFFFFF]/12 bg-[#080808] text-[#FFFFFF]">
@@ -106,7 +66,7 @@ export function Footer() {
       </section> */}
 
       <section className="border-t border-[#FFFFFF]/12 bg-[#6B0F1A] text-[#FFFFFF]">
-        <div className="mx-auto grid max-w-[1500px] gap-12 px-5 py-14 lg:grid-cols-[1.15fr_1.6fr_0.75fr] lg:px-8">
+        <div className="mx-auto grid max-w-[1500px] gap-12 px-5 py-14 sm:grid-cols-2 lg:grid-cols-[1.15fr_0.65fr_0.95fr_0.7fr] lg:px-8">
           <div>
             <Link
               to="/"
@@ -119,21 +79,17 @@ export function Footer() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-9 sm:grid-cols-3">
-            {footerColumns.map((column) => (
-              <div key={column.title}>
-                <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF]/70">
-                  {column.title}
-                </h3>
-                <div className="mt-5 grid gap-3 text-sm text-[#FFFFFF]">
-                  {column.links.map((link) => (
-                    <Link key={`${column.title}-${link.label}`} to={link.to} className="luxury-link-underline w-fit">
-                      {link.label}
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            ))}
+          <div>
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF]/70">
+              {t("menu")}
+            </h3>
+            <div className="mt-5 grid gap-3 text-sm text-[#FFFFFF]">
+              {menuLinks.map((link) => (
+                <Link key={link.label} to={link.to} className="luxury-link-underline w-fit">
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           </div>
 
           <div>
@@ -144,6 +100,22 @@ export function Footer() {
               <a href="mailto:contact@rüzo.com" className="luxury-link-underline w-fit">
                 contact@rüzo.com
               </a>
+              <a
+                href="https://wa.me/96178707979"
+                target="_blank"
+                rel="noreferrer"
+                className="luxury-link-underline w-fit"
+              >
+                +961 78 70 79 79 ({t("whatsapp")})
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF]/70">
+              {t("social")}
+            </h3>
+            <div className="mt-5 grid gap-3 text-sm text-[#FFFFFF]">
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"
@@ -166,24 +138,7 @@ export function Footer() {
         </div>
       </section>
 
-      <section className="grid border-t border-[#FFFFFF]/12 bg-[#080808] text-[#FFFFFF] lg:grid-cols-3">
-        {serviceItems.map((item) => {
-          const Icon = item.icon;
 
-          return (
-            <div
-              key={item.title}
-              className="flex items-center gap-4 border-b border-[#FFFFFF]/12 px-5 py-6 last:border-b-0 lg:border-b-0 lg:border-r lg:last:border-r-0 lg:px-8"
-            >
-              <Icon className="h-8 w-8 stroke-[1.5] text-[#6B0F1A]" />
-              <div>
-                <h3 className="text-sm font-semibold uppercase tracking-[0.18em]">{item.title}</h3>
-                <p className="mt-1 text-xs uppercase tracking-[0.14em] text-[#FFFFFF]/64">{item.copy}</p>
-              </div>
-            </div>
-          );
-        })}
-      </section>
     </footer>
   );
 }

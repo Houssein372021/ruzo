@@ -17,19 +17,36 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check deployment secrets
+        shell: bash
+        env:
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          missing=0
+
+          if [ -z "$VPS_USER" ]; then
+            echo "::error::Missing required GitHub secret: VPS_USER"
+            missing=1
+          fi
+
+          if [ -z "$VPS_SSH_KEY" ]; then
+            echo "::error::Missing required GitHub secret: VPS_SSH_KEY"
+            missing=1
+          fi
+
+          exit "$missing"
+
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.2.0
         with:
-          host: ${{ secrets.VPS_HOST }}
+          host: ${{ secrets.VPS_HOST || '217.154.13.95' }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             set -e
 
-            PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH }}"
-            if [ -z "$PROJECT_PATH" ]; then
-              PROJECT_PATH="/opt/ruzo"
-            fi
+            PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH || '/opt/ruzo' }}"
 
             cd "$PROJECT_PATH"
             git checkout main

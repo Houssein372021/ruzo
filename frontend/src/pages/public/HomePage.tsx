@@ -9,7 +9,7 @@ import { ProductSkeletonGrid } from "../../components/common/Skeleton";
 import { ProductCard } from "../../components/product/ProductCard";
 import { useI18n } from "../../hooks/useI18n";
 import type { Category, Product } from "../../types";
-import { getProductImage } from "../../utils/product";
+// import { getProductImage } from "../../utils/product";
 
 const heroVideoMp4Url = "/hero-ruzo.mp4";
 const heroVideoWebmUrl = "/hero-ruzo.webm";
@@ -61,10 +61,10 @@ export function HomePage() {
     return (flagged.length > 0 ? flagged : products.slice(4)).slice(0, 4);
   }, [products]);
 
-  const heroProductImage = useMemo(() => {
-    const candidate = bestSellers[0] ?? newArrivals[0] ?? products[0];
-    return candidate ? getProductImage(candidate) : editorialImageUrl;
-  }, [bestSellers, newArrivals, products]);
+  // const heroProductImage = useMemo(() => {
+  //   const candidate = bestSellers[0] ?? newArrivals[0] ?? products[0];
+  //   return candidate ? getProductImage(candidate) : editorialImageUrl;
+  // }, [bestSellers, newArrivals, products]);
 
   const isRtl = dir === "rtl";
 
@@ -443,7 +443,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="grid border-y border-[#080808] bg-[#080808] text-[#FFFFFF] lg:grid-cols-[0.92fr_1.08fr]">
+      {/* <section className="grid border-y border-[#080808] bg-[#080808] text-[#FFFFFF] lg:grid-cols-[0.92fr_1.08fr]">
         <div className="relative min-h-[560px] overflow-hidden bg-[#080808]">
           <img
             src={heroProductImage}
@@ -471,7 +471,7 @@ export function HomePage() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
 
       <section className="bg-[#FFFFFF]">
         <div className="mx-auto grid max-w-[1500px] gap-10 px-5 py-16 sm:py-20 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">

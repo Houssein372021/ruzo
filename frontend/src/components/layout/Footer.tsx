@@ -63,7 +63,7 @@ export function Footer() {
                   rel="noreferrer"
                   className="luxury-link-underline mt-1 inline-flex w-fit"
                 >
-                  +961 78 70 79 79
+                  +961 78 70 79 79 test
                 </a>
               </div>
             </div>

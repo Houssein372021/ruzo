@@ -42,6 +42,23 @@ Start production:
 docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
 ```
 
+## GitHub Actions CD
+
+The CD workflow deploys automatically after a successful `CI` run on `main`.
+It can also be launched manually from GitHub Actions.
+
+Add these repository secrets in GitHub:
+
+```text
+VPS_HOST=217.154.13.95
+VPS_USER=<ssh user>
+VPS_SSH_KEY=<private ssh key>
+VPS_PROJECT_PATH=/opt/ruzo
+```
+
+`VPS_PROJECT_PATH` is optional. If it is not set, the workflow uses `/opt/ruzo`.
+The VPS project directory must already contain `.env.production`.
+
 Caddy will automatically request and renew HTTPS certificates for:
 
 ```text

@@ -32,6 +32,9 @@ cp .env.production.example .env.production
 ```
 
 Edit `.env.production` and replace all `CHANGE_ME...` values with strong private values.
+For email notifications, set `SMTP_PASSWORD` to the password of the IONOS mailbox
+`noreply@rüzo.com`. The default SMTP server is `smtp.ionos.com` on port `587`
+with STARTTLS.
 
 Start production:
 

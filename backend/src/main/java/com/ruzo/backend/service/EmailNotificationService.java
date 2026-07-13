@@ -1,41 +1,37 @@
 package com.ruzo.backend.service;
 
-import com.ruzo.backend.config.BrevoConfig;
-import com.ruzo.backend.dto.brevo.BrevoEmailRecipient;
-import com.ruzo.backend.dto.brevo.BrevoEmailRequest;
-import com.ruzo.backend.dto.brevo.BrevoEmailSender;
+import com.ruzo.backend.config.SmtpEmailConfig;
 import com.ruzo.backend.entity.Order;
 import com.ruzo.backend.entity.OrderItem;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import java.math.BigDecimal;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.MediaType;
+import org.springframework.mail.MailException;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.util.HtmlUtils;
 
 @Service
 public class EmailNotificationService {
 
   private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotificationService.class);
-  private static final String BREVO_BASE_URL = "https://api.brevo.com/v3";
-  private static final String BREVO_EMAIL_PATH = "/smtp/email";
   private static final DateTimeFormatter ORDER_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-  private final BrevoConfig brevoConfig;
-  private final RestClient restClient;
+  private final SmtpEmailConfig smtpEmailConfig;
+  private final JavaMailSender mailSender;
 
-  public EmailNotificationService(BrevoConfig brevoConfig, RestClient.Builder restClientBuilder) {
-    this.brevoConfig = brevoConfig;
-    this.restClient = restClientBuilder.baseUrl(BREVO_BASE_URL).build();
+  public EmailNotificationService(SmtpEmailConfig smtpEmailConfig, JavaMailSender mailSender) {
+    this.smtpEmailConfig = smtpEmailConfig;
+    this.mailSender = mailSender;
   }
 
   public void sendOrderConfirmationEmailToCustomer(Order order) {
@@ -46,21 +42,21 @@ public class EmailNotificationService {
     }
 
     sendEmail(
-        new BrevoEmailRecipient(order.getEmail(), customerName(order)),
+        new EmailRecipient(order.getEmail(), customerName(order)),
         customerEmailSubject(order),
         buildCustomerEmail(order),
         buildCustomerText(order));
   }
 
   public void sendOrderNotificationEmailToOwner(Order order) {
-    if (!StringUtils.hasText(brevoConfig.ownerEmail())) {
+    if (!StringUtils.hasText(smtpEmailConfig.ownerEmail())) {
       LOGGER.warn("Skipping owner order notification email for order {} because SITE_OWNER_EMAIL is blank",
           order.getId());
       return;
     }
 
     sendEmail(
-        new BrevoEmailRecipient(brevoConfig.ownerEmail(), "RÜZO"),
+        new EmailRecipient(smtpEmailConfig.ownerEmail(), "RÜZO"),
         ownerEmailSubject(order),
         buildOwnerEmail(order),
         buildOwnerText(order));
@@ -73,7 +69,7 @@ public class EmailNotificationService {
     }
 
     sendEmail(
-        new BrevoEmailRecipient(order.getEmail(), customerName(order)),
+        new EmailRecipient(order.getEmail(), customerName(order)),
         shippedEmailSubject(order),
         buildShippedEmail(order),
         buildShippedText(order));
@@ -90,7 +86,7 @@ public class EmailNotificationService {
     }
 
     sendEmail(
-        new BrevoEmailRecipient(order.getEmail(), customerName(order)),
+        new EmailRecipient(order.getEmail(), customerName(order)),
         reviewRequestEmailSubject(order),
         buildReviewRequestEmail(order),
         buildReviewRequestText(order));
@@ -109,41 +105,34 @@ public class EmailNotificationService {
     runSafely("customer review request", order, () -> sendReviewRequestEmailToCustomer(order));
   }
 
-  private void sendEmail(BrevoEmailRecipient recipient, String subject, String htmlContent, String textContent) {
-    if (!brevoConfig.isEnabled()) {
-      LOGGER.warn("Skipping Brevo email '{}' to {} because BREVO_API_KEY is not configured", subject,
+  private void sendEmail(EmailRecipient recipient, String subject, String htmlContent, String textContent) {
+    if (!smtpEmailConfig.isEnabled()) {
+      LOGGER.warn("Skipping SMTP email '{}' to {} because SMTP credentials are not configured", subject,
           recipient.email());
       return;
     }
 
-    BrevoEmailRequest request = new BrevoEmailRequest(
-        new BrevoEmailSender(brevoConfig.senderEmail(), brevoConfig.senderName()),
-        List.of(recipient),
-        subject,
-        htmlContent,
-        textContent,
-        new BrevoEmailRecipient(brevoConfig.senderEmail(), brevoConfig.senderName()));
-
-    restClient.post()
-        .uri(BREVO_EMAIL_PATH)
-        .contentType(Objects.requireNonNull(MediaType.APPLICATION_JSON, "MediaType.APPLICATION_JSON must not be null"))
-        .header("api-key", brevoConfig.apiKey())
-        .body(request)
-        .retrieve()
-        .toBodilessEntity();
+    try {
+      MimeMessage message = mailSender.createMimeMessage();
+      MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+      helper.setFrom(smtpEmailConfig.senderEmail(), smtpEmailConfig.senderName());
+      helper.setReplyTo(smtpEmailConfig.senderEmail(), smtpEmailConfig.senderName());
+      helper.setTo(recipient.email());
+      helper.setSubject(subject);
+      helper.setText(textContent, htmlContent);
+      mailSender.send(message);
+    } catch (MessagingException exception) {
+      throw new IllegalStateException("Failed to build SMTP email message", exception);
+    } catch (java.io.UnsupportedEncodingException exception) {
+      throw new IllegalStateException("Failed to encode SMTP sender name", exception);
+    }
   }
 
   private void runSafely(String emailType, Order order, Runnable action) {
     try {
       action.run();
-    } catch (RestClientResponseException exception) {
-      LOGGER.error(
-          "Brevo rejected {} email for order {} with status {} and body: {}",
-          emailType,
-          order.getId(),
-          exception.getStatusCode(),
-          exception.getResponseBodyAsString(),
-          exception);
+    } catch (MailException exception) {
+      LOGGER.error("SMTP rejected {} email for order {}", emailType, order.getId(), exception);
     } catch (Exception exception) {
       LOGGER.error("Failed to send {} email for order {}", emailType, order.getId(), exception);
     }
@@ -732,8 +721,8 @@ public class EmailNotificationService {
   }
 
   private String reviewLink(Order order) {
-    String baseUrl = StringUtils.hasText(brevoConfig.publicUrl())
-        ? brevoConfig.publicUrl()
+    String baseUrl = StringUtils.hasText(smtpEmailConfig.publicUrl())
+        ? smtpEmailConfig.publicUrl()
         : "https://www.rüzo.com";
     return baseUrl.replaceAll("/+$", "") + "/review/" + order.getReviewToken();
   }
@@ -758,5 +747,8 @@ public class EmailNotificationService {
 
   private String escape(String value) {
     return HtmlUtils.htmlEscape(value == null ? "" : value);
+  }
+
+  private record EmailRecipient(String email, String name) {
   }
 }

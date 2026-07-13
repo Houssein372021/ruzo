@@ -5,30 +5,40 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.StringUtils;
 
 @Configuration
-public class BrevoConfig {
+public class SmtpEmailConfig {
 
-    private final String apiKey;
+    private final String host;
+    private final String username;
+    private final String password;
     private final String senderEmail;
     private final String senderName;
     private final String ownerEmail;
     private final String publicUrl;
 
-    public BrevoConfig(
-            @Value("${brevo.api-key:}") String apiKey,
-            @Value("${brevo.sender-email:noreply@rüzo.com}") String senderEmail,
-            @Value("${brevo.sender-name:RÜZO}") String senderName,
+    public SmtpEmailConfig(
+            @Value("${spring.mail.host:smtp.ionos.com}") String host,
+            @Value("${spring.mail.username:noreply@rüzo.com}") String username,
+            @Value("${spring.mail.password:}") String password,
+            @Value("${smtp.sender-email:noreply@rüzo.com}") String senderEmail,
+            @Value("${smtp.sender-name:RÜZO}") String senderName,
             @Value("${site.owner-email:housseinghannoum@803gmail.com}") String ownerEmail,
             @Value("${site.public-url:https://www.rüzo.com}") String publicUrl
     ) {
-        this.apiKey = apiKey;
+        this.host = host;
+        this.username = username;
+        this.password = password;
         this.senderEmail = senderEmail;
         this.senderName = senderName;
         this.ownerEmail = ownerEmail;
         this.publicUrl = publicUrl;
     }
 
-    public String apiKey() {
-        return apiKey;
+    public String host() {
+        return host;
+    }
+
+    public String username() {
+        return username;
     }
 
     public String senderEmail() {
@@ -48,6 +58,9 @@ public class BrevoConfig {
     }
 
     public boolean isEnabled() {
-        return StringUtils.hasText(apiKey);
+        return StringUtils.hasText(host)
+                && StringUtils.hasText(username)
+                && StringUtils.hasText(password)
+                && StringUtils.hasText(senderEmail);
     }
 }

@@ -2,7 +2,7 @@ import type { Language } from "../types";
 
 export const translations = {
   en: {
-    announcement: "Free delivery on orders over $70",
+    announcement: "Free delivery on orders over $120",
     home: "Home",
     sets: "Sets",
     dresses: "Dresses",
@@ -149,7 +149,7 @@ export const translations = {
     shoppingAssuranceTitle: "Shopping made simple",
     shoppingAssuranceCopy: "Everything around your order is designed to feel clear, easy, and supported.",
     freeShippingTitle: "Free Shipping",
-    freeShippingCopy: "Free shipping for orders above $70.",
+    freeShippingCopy: "Free shipping for orders above $120.",
     onlineSupportTitle: "Online Support",
     onlineSupportCopy: "24 hours a day, 7 days a week.",
     cashOnDelivery: "Cash on Delivery",
@@ -177,7 +177,7 @@ export const translations = {
     previousImage: "Previous image",
     nextImage: "Next image",
     fabricCareCopy: "Soft stretch performance fabric. Cold wash, lay flat to dry.",
-    shippingReturnsCopy: "Free delivery above $70. No refunds, returns, or exchanges.",
+    shippingReturnsCopy: "Free delivery above $120. No refunds, returns, or exchanges.",
     cashOnDeliveryCheckoutCopy: "Pay in cash when your order arrives.",
     paymentMethod: "Payment method",
     invalidCart: "Some products are no longer available. Please review your cart before placing the order.",
@@ -250,7 +250,7 @@ export const translations = {
     statusCancelled: "Cancelled",
   },
   ar: {
-    announcement: "توصيل مجاني للطلبات فوق 70 دولار",
+    announcement: "توصيل مجاني للطلبات فوق 120 دولار",
     home: "الرئيسية",
     sets: "الأطقم",
     dresses: "\u0627\u0644\u0641\u0633\u0627\u062a\u064a\u0646",
@@ -397,7 +397,7 @@ export const translations = {
     shoppingAssuranceTitle: "تسوق أسهل",
     shoppingAssuranceCopy: "كل ما يخص طلبك مصمم ليكون واضحا وسهلا ومدعوما.",
     freeShippingTitle: "شحن مجاني",
-    freeShippingCopy: "شحن مجاني للطلبات فوق 70 دولار.",
+    freeShippingCopy: "شحن مجاني للطلبات فوق 120 دولار.",
     onlineSupportTitle: "دعم عبر الإنترنت",
     onlineSupportCopy: "24 ساعة في اليوم، 7 أيام في الأسبوع.",
     cashOnDelivery: "الدفع عند الاستلام",
@@ -425,7 +425,7 @@ export const translations = {
     previousImage: "الصورة السابقة",
     nextImage: "الصورة التالية",
     fabricCareCopy: "قماش أداء مطاطي ناعم. يغسل باردا ويجفف على سطح مستو.",
-    shippingReturnsCopy: "توصيل مجاني فوق 70 دولارا. لا يوجد استرداد أو إرجاع أو استبدال.",
+    shippingReturnsCopy: "توصيل مجاني فوق 120 دولارا. لا يوجد استرداد أو إرجاع أو استبدال.",
     cashOnDeliveryCheckoutCopy: "ادفعي نقدا عند وصول طلبك.",
     paymentMethod: "طريقة الدفع",
     invalidCart: "بعض المنتجات لم تعد متوفرة. يرجى مراجعة سلتك قبل تأكيد الطلب.",

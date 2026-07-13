@@ -288,8 +288,8 @@ export function HomePage() {
       : [
           {
             icon: Truck,
-            title: "Worldwide Shipping",
-            copy: "Delivering to your doorstep",
+            title: t("worldwideShipping"),
+            copy: t("worldwideShippingCopy"),
           },
           {
             icon: Shirt,
@@ -367,9 +367,7 @@ export function HomePage() {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-5xl text-[#FFFFFF]"
           >
-            <h1 className="mx-auto max-w-5xl font-display text-[3.45rem] leading-[0.96] text-balance drop-shadow-[0_18px_48px_rgba(8,8,8,0.48)] sm:text-[5.8rem] lg:text-[7.15rem]">
-              {t("heroTitle")}
-            </h1>
+            
             {heroCopy ? (
               <p className="mx-auto mt-5 max-w-xl text-sm font-medium leading-7 text-[#FFFFFF]/86 sm:text-base">
                 {heroCopy}

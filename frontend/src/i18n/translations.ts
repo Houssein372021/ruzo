@@ -3,7 +3,6 @@ import type { Language } from "../types";
 export const translations = {
   en: {
     announcement: "Free delivery on orders over $70",
-    heroTitle: "Where confidence Becomes Styles.",
     home: "Home",
     sets: "Sets",
     dresses: "Dresses",
@@ -252,7 +251,6 @@ export const translations = {
   },
   ar: {
     announcement: "توصيل مجاني للطلبات فوق 70 دولار",
-    heroTitle: "حيث تصبح الثقة أسلوباً.",
     home: "الرئيسية",
     sets: "الأطقم",
     dresses: "\u0627\u0644\u0641\u0633\u0627\u062a\u064a\u0646",

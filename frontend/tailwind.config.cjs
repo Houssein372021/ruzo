@@ -6,6 +6,11 @@ module.exports = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        display: ['var(--font-display)'],
+        sans: ['var(--font-body)'],
+        body: ['var(--font-body)'],
+      },
       maxWidth: {
         '300': '1200px',
       },

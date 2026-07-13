@@ -171,8 +171,6 @@ export function ProductDetailPage() {
     (language === "ar" ? product.shortDescriptionAr : product.shortDescriptionEn)?.trim() || description;
   const displayPrice = product.salePrice ?? product.price;
   const productName = getProductName(product, language);
-  const fabricCareCopy =
-    (language === "ar" ? product.fabricCareAr : product.fabricCareEn)?.trim() || t("fabricCareCopy");
   const mobileMediaItems = [
     ...mediaImages.map((image) => ({
       id: image.id,
@@ -544,7 +542,6 @@ export function ProductDetailPage() {
           <div className="mt-10 divide-y divide-[#080808]/10 border-y border-[#080808]/10">
             {[
               { id: "details", label: t("details"), copy: description || t("productDetailsFallback") },
-              { id: "fabric", label: t("fabricCare"), copy: fabricCareCopy },
               { id: "shipping", label: t("shippingReturns"), copy: t("shippingReturnsCopy") },
             ].map((item) => (
               <div key={item.id}>

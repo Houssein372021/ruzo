@@ -31,8 +31,6 @@ type ProductForm = {
   shortDescriptionAr: string;
   descriptionEn: string;
   descriptionAr: string;
-  fabricCareEn: string;
-  fabricCareAr: string;
   price: string;
   categoryId: string;
   videoUrl: string;
@@ -62,8 +60,6 @@ const createEmptyProductForm = (categoryId = ""): ProductForm => ({
   shortDescriptionAr: "",
   descriptionEn: "",
   descriptionAr: "",
-  fabricCareEn: "",
-  fabricCareAr: "",
   price: "",
   categoryId,
   videoUrl: "",
@@ -220,8 +216,6 @@ export function AdminProductsPage() {
       shortDescriptionAr: form.shortDescriptionAr.trim(),
       descriptionEn: form.descriptionEn.trim(),
       descriptionAr: form.descriptionAr.trim(),
-      fabricCareEn: form.fabricCareEn.trim(),
-      fabricCareAr: form.fabricCareAr.trim(),
       price: Number(form.price || 0),
       categoryId,
       videoUrl: form.videoUrl.trim() || undefined,
@@ -262,8 +256,6 @@ export function AdminProductsPage() {
       shortDescriptionAr: product.shortDescriptionAr ?? "",
       descriptionEn: product.descriptionEn ?? "",
       descriptionAr: product.descriptionAr ?? "",
-      fabricCareEn: product.fabricCareEn ?? "",
-      fabricCareAr: product.fabricCareAr ?? "",
       price: String(product.price),
       categoryId: product.category?.id ?? categories[0]?.id ?? "",
       videoUrl: product.videoUrl ?? "",
@@ -457,16 +449,6 @@ export function AdminProductsPage() {
               label={t("descriptionAr")}
               value={form.descriptionAr}
               onChange={(value) => setForm({ ...form, descriptionAr: value })}
-            />
-            <AdminTextarea
-              label={t("fabricCareEn")}
-              value={form.fabricCareEn}
-              onChange={(value) => setForm({ ...form, fabricCareEn: value })}
-            />
-            <AdminTextarea
-              label={t("fabricCareAr")}
-              value={form.fabricCareAr}
-              onChange={(value) => setForm({ ...form, fabricCareAr: value })}
             />
             <div className="grid grid-cols-2 gap-3">
               <AdminInput label={t("price")} type="number" value={form.price} onChange={(value) => setForm({ ...form, price: value })} />

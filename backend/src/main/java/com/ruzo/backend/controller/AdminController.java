@@ -285,8 +285,6 @@ public class AdminController {
         product.setShortDescriptionAr(request.shortDescriptionAr());
         product.setDescriptionEn(request.descriptionEn());
         product.setDescriptionAr(request.descriptionAr());
-        product.setFabricCareEn(request.fabricCareEn());
-        product.setFabricCareAr(request.fabricCareAr());
         product.setPrice(request.price() == null ? BigDecimal.ZERO : request.price());
         product.setActive(request.active() == null || request.active());
         product.setVideoUrl(request.videoUrl());
@@ -461,8 +459,6 @@ public class AdminController {
             String shortDescriptionAr,
             String descriptionEn,
             String descriptionAr,
-            String fabricCareEn,
-            String fabricCareAr,
             BigDecimal price,
             UUID categoryId,
             String videoUrl,
@@ -705,8 +701,6 @@ public class AdminController {
             String shortDescriptionAr,
             String descriptionEn,
             String descriptionAr,
-            String fabricCareEn,
-            String fabricCareAr,
             BigDecimal price,
             BigDecimal salePrice,
             String badge,
@@ -725,8 +719,6 @@ public class AdminController {
                     product.getShortDescriptionAr(),
                     product.getDescriptionEn(),
                     product.getDescriptionAr(),
-                    product.getFabricCareEn(),
-                    product.getFabricCareAr(),
                     product.getPrice(),
                     product.getSalePrice(),
                     product.getBadge(),

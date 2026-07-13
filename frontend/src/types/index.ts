@@ -45,8 +45,6 @@ export type Product = {
   shortDescriptionAr?: string | null;
   descriptionEn?: string | null;
   descriptionAr?: string | null;
-  fabricCareEn?: string | null;
-  fabricCareAr?: string | null;
   price: number;
   salePrice?: number | null;
   badge?: string | null;

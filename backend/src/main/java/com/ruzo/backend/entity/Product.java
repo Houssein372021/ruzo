@@ -61,12 +61,6 @@ public class Product {
     @Column(name = "short_description_ar", columnDefinition = "TEXT")
     private String shortDescriptionAr;
 
-    @Column(name = "fabric_care_en", columnDefinition = "TEXT")
-    private String fabricCareEn;
-
-    @Column(name = "fabric_care_ar", columnDefinition = "TEXT")
-    private String fabricCareAr;
-
     @Column(name = "price")
     private BigDecimal price;
 

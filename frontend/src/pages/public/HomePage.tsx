@@ -1,12 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowRight, Ban, CreditCard, Headphones, Package } from "lucide-react";
+import { ArrowRight, Ban, ChevronLeft, ChevronRight, CreditCard, Headphones, Package } from "lucide-react";
 import { categoriesApi } from "../../api/categories";
 import { productsApi } from "../../api/products";
 import { Seo } from "../../components/common/Seo";
 import { ProductSkeletonGrid } from "../../components/common/Skeleton";
 import { ProductCard } from "../../components/product/ProductCard";
+import { INSTAGRAM_URL } from "../../config/brand";
 import { useI18n } from "../../hooks/useI18n";
 import type { Category, Product } from "../../types";
 // import { getProductImage } from "../../utils/product";
@@ -14,7 +15,14 @@ import type { Category, Product } from "../../types";
 const heroVideoMp4Url = "/hero-ruzo.mp4";
 const heroVideoWebmUrl = "/hero-ruzo.webm";
 const heroPosterUrl = "/hero-ruzo-poster.webp";
-const editorialImageUrl = "/editorial-ruzo.png";
+const storyImageUrl = "/products/ruzo/metallic-magenta-set-01.webp";
+
+const storyFeatureImages = [
+  { src: "/products/ruzo/metallic-magenta-set-01.webp", titleKey: "sets", className: "sm:row-span-2" },
+  { src: "/products/ruzo/black-midi-dress-01.webp", titleKey: "dresses", className: "" },
+  { src: "/products/ruzo/black-satin-short-set-02.webp", titleKey: "tops", className: "" },
+  { src: "/products/ruzo/sheer-shirt-trouser-set-02.webp", titleKey: "outerwear", className: "" },
+] as const;
 
 const categoryFallbacks = [
   { slug: "sets", titleKey: "sets" },
@@ -31,6 +39,78 @@ const categoryImageFallbacks: Record<string, string> = {
   tops: "/products/ruzo/black-satin-short-set-02.webp",
   outerwear: "/products/ruzo/sheer-shirt-trouser-set-02.webp",
 };
+
+function useAutoCarousel(itemCount: number, intervalMs = 3800) {
+  const [index, setIndex] = useState(0);
+  const [visibleCount, setVisibleCount] = useState(1);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 1024px)");
+    const updateVisibleCount = () => {
+      setVisibleCount(mediaQuery.matches ? 3 : 1);
+    };
+
+    updateVisibleCount();
+    mediaQuery.addEventListener("change", updateVisibleCount);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateVisibleCount);
+    };
+  }, []);
+
+  const maxIndex = Math.max(itemCount - visibleCount, 0);
+
+  useEffect(() => {
+    setIndex((current) => Math.min(current, maxIndex));
+  }, [maxIndex]);
+
+  useEffect(() => {
+    if (itemCount <= visibleCount) {
+      return;
+    }
+
+    const intervalId = window.setInterval(() => {
+      setIndex((current) => (current >= maxIndex ? 0 : current + 1));
+    }, intervalMs);
+
+    return () => {
+      window.clearInterval(intervalId);
+    };
+  }, [itemCount, visibleCount, maxIndex, intervalMs]);
+
+  return {
+    index,
+    visibleCount,
+    canScroll: itemCount > visibleCount,
+    previous: () => setIndex((current) => (current <= 0 ? maxIndex : current - 1)),
+    next: () => setIndex((current) => (current >= maxIndex ? 0 : current + 1)),
+  };
+}
+
+type CarouselArrowButtonProps = {
+  direction: "previous" | "next";
+  label: string;
+  onClick: () => void;
+};
+
+function CarouselArrowButton({ direction, label, onClick }: CarouselArrowButtonProps) {
+  const Icon = direction === "previous" ? ChevronLeft : ChevronRight;
+  const positionClass =
+    direction === "previous"
+      ? "left-0 -translate-x-2 sm:-translate-x-4"
+      : "right-0 translate-x-2 sm:translate-x-4";
+
+  return (
+    <button
+      type="button"
+      aria-label={label}
+      onClick={onClick}
+      className={`absolute top-[42%] z-10 grid h-11 w-11 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] ${positionClass}`}
+    >
+      <Icon className="h-6 w-6 stroke-[2.2]" />
+    </button>
+  );
+}
 
 export function HomePage() {
   const { language, dir, t } = useI18n();
@@ -66,12 +146,12 @@ export function HomePage() {
 
   const bestSellers = useMemo(() => {
     const flagged = products.filter((product) => product.isBestSeller);
-    return (flagged.length > 0 ? flagged : products.slice(4)).slice(0, 4);
+    return (flagged.length > 0 ? flagged : products.slice(4)).slice(0, 8);
   }, [products]);
 
   // const heroProductImage = useMemo(() => {
   //   const candidate = bestSellers[0] ?? newArrivals[0] ?? products[0];
-  //   return candidate ? getProductImage(candidate) : editorialImageUrl;
+  //   return candidate ? getProductImage(candidate) : storyImageUrl;
   // }, [bestSellers, newArrivals, products]);
 
   const isRtl = dir === "rtl";
@@ -83,10 +163,12 @@ export function HomePage() {
           viewAll: "عرض الكل",
           readMore: "اكتشفي المزيد",
           storyLabel: "القصة",
+          storyTitle: "مصممة لإطلالات بيروت اليومية.",
+          storyMeta: "Sets · Dresses · Bottoms · Tops · Outerwear",
           manifesto:
-            "روزو رؤية للملابس الرياضية الفاخرة، تجمع بين خطوط منحوتة، نعومة مدروسة، وحضور يبقى بعد الحركة.",
+            "روزو علامة أزياء نسائية من بيروت، تصمم أطقم الساتان، الفساتين، القطع العلوية، القطع السفلية، والطبقات الخارجية بإحساس أنيق ينتقل معك من النهار إلى الليل.",
           storyCopy:
-            "كل قطعة مصممة لترافقك من التمرين إلى اليوم الكامل، بخامات مريحة وتفاصيل هادئة تمنح الشكل ثقة دون مبالغة.",
+            "من الأطقم اللامعة إلى الفساتين الانسيابية والقمصان الشفافة، كل قطعة مصممة لتمنح حضوراً ناعماً، واضحاً، وسهل التنسيق.",
           newInTitle: "وصل حديثا: اختيار روزو",
           journalTitle: "ملاحظات حول الحركة العصرية",
           journalCta: "اقرئي المزيد",
@@ -110,10 +192,12 @@ export function HomePage() {
           viewAll: "View all",
           readMore: "Discover more",
           storyLabel: "the story",
+          storyTitle: "Made for Beirut light, late plans, and polished ease.",
+          storyMeta: "Sets · Dresses · Bottoms · Tops · Outerwear",
           manifesto:
-            "Rüzo is a vision of high-end activewear, shaped through sculpted lines, soft support, and a presence that lasts beyond movement.",
+            "Rüzo is a Beirut-born womenswear label shaped around satin sets, fluid dresses, sharp tops, tailored bottoms, and outerwear made to move from day to night.",
           storyCopy:
-            "Every piece is built to follow the whole day: from training to travel, with refined comfort and quiet details that hold their shape.",
+            "From metallic sets to clean black dresses and sheer layers, each piece is curated for a confident silhouette, soft shine, and a wardrobe that feels ready without trying too hard.",
           newInTitle: "New in: Rüzo edit",
           journalTitle: "Notes on modern movement",
           journalCta: "Read more",
@@ -142,6 +226,14 @@ export function HomePage() {
     };
   });
 
+  const newArrivalsCarousel = useAutoCarousel(newArrivals.length);
+  const collectionsCarousel = useAutoCarousel(categoryCards.length);
+  const bestSellersCarousel = useAutoCarousel(bestSellers.length);
+  const productPreviousLabel = language === "ar" ? "المنتج السابق" : "Previous product";
+  const productNextLabel = language === "ar" ? "المنتج التالي" : "Next product";
+  const collectionPreviousLabel = language === "ar" ? "المجموعة السابقة" : "Previous collection";
+  const collectionNextLabel = language === "ar" ? "المجموعة التالية" : "Next collection";
+
   const servicePromises = [
     {
       icon: Package,
@@ -168,10 +260,10 @@ export function HomePage() {
   return (
     <div className="bg-[#FFFFFF]">
       <Seo
-        title="RÜZO | High-end activewear"
-        description="Shop RÜZO activewear at rüzo: sets, dresses, bottoms, tops, outerwear, and everyday activewear for women."
+        title="RÜZO | Beirut womenswear"
+        description="Shop RÜZO womenswear: satin sets, dresses, bottoms, tops, and outerwear designed for polished everyday dressing."
         path="/"
-        image="/editorial-ruzo.png"
+        image={storyImageUrl}
         jsonLd={{
           "@context": "https://schema.org",
           "@graph": [
@@ -182,7 +274,7 @@ export function HomePage() {
               alternateName: ["Rüzo", "rüzo"],
               url: "https://www.rüzo.com/",
               logo: "https://www.rüzo.com/site-icon-512.png",
-              sameAs: ["https://www.instagram.com/ruzoofficial/"],
+              sameAs: [INSTAGRAM_URL],
             },
             {
               "@type": "WebSite",
@@ -199,7 +291,7 @@ export function HomePage() {
               "@id": "https://www.rüzo.com/#store",
               name: "RÜZO",
               url: "https://www.rüzo.com/",
-              image: "https://www.rüzo.com/editorial-ruzo.png",
+              image: `https://www.rüzo.com${storyImageUrl}`,
               priceRange: "$$",
             },
           ],
@@ -245,21 +337,64 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1120px] border-b border-[#080808]/10 px-5 py-16 text-center sm:py-24 lg:px-8">
-        <motion.h2
-          initial={{ opacity: 0, y: 18 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-80px" }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="font-display text-4xl leading-tight text-[#080808] sm:text-6xl"
-        >
-          {copy.manifesto}
-        </motion.h2>
+      <section className="border-b border-[#080808]/10 bg-[#FFFFFF]">
+        <div className="mx-auto grid max-w-[1500px] gap-10 px-5 py-16 sm:py-24 lg:grid-cols-[0.72fr_1.28fr] lg:px-8">
+          <div className="flex flex-col justify-between border-t border-[#080808] pt-5">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6B0F1A]">
+                RÜZO edit
+              </p>
+              <p className="mt-4 max-w-sm text-sm leading-7 text-[#080808]/66">
+                {copy.storyMeta}
+              </p>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-2">
+              {categoryCards.map((category) => (
+                <Link
+                  key={category.slug}
+                  to={`/collections/${category.slug}`}
+                  className="border border-[#080808]/12 px-3 py-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#080808] transition hover:border-[#6B0F1A] hover:bg-[#6B0F1A] hover:text-[#FFFFFF]"
+                >
+                  {category.title}
+                </Link>
+              ))}
+            </div>
+          </div>
+          <motion.h2
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="font-display text-4xl leading-[1.08] text-[#080808] sm:text-6xl lg:text-7xl"
+          >
+            {copy.manifesto}
+          </motion.h2>
+        </div>
       </section>
 
-      <section className="grid border-y border-[#080808]/10 bg-[#FFFFFF] lg:grid-cols-2">
-        <div className="relative min-h-[520px] overflow-hidden bg-[#080808]">
-          <img src={editorialImageUrl} alt="" className="product-image h-full w-full object-cover" />
+      <section className="grid border-y border-[#080808]/10 bg-[#FFFFFF] lg:grid-cols-[1.08fr_0.92fr]">
+        <div className="grid min-h-[640px] grid-cols-1 gap-px bg-[#080808]/12 sm:grid-cols-2">
+          {storyFeatureImages.map((image) => (
+            <Link
+              key={image.src}
+              to={`/collections/${categoryFallbacks.find((category) => category.titleKey === image.titleKey)?.slug ?? "sets"}`}
+              className={`group relative min-h-[320px] overflow-hidden bg-[#080808] ${image.className}`}
+            >
+              <img
+                src={image.src}
+                alt=""
+                loading="lazy"
+                className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+              />
+              <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.66),rgba(8,8,8,0.04))]" />
+              <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF]">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/72">
+                  RÜZO
+                </p>
+                <p className="font-display mt-1 text-3xl">{t(image.titleKey)}</p>
+              </div>
+            </Link>
+          ))}
         </div>
         <div className="flex items-center px-5 py-16 sm:px-10 lg:px-16">
           <div className="max-w-xl">
@@ -267,18 +402,41 @@ export function HomePage() {
               {copy.storyLabel}
             </p>
             <h2 className="font-display mt-5 text-5xl leading-tight text-[#080808] sm:text-6xl">
-              {t("brandStory")}
+              {copy.storyTitle}
             </h2>
             <p className="mt-6 text-sm leading-8 text-[#080808]/68 sm:text-base">
               {copy.storyCopy}
             </p>
-            <Link
-              to="/about"
-              className="luxury-link-underline mt-8 inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
-            >
-              {copy.readMore}
-              <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
-            </Link>
+            <div className="mt-8 grid gap-3 border-y border-[#080808]/10 py-5">
+              {categoryCards.slice(0, 5).map((category) => (
+                <Link
+                  key={category.slug}
+                  to={`/collections/${category.slug}`}
+                  className="flex items-center justify-between gap-4 text-sm font-medium text-[#080808] transition hover:text-[#6B0F1A]"
+                >
+                  <span>{category.title}</span>
+                  <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-4">
+              <Link
+                to="/about"
+                className="luxury-link-underline inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
+              >
+                {copy.readMore}
+                <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
+              </Link>
+              <a
+                href={INSTAGRAM_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="luxury-link-underline inline-flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]"
+              >
+                {t("instagram")}
+                <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
+              </a>
+            </div>
           </div>
         </div>
       </section>
@@ -305,10 +463,36 @@ export function HomePage() {
           {isLoading ? (
             <ProductSkeletonGrid />
           ) : newArrivals.length > 0 ? (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-6">
-              {newArrivals.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-700 ease-out"
+                  style={{
+                    transform: `translateX(-${newArrivalsCarousel.index * (100 / newArrivalsCarousel.visibleCount)}%)`,
+                  }}
+                >
+                  {newArrivals.map((product) => (
+                    <div key={product.id} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {newArrivalsCarousel.canScroll ? (
+                <>
+                  <CarouselArrowButton
+                    direction="previous"
+                    label={productPreviousLabel}
+                    onClick={newArrivalsCarousel.previous}
+                  />
+                  <CarouselArrowButton
+                    direction="next"
+                    label={productNextLabel}
+                    onClick={newArrivalsCarousel.next}
+                  />
+                </>
+              ) : null}
             </div>
           ) : (
             <p className="border border-[#080808]/10 px-5 py-10 text-center text-sm text-[#080808]/66">
@@ -329,38 +513,63 @@ export function HomePage() {
             </p>
           </div>
 
-          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {categoryCards.map((category) => (
-              <Link
-                key={category.slug}
-                to={`/collections/${category.slug}`}
-                className="group relative block aspect-[3/4] overflow-hidden bg-[#080808]"
+          <div className="relative mt-10">
+            <div className="overflow-hidden">
+              <div
+                className="flex transition-transform duration-700 ease-out"
+                style={{
+                  transform: `translateX(-${collectionsCarousel.index * (100 / collectionsCarousel.visibleCount)}%)`,
+                }}
               >
-                {category.image ? (
-                  <img
-                    src={category.image}
-                    alt=""
-                    loading="lazy"
-                    className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
-                  />
-                ) : (
-                  <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#6B0F1A_35%,#080808_100%)]" />
-                )}
-                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.78),rgba(107,15,26,0.22),rgba(8,8,8,0.02))]" />
-                <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF] sm:p-6">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/78">
-                    {t("ruzoEdit")}
-                  </p>
-                  <h3 className="font-display mt-2 text-3xl leading-tight sm:text-4xl lg:text-3xl xl:text-4xl">
-                    {category.title}
-                  </h3>
-                  <span className="mt-5 inline-flex min-h-9 items-center gap-3 border border-[#FFFFFF]/78 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition group-hover:border-[#6B0F1A] group-hover:bg-[#6B0F1A]">
-                    {t("shopNow")}
-                    <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
-                  </span>
-                </div>
-              </Link>
-            ))}
+                {categoryCards.map((category) => (
+                  <div key={category.slug} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
+                    <Link
+                      to={`/collections/${category.slug}`}
+                      className="group relative block aspect-[3/4] overflow-hidden bg-[#080808]"
+                    >
+                      {category.image ? (
+                        <img
+                          src={category.image}
+                          alt=""
+                          loading="lazy"
+                          className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#6B0F1A_35%,#080808_100%)]" />
+                      )}
+                      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.78),rgba(107,15,26,0.22),rgba(8,8,8,0.02))]" />
+                      <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF] sm:p-6">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/78">
+                          {t("ruzoEdit")}
+                        </p>
+                        <h3 className="font-display mt-2 text-3xl leading-tight sm:text-4xl lg:text-3xl xl:text-4xl">
+                          {category.title}
+                        </h3>
+                        <span className="mt-5 inline-flex min-h-9 items-center gap-3 border border-[#FFFFFF]/78 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition group-hover:border-[#6B0F1A] group-hover:bg-[#6B0F1A]">
+                          {t("shopNow")}
+                          <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
+                        </span>
+                      </div>
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {collectionsCarousel.canScroll ? (
+              <>
+                <CarouselArrowButton
+                  direction="previous"
+                  label={collectionPreviousLabel}
+                  onClick={collectionsCarousel.previous}
+                />
+                <CarouselArrowButton
+                  direction="next"
+                  label={collectionNextLabel}
+                  onClick={collectionsCarousel.next}
+                />
+              </>
+            ) : null}
           </div>
         </div>
       </section>
@@ -387,10 +596,42 @@ export function HomePage() {
           {isLoading ? (
             <ProductSkeletonGrid />
           ) : bestSellers.length > 0 ? (
-            <div className="grid grid-cols-2 gap-x-4 gap-y-10 lg:grid-cols-4 lg:gap-x-6">
-              {bestSellers.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div
+                  className="flex transition-transform duration-700 ease-out"
+                  style={{
+                    transform: `translateX(-${bestSellersCarousel.index * (100 / bestSellersCarousel.visibleCount)}%)`,
+                  }}
+                >
+                  {bestSellers.map((product) => (
+                    <div key={product.id} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
+                      <ProductCard product={product} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {bestSellersCarousel.canScroll ? (
+                <>
+                  <button
+                    type="button"
+                    aria-label={language === "ar" ? "المنتج السابق" : "Previous product"}
+                    onClick={bestSellersCarousel.previous}
+                    className="absolute left-0 top-[42%] z-10 grid h-11 w-11 -translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:-translate-x-4"
+                  >
+                    <ChevronLeft className="h-6 w-6 stroke-[2.2]" />
+                  </button>
+                  <button
+                    type="button"
+                    aria-label={language === "ar" ? "المنتج التالي" : "Next product"}
+                    onClick={bestSellersCarousel.next}
+                    className="absolute right-0 top-[42%] z-10 grid h-11 w-11 translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:translate-x-4"
+                  >
+                    <ChevronRight className="h-6 w-6 stroke-[2.2]" />
+                  </button>
+                </>
+              ) : null}
             </div>
           ) : (
             <p className="border border-[#080808]/10 px-5 py-10 text-center text-sm text-[#080808]/66">

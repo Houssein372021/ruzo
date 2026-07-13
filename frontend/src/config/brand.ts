@@ -1,2 +1,2 @@
-export const INSTAGRAM_URL = "https://www.instagram.com/ruzoofficial/";
-export const INSTAGRAM_HANDLE = "@ruzoofficial";
+export const INSTAGRAM_URL = "https://www.instagram.com/ruzobeirut/";
+export const INSTAGRAM_HANDLE = "RÜZO";

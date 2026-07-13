@@ -24,6 +24,14 @@ const categoryFallbacks = [
   { slug: "outerwear", titleKey: "outerwear" },
 ] as const;
 
+const categoryImageFallbacks: Record<string, string> = {
+  sets: "/products/ruzo/metallic-magenta-set-01.webp",
+  dresses: "/products/ruzo/black-midi-dress-01.webp",
+  bottoms: "/products/ruzo/ivory-satin-trouser-set-02.webp",
+  tops: "/products/ruzo/black-satin-short-set-02.webp",
+  outerwear: "/products/ruzo/sheer-shirt-trouser-set-02.webp",
+};
+
 export function HomePage() {
   const { language, dir, t } = useI18n();
   const [products, setProducts] = useState<Product[]>([]);
@@ -130,22 +138,9 @@ export function HomePage() {
     return {
       slug: category?.slug ?? fallback.slug,
       title: category ? (language === "ar" ? category.nameAr : category.nameEn) : t(fallback.titleKey),
-      image: category?.imageUrl ?? null,
+      image: category?.imageUrl ?? categoryImageFallbacks[fallback.slug] ?? null,
     };
   });
-
-  const editorialTiles = [
-    {
-      title: language === "ar" ? "خط الاستوديو" : "The studio line",
-      image: editorialImageUrl,
-      to: "/about",
-    },
-    ...categoryCards.map((category) => ({
-      title: category.title,
-      image: category.image,
-      to: `/collections/${category.slug}`,
-    })),
-  ].slice(0, 4);
 
   const servicePromises = [
     {
@@ -323,89 +318,51 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="border-y border-[#080808]/10 bg-[#FFFFFF] py-16 sm:py-20">
-        <div className="mx-auto max-w-[1500px] px-5 lg:px-8">
-          <div className="mb-9 flex items-end justify-between gap-5">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]">
-                {t("editorial")}
-              </p>
-              <h2 className="font-display mt-2 text-3xl text-[#080808] sm:text-4xl">
-                {copy.journalTitle}
-              </h2>
-            </div>
-            <Link
-              to="/about"
-              className="luxury-link-underline hidden shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808] sm:inline-flex"
-            >
-              {copy.viewAll}
-            </Link>
+      <section className="border-y border-[#080808]/10 bg-[#FFFFFF] px-5 py-16 sm:py-20 lg:px-8">
+        <div className="mx-auto max-w-[1500px]">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="font-display text-4xl leading-tight text-[#080808] sm:text-5xl">
+              {t("collectionsTitle")}
+            </h2>
+            <p className="mx-auto mt-4 max-w-xl text-sm leading-7 text-[#080808]/68">
+              {t("collectionsCopy")}
+            </p>
           </div>
 
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {editorialTiles.map((tile) => (
+          <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            {categoryCards.map((category) => (
               <Link
-                key={`${tile.to}-${tile.title}`}
-                to={tile.to}
-                className="group block border border-[#080808]/10 bg-[#FFFFFF] p-2 transition hover:border-[#6B0F1A]"
+                key={category.slug}
+                to={`/collections/${category.slug}`}
+                className="group relative block aspect-[3/4] overflow-hidden bg-[#080808]"
               >
-                <div className="aspect-[4/5] overflow-hidden bg-[#080808]">
-                  {tile.image ? (
-                    <img
-                      src={tile.image}
-                      alt=""
-                      loading="lazy"
-                      className="product-image h-full w-full object-cover"
-                    />
-                  ) : (
-                    <div className="h-full w-full bg-[linear-gradient(135deg,#FFFFFF_0%,#FFFFFF_42%,#6B0F1A_43%,#080808_100%)]" />
-                  )}
-                </div>
-                <div className="px-1 pt-4">
-                  <h3 className="font-display text-2xl leading-tight text-[#080808]">
-                    {tile.title}
+                {category.image ? (
+                  <img
+                    src={category.image}
+                    alt=""
+                    loading="lazy"
+                    className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                  />
+                ) : (
+                  <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#6B0F1A_35%,#080808_100%)]" />
+                )}
+                <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.78),rgba(107,15,26,0.22),rgba(8,8,8,0.02))]" />
+                <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF] sm:p-6">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/78">
+                    {t("ruzoEdit")}
+                  </p>
+                  <h3 className="font-display mt-2 text-3xl leading-tight sm:text-4xl lg:text-3xl xl:text-4xl">
+                    {category.title}
                   </h3>
-                  <span className="luxury-link-underline mt-3 inline-flex text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]">
-                    {copy.journalCta}
+                  <span className="mt-5 inline-flex min-h-9 items-center gap-3 border border-[#FFFFFF]/78 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition group-hover:border-[#6B0F1A] group-hover:bg-[#6B0F1A]">
+                    {t("shopNow")}
+                    <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
                   </span>
                 </div>
               </Link>
             ))}
           </div>
         </div>
-      </section>
-
-      <section className="grid border-b border-[#080808]/10 bg-[#FFFFFF] md:grid-cols-2 lg:grid-cols-5">
-        {categoryCards.map((category, index) => (
-          <Link
-            key={category.slug}
-            to={`/collections/${category.slug}`}
-            className="group relative min-h-[440px] overflow-hidden border-[#080808]/10 lg:border-r last:lg:border-r-0"
-          >
-            {category.image ? (
-              <img
-                src={category.image}
-                alt=""
-                loading="lazy"
-                className="product-image absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#6B0F1A_35%,#080808_100%)]" />
-            )}
-            <div className="absolute inset-0 bg-[#080808]/26 transition group-hover:bg-[#080808]/42" />
-            <div className="absolute inset-x-0 bottom-0 p-6 text-[#FFFFFF] sm:p-8">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF]/78">
-                {index === 0 ? copy.summerTitle : index === 1 ? copy.vacationTitle : copy.trendingTitle}
-              </p>
-              <h3 className="font-display mt-3 text-4xl leading-tight sm:text-5xl">
-                {category.title}
-              </h3>
-              <p className="mt-3 max-w-sm text-sm leading-7 text-[#FFFFFF]/76">
-                {index === 0 ? copy.summerCopy : index === 1 ? copy.vacationCopy : copy.trendingCopy}
-              </p>
-            </div>
-          </Link>
-        ))}
       </section>
 
       <section className="mx-auto max-w-[1500px] px-5 py-16 sm:py-20 lg:px-8">

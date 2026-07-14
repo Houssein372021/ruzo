@@ -6,6 +6,7 @@ import com.ruzo.backend.entity.*;
 import com.ruzo.backend.repository.CustomerRepository;
 import com.ruzo.backend.repository.OrderRepository;
 import com.ruzo.backend.repository.ProductRepository;
+import com.ruzo.backend.repository.ProductVariantRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -29,16 +30,19 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final ProductVariantRepository productVariantRepository;
     private final EmailNotificationService emailNotificationService;
 
     public OrderService(
             OrderRepository orderRepository,
             CustomerRepository customerRepository,
             ProductRepository productRepository,
+            ProductVariantRepository productVariantRepository,
             EmailNotificationService emailNotificationService) {
         this.orderRepository = orderRepository;
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
+        this.productVariantRepository = productVariantRepository;
         this.emailNotificationService = emailNotificationService;
     }
 
@@ -104,6 +108,17 @@ public class OrderService {
             String productName = firstNonBlank(itemRequest.productName(), product.getNameEn(), product.getSlug());
             String color = requiredText(itemRequest.color());
             String size = requiredText(itemRequest.size());
+            ProductVariant variant = productVariantRepository
+                    .findFirstByProduct_IdAndColorIgnoreCaseAndSizeIgnoreCase(productId, color, size)
+                    .orElseThrow(() -> new ResponseStatusException(
+                            HttpStatus.BAD_REQUEST,
+                            "Selected product option is no longer available"));
+            int availableStock = variant.getStock() == null ? 0 : variant.getStock();
+            if (quantity > availableStock) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Requested quantity exceeds available stock");
+            }
 
             OrderItem item = new OrderItem();
             item.setOrder(order);

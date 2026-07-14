@@ -267,7 +267,9 @@ public class AdminController {
                         order.setReviewToken(UUID.randomUUID().toString().replace("-", ""));
                     }
 
-                    if (previousStatus != OrderStatus.DELIVERED && nextStatus == OrderStatus.DELIVERED) {
+                    if (previousStatus == OrderStatus.DELIVERED && nextStatus == OrderStatus.CANCELLED) {
+                        restoreStockForCancelledDeliveredOrder(order);
+                    } else if (previousStatus != OrderStatus.DELIVERED && nextStatus == OrderStatus.DELIVERED) {
                         decrementStockForDeliveredOrder(order);
                     }
 
@@ -306,12 +308,7 @@ public class AdminController {
                 continue;
             }
 
-            ProductVariant variant = productVariantRepository
-                    .findFirstByProduct_IdAndColorIgnoreCaseAndSizeIgnoreCase(
-                            item.getProduct().getId(),
-                            color,
-                            size)
-                    .orElse(null);
+            ProductVariant variant = findVariantForOrderItem(item, color, size);
 
             if (variant == null) {
                 LOGGER.warn(
@@ -325,9 +322,60 @@ public class AdminController {
 
             int currentStock = variant.getStock() == null ? 0 : variant.getStock();
             int quantity = item.getQuantity() == null || item.getQuantity() < 1 ? 1 : item.getQuantity();
-            variant.setStock(Math.max(currentStock - quantity, 0));
+            if (quantity > currentStock) {
+                throw new ResponseStatusException(
+                        HttpStatus.BAD_REQUEST,
+                        "Order quantity exceeds available stock");
+            }
+
+            variant.setStock(currentStock - quantity);
             productVariantRepository.save(variant);
         }
+    }
+
+    private void restoreStockForCancelledDeliveredOrder(Order order) {
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            return;
+        }
+
+        for (OrderItem item : order.getItems()) {
+            if (item.getProduct() == null || item.getProduct().getId() == null) {
+                LOGGER.warn("Cannot restore stock for order item {} without product", item.getId());
+                continue;
+            }
+
+            String color = firstNonBlank(item.getColor(), item.getColorName());
+            String size = item.getSize();
+            if (color.isBlank() || size == null || size.isBlank()) {
+                LOGGER.warn("Cannot restore stock for order item {} without color or size", item.getId());
+                continue;
+            }
+
+            ProductVariant variant = findVariantForOrderItem(item, color, size);
+            if (variant == null) {
+                LOGGER.warn(
+                        "Cannot restore stock for order item {} because variant was not found: product={}, color={}, size={}",
+                        item.getId(),
+                        item.getProduct().getId(),
+                        color,
+                        size);
+                continue;
+            }
+
+            int currentStock = variant.getStock() == null ? 0 : variant.getStock();
+            int quantity = item.getQuantity() == null || item.getQuantity() < 1 ? 1 : item.getQuantity();
+            variant.setStock(currentStock + quantity);
+            productVariantRepository.save(variant);
+        }
+    }
+
+    private ProductVariant findVariantForOrderItem(OrderItem item, String color, String size) {
+        return productVariantRepository
+                .findFirstByProduct_IdAndColorIgnoreCaseAndSizeIgnoreCase(
+                        item.getProduct().getId(),
+                        color,
+                        size)
+                .orElse(null);
     }
 
     @GetMapping("/customers")

@@ -119,6 +119,15 @@ export function ProductDetailPage() {
     [product, selectedColor, selectedSize],
   );
 
+  useEffect(() => {
+    if (!selectedVariant) {
+      setQuantity(1);
+      return;
+    }
+
+    setQuantity((currentQuantity) => Math.min(Math.max(currentQuantity, 1), Math.max(selectedVariant.stock, 1)));
+  }, [selectedVariant]);
+
   const similarProducts = useMemo(
     () =>
       allProducts
@@ -235,6 +244,7 @@ export function ProductDetailPage() {
         color: selectedVariant?.color,
         colorHex: selectedVariant?.colorHex,
         size: selectedVariant?.size,
+        stock: selectedVariant?.stock,
         imageUrl: selectedVariant?.imageUrl ?? favoriteItem.imageUrl,
       },
       quantity,
@@ -509,6 +519,7 @@ export function ProductDetailPage() {
                           product.variants.find((item) => item.color === color);
                         setSelectedColor(color);
                         setSelectedSize(firstAvailableVariant?.size ?? "");
+                        setQuantity(1);
                         scrollToMedia(firstAvailableVariant?.imageUrl ?? variant?.imageUrl ?? selectedImage);
                       }}
                     />
@@ -531,7 +542,10 @@ export function ProductDetailPage() {
                         ? "border-[#6B0F1A] bg-[#6B0F1A] text-[#FFFFFF]"
                         : "border-[#080808]/14 hover:border-[#6B0F1A]"
                     }`}
-                    onClick={() => setSelectedSize(sizeOption)}
+                    onClick={() => {
+                      setSelectedSize(sizeOption);
+                      setQuantity(1);
+                    }}
                   >
                     {sizeOption}
                   </button>
@@ -541,7 +555,12 @@ export function ProductDetailPage() {
             </div>
 
             <div className="grid grid-cols-[auto_minmax(0,1fr)_52px] items-center gap-3 pt-1">
-              <QuantityStepper value={quantity} variant="product" onChange={setQuantity} />
+              <QuantityStepper
+                value={quantity}
+                max={selectedVariant?.stock ?? 99}
+                variant="product"
+                onChange={setQuantity}
+              />
               <button
                 type="button"
                 disabled={!selectedVariant || selectedVariant.stock <= 0}

@@ -30,12 +30,17 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const displayPrice = product.salePrice ?? product.price;
 
   const handleQuickAdd = () => {
+    if (!firstVariant || firstVariant.stock <= 0) {
+      return;
+    }
+
     addItem({
       ...toFavoriteItem(product),
       variantId: firstVariant?.id,
       color: firstVariant?.color,
       colorHex: firstVariant?.colorHex,
       size: firstVariant?.size,
+      stock: firstVariant?.stock,
       imageUrl: firstVariant?.imageUrl ?? toFavoriteItem(product).imageUrl,
     });
   };

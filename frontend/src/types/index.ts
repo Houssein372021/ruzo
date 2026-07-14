@@ -77,6 +77,7 @@ export type CartItem = FavoriteItem & {
   color?: string;
   colorHex?: string | null;
   size?: string;
+  stock?: number;
   quantity: number;
 };
 

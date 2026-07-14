@@ -10,7 +10,7 @@ import { Seo } from "../../components/common/Seo";
 import { useI18n } from "../../hooks/useI18n";
 import { selectCartTotals, useCartStore } from "../../store/cartStore";
 import { useCheckoutStore } from "../../store/checkoutStore";
-import type { CustomerInfo, OrderPayload } from "../../types";
+import type { CartItem, CustomerInfo, OrderPayload, Product } from "../../types";
 import { formatCurrency, getDeliveryFee } from "../../utils/format";
 
 type CheckoutForm = CustomerInfo & {
@@ -31,6 +31,42 @@ const emptyCustomer: CheckoutForm = {
   paymentMethod: "cash-on-delivery",
   saveDetails: true,
 };
+
+function syncCartItemsWithProducts(items: CartItem[], products: Product[]): CartItem[] {
+  const productMap = new Map(products.map((product) => [product.id, product]));
+
+  return items
+    .map((item) => {
+      const product = productMap.get(item.id);
+      if (!product) {
+        return null;
+      }
+
+      const variant =
+        product.variants.find((candidate) => candidate.id === item.variantId) ??
+        product.variants.find(
+          (candidate) => candidate.color === item.color && candidate.size === item.size,
+        );
+
+      if (!variant || variant.stock <= 0) {
+        return null;
+      }
+
+      const syncedItem: CartItem = {
+        ...item,
+        variantId: variant.id,
+        color: variant.color,
+        colorHex: variant.colorHex,
+        size: variant.size,
+        stock: variant.stock,
+        imageUrl: variant.imageUrl ?? item.imageUrl,
+        quantity: Math.min(item.quantity, variant.stock),
+      };
+
+      return syncedItem;
+    })
+    .filter((item): item is CartItem => item !== null && item.quantity > 0);
+}
 
 export function CheckoutPage() {
   const { language, t } = useI18n();
@@ -60,10 +96,9 @@ export function CheckoutPage() {
           return;
         }
 
-        const activeProductIds = new Set(products.map((product) => product.id));
-        const validItems = items.filter((item) => activeProductIds.has(item.id));
+        const validItems = syncCartItemsWithProducts(items, products);
 
-        if (validItems.length !== items.length) {
+        if (JSON.stringify(validItems) !== JSON.stringify(items)) {
           replaceItems(validItems);
           setError(invalidCartMessage);
         }
@@ -99,10 +134,9 @@ export function CheckoutPage() {
 
     try {
       const products = await productsApi.getAll();
-      const activeProductIds = new Set(products.map((product) => product.id));
-      const validItems = items.filter((item) => activeProductIds.has(item.id));
+      const validItems = syncCartItemsWithProducts(items, products);
 
-      if (validItems.length !== items.length) {
+      if (JSON.stringify(validItems) !== JSON.stringify(items)) {
         replaceItems(validItems);
         setError(invalidCartMessage);
         return;

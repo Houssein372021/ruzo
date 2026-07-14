@@ -124,6 +124,7 @@ export function CartDrawer() {
                           <div className="mt-4 flex items-center justify-between">
                             <QuantityStepper
                               value={item.quantity}
+                              max={item.stock ?? 99}
                               onChange={(value) => updateQuantity(item.lineId, value)}
                             />
                             <button

@@ -17,6 +17,7 @@ export function QuantityStepper({
   onChange,
 }: QuantityStepperProps) {
   const { t } = useI18n();
+  const effectiveMax = Math.max(max, min);
   const dimensions =
     variant === "product" ? "h-[52px] grid-cols-[40px_42px_40px]" : "h-11 grid-cols-[44px_48px_44px]";
 
@@ -35,7 +36,7 @@ export function QuantityStepper({
         type="button"
         aria-label={t("increaseQuantity")}
         className="grid place-items-center transition hover:bg-[#080808]/5"
-        onClick={() => onChange(Math.min(value + 1, max))}
+        onClick={() => onChange(Math.min(value + 1, effectiveMax))}
       >
         <Plus className="h-4 w-4" />
       </button>

@@ -18,6 +18,19 @@ function createLineId(item: Omit<CartItem, "lineId" | "quantity">) {
   return [item.id, item.variantId ?? "standard", item.color ?? "color", item.size ?? "size"].join(":");
 }
 
+function clampQuantity(quantity: number, stock?: number) {
+  const safeQuantity = Number.isFinite(quantity) ? Math.max(Math.trunc(quantity), 0) : 0;
+  const maxQuantity = typeof stock === "number" ? Math.max(Math.trunc(stock), 0) : 99;
+
+  return Math.min(safeQuantity, maxQuantity);
+}
+
+function normalizeCartItem(item: CartItem): CartItem | null {
+  const quantity = clampQuantity(item.quantity, item.stock);
+
+  return quantity > 0 ? { ...item, quantity } : null;
+}
+
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
@@ -34,29 +47,39 @@ export const useCartStore = create<CartState>()(
             return {
               items: state.items.map((cartItem) =>
                 cartItem.lineId === lineId
-                  ? { ...cartItem, quantity: cartItem.quantity + quantity }
+                  ? {
+                      ...cartItem,
+                      ...item,
+                      lineId,
+                      quantity: clampQuantity(cartItem.quantity + quantity, item.stock ?? cartItem.stock),
+                    }
                   : cartItem,
-              ),
+              ).filter((cartItem) => cartItem.quantity > 0),
               isOpen: true,
             };
           }
 
+          const safeQuantity = clampQuantity(quantity, item.stock);
+          if (safeQuantity <= 0) {
+            return { items: state.items, isOpen: true };
+          }
+
           return {
-            items: [...state.items, { ...item, lineId, quantity }],
+            items: [...state.items, { ...item, lineId, quantity: safeQuantity }],
             isOpen: true,
           };
         }),
       updateQuantity: (lineId, quantity) =>
         set((state) => ({
           items: state.items
-            .map((item) => (item.lineId === lineId ? { ...item, quantity } : item))
+            .map((item) => (item.lineId === lineId ? { ...item, quantity: clampQuantity(quantity, item.stock) } : item))
             .filter((item) => item.quantity > 0),
         })),
       removeItem: (lineId) =>
         set((state) => ({
           items: state.items.filter((item) => item.lineId !== lineId),
         })),
-      replaceItems: (items) => set({ items }),
+      replaceItems: (items) => set({ items: items.map(normalizeCartItem).filter((item): item is CartItem => item !== null) }),
       clearCart: () => set({ items: [], isOpen: false }),
     }),
     {

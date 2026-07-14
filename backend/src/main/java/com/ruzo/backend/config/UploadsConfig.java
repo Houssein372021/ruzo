@@ -1,8 +1,10 @@
 package com.ruzo.backend.config;
 
 import java.nio.file.Path;
+import java.util.concurrent.TimeUnit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.CacheControl;
 import org.springframework.lang.NonNull;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,6 +22,7 @@ public class UploadsConfig implements WebMvcConfigurer {
     public void addResourceHandlers(@NonNull ResourceHandlerRegistry registry) {
         registry
                 .addResourceHandler("/api/uploads/**")
-                .addResourceLocations(uploadsDirectory.toUri().toString() + "/");
+                .addResourceLocations(uploadsDirectory.toUri().toString() + "/")
+                .setCacheControl(CacheControl.maxAge(30, TimeUnit.DAYS).cachePublic());
     }
 }

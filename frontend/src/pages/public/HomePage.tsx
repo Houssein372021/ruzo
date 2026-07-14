@@ -413,9 +413,9 @@ export function HomePage() {
                     transform: `translateX(-${bestSellersCarousel.index * (100 / bestSellersCarousel.visibleCount)}%)`,
                   }}
                 >
-                  {bestSellers.map((product) => (
+                  {bestSellers.map((product, productIndex) => (
                     <div key={product.id} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
-                      <ProductCard product={product} />
+                      <ProductCard product={product} priority={productIndex < bestSellersCarousel.visibleCount} />
                     </div>
                   ))}
                 </div>
@@ -501,9 +501,9 @@ export function HomePage() {
                     transform: `translateX(-${newArrivalsCarousel.index * (100 / newArrivalsCarousel.visibleCount)}%)`,
                   }}
                 >
-                  {newArrivals.map((product) => (
+                  {newArrivals.map((product, productIndex) => (
                     <div key={product.id} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
-                      <ProductCard product={product} />
+                      <ProductCard product={product} priority={productIndex < newArrivalsCarousel.visibleCount} />
                     </div>
                   ))}
                 </div>
@@ -552,7 +552,7 @@ export function HomePage() {
                   transform: `translateX(-${collectionsCarousel.index * (100 / collectionsCarousel.visibleCount)}%)`,
                 }}
               >
-                {categoryCards.map((category) => (
+                {categoryCards.map((category, categoryIndex) => (
                   <div key={category.slug} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
                     <Link
                       to={`/collections/${category.slug}`}
@@ -562,7 +562,12 @@ export function HomePage() {
                         <img
                           src={category.image}
                           alt=""
-                          loading="lazy"
+                          loading={categoryIndex < collectionsCarousel.visibleCount ? "eager" : "lazy"}
+                          fetchPriority={categoryIndex < collectionsCarousel.visibleCount ? "high" : "auto"}
+                          decoding="async"
+                          width={900}
+                          height={1200}
+                          sizes="(min-width: 1024px) 31vw, (min-width: 640px) 50vw, 100vw"
                           className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
                         />
                       ) : (

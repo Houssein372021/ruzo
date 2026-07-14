@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Heart, ShoppingBag } from "lucide-react";
@@ -11,15 +12,19 @@ import { StarRating } from "./StarRating";
 
 type ProductCardProps = {
   product: Product;
+  priority?: boolean;
 };
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const { language, t } = useI18n();
+  const [shouldLoadHoverImage, setShouldLoadHoverImage] = useState(false);
+  const [hoverImageLoaded, setHoverImageLoaded] = useState(false);
   const addItem = useCartStore((state) => state.addItem);
   const toggleFavorite = useFavoritesStore((state) => state.toggleFavorite);
   const isFavorite = useFavoritesStore((state) => state.isFavorite(product.slug));
   const image = getProductImage(product);
   const hoverImage = getHoverImage(product);
+  const hasHoverImage = Boolean(hoverImage && hoverImage !== image);
   const colors = uniqueValues(product.variants.map((variant) => variant.color)).slice(0, 5);
   const firstVariant = product.variants.find((variant) => variant.stock > 0) ?? product.variants[0];
   const displayPrice = product.salePrice ?? product.price;
@@ -42,21 +47,48 @@ export function ProductCard({ product }: ProductCardProps) {
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.45 }}
       className="group relative"
+      onMouseEnter={() => {
+        if (hasHoverImage) {
+          setShouldLoadHoverImage(true);
+        }
+      }}
+      onFocus={() => {
+        if (hasHoverImage) {
+          setShouldLoadHoverImage(true);
+        }
+      }}
     >
-      <div className="relative overflow-hidden border border-[#080808]/10 bg-[#FFFFFF]">
+      <div className="relative overflow-hidden border border-[#080808]/10 bg-[#F7F3F0]">
         <Link to={`/products/${product.slug}`} className="block">
           <img
             src={image}
             alt={getProductName(product, language)}
-            loading="lazy"
-            className="product-image aspect-[3/4] w-full object-cover transition duration-700 group-hover:opacity-0"
+            loading={priority ? "eager" : "lazy"}
+            fetchPriority={priority ? "high" : "auto"}
+            decoding="async"
+            width={900}
+            height={1200}
+            sizes="(min-width: 1024px) 31vw, (min-width: 640px) 50vw, 100vw"
+            className={`product-image aspect-[3/4] w-full object-cover transition duration-700 ${
+              hoverImageLoaded ? "group-hover:opacity-0" : ""
+            }`}
           />
-          <img
-            src={hoverImage}
-            alt=""
-            loading="lazy"
-            className="product-image absolute inset-0 aspect-[3/4] h-full w-full object-cover opacity-0 transition duration-700 group-hover:opacity-100"
-          />
+          {hasHoverImage && shouldLoadHoverImage ? (
+            <img
+              src={hoverImage}
+              alt=""
+              loading="lazy"
+              fetchPriority="low"
+              decoding="async"
+              width={900}
+              height={1200}
+              sizes="(min-width: 1024px) 31vw, (min-width: 640px) 50vw, 100vw"
+              onLoad={() => setHoverImageLoaded(true)}
+              className={`product-image absolute inset-0 aspect-[3/4] h-full w-full object-cover opacity-0 transition duration-700 ${
+                hoverImageLoaded ? "group-hover:opacity-100" : ""
+              }`}
+            />
+          ) : null}
         </Link>
 
         {product.badge || product.isNew || product.isBestSeller ? (

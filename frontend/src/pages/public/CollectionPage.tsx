@@ -320,8 +320,8 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
               <EmptyState title={t("noProducts")} actionTo="/" />
             ) : (
               <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
-                {filteredProducts.map((product) => (
-                  <ProductCard key={product.id} product={product} />
+                {filteredProducts.map((product, productIndex) => (
+                  <ProductCard key={product.id} product={product} priority={productIndex < 6} />
                 ))}
               </div>
             )}

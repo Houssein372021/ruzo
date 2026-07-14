@@ -11,4 +11,9 @@ export const productsApi = {
     const response = await apiClient.get<Product>(`/products/${slug}`);
     return response.data;
   },
+
+  async getFeaturedMenu() {
+    const response = await apiClient.get<Product[]>("/products/featured-menu");
+    return response.data;
+  },
 };

@@ -68,6 +68,15 @@ const createEmptyProductForm = (categoryId = ""): ProductForm => ({
   variants: [createVariantRow()],
 });
 
+const createFeaturedSelection = (products: Product[]) => {
+  const featuredProducts = products
+    .filter((product) => product.featuredMenu)
+    .sort((first, second) => (first.featuredMenuOrder ?? 999) - (second.featuredMenuOrder ?? 999))
+    .slice(0, 4);
+
+  return Array.from({ length: 4 }, (_, index) => featuredProducts[index]?.id ?? "");
+};
+
 const colorHexByName: Record<string, string> = {
   beige: "#D8C3A5",
   black: "#111111",
@@ -142,12 +151,17 @@ export function AdminProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
+  const [featuredSelection, setFeaturedSelection] = useState<string[]>(["", "", "", ""]);
+  const [featuredStatus, setFeaturedStatus] = useState("");
   const [form, setForm] = useState<ProductForm>(() => createEmptyProductForm());
 
   const loadProducts = useCallback(() => {
     adminApi
       .products()
-      .then(setProducts)
+      .then((data) => {
+        setProducts(data);
+        setFeaturedSelection(createFeaturedSelection(data));
+      })
       .catch(() => setError(t("apiUnavailable")));
   }, [t]);
 
@@ -344,10 +358,71 @@ export function AdminProductsPage() {
     setForm(createEmptyProductForm(form.categoryId || categories[0]?.id || ""));
   };
 
+  const updateFeaturedSlot = (index: number, productId: string) => {
+    setFeaturedStatus("");
+    setFeaturedSelection((current) => current.map((value, valueIndex) => (
+      valueIndex === index ? productId : value
+    )));
+  };
+
+  const saveFeaturedMenu = async () => {
+    setError("");
+    setFeaturedStatus("");
+    const productIds = featuredSelection.filter(Boolean);
+    if (new Set(productIds).size !== productIds.length) {
+      setError("Please choose each featured piece only once.");
+      return;
+    }
+
+    try {
+      await adminApi.updateFeaturedMenu(productIds);
+      setFeaturedStatus("Featured pieces saved.");
+      loadProducts();
+    } catch {
+      setError(t("apiUnavailable"));
+    }
+  };
+
   return (
     <div className="space-y-6">
       <AdminPageHeader title={t("products")} />
       {error ? <p className="admin-notice">{error}</p> : null}
+      <AdminPanel title="Featured pieces menu">
+        <div className="grid gap-4">
+          <p className="text-sm leading-6 text-[#080808]/65">
+            Choose up to 4 products to show in the header menu.
+          </p>
+          <div className="grid gap-3 md:grid-cols-4">
+            {featuredSelection.map((productId, index) => (
+              <AdminSelect
+                key={`featured-slot-${index}`}
+                label={`Slot ${index + 1}`}
+                value={productId}
+                onChange={(value) => updateFeaturedSlot(index, value)}
+              >
+                <option value="">No product</option>
+                {products.map((product) => {
+                  const isSelectedElsewhere = featuredSelection.some(
+                    (selectedId, selectedIndex) => selectedIndex !== index && selectedId === product.id,
+                  );
+
+                  return (
+                    <option key={product.id} value={product.id} disabled={isSelectedElsewhere}>
+                      {language === "ar" ? product.nameAr : product.nameEn}
+                    </option>
+                  );
+                })}
+              </AdminSelect>
+            ))}
+          </div>
+          <div className="flex flex-wrap items-center gap-3">
+            <button type="button" className="admin-primary-button" onClick={saveFeaturedMenu}>
+              {t("save")}
+            </button>
+            {featuredStatus ? <span className="text-sm font-semibold text-[#6B0F1A]">{featuredStatus}</span> : null}
+          </div>
+        </div>
+      </AdminPanel>
       <div className="grid gap-6 xl:grid-cols-[1fr_440px]">
         <AdminPanel
           title={t("products")}

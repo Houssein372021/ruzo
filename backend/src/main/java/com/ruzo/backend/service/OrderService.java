@@ -121,9 +121,9 @@ public class OrderService {
             orderItems.add(item);
         }
 
-        BigDecimal deliveryFee = subtotal.compareTo(BigDecimal.valueOf(70)) > 0
+        BigDecimal deliveryFee = subtotal.compareTo(BigDecimal.valueOf(100)) >= 0
                 ? BigDecimal.ZERO
-                : BigDecimal.valueOf(7);
+                : BigDecimal.valueOf(5);
 
         BigDecimal total = subtotal.add(deliveryFee);
 

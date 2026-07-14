@@ -34,6 +34,16 @@ public class ProductController {
                 .toList();
     }
 
+    @GetMapping("/featured-menu")
+    @Transactional(readOnly = true)
+    public List<ProductResponse> getFeaturedMenuProducts() {
+        return productRepository.findByFeaturedMenuTrueAndActiveTrueOrderByFeaturedMenuOrderAsc()
+                .stream()
+                .limit(4)
+                .map(ProductResponse::from)
+                .toList();
+    }
+
     @GetMapping("/{slug}")
     @Transactional(readOnly = true)
     public ResponseEntity<ProductResponse> getProductBySlug(@PathVariable String slug) {
@@ -57,6 +67,8 @@ public class ProductController {
             BigDecimal salePrice,
             String badge,
             Boolean active,
+            Boolean featuredMenu,
+            Integer featuredMenuOrder,
             String videoUrl,
             List<ProductImageResponse> images,
             List<ProductVariantResponse> variants
@@ -77,6 +89,8 @@ public class ProductController {
                     product.getSalePrice(),
                     product.getBadge(),
                     product.getActive(),
+                    product.getFeaturedMenu(),
+                    product.getFeaturedMenuOrder(),
                     product.getVideoUrl(),
                     product.getImages().stream().map(ProductImageResponse::from).toList(),
                     product.getVariants().stream().map(ProductVariantResponse::from).toList()

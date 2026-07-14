@@ -148,6 +148,47 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/products/featured-menu")
+    @Transactional
+    public List<ProductResponse> updateFeaturedMenu(@RequestBody FeaturedMenuRequest request) {
+        List<UUID> productIds = request.productIds() == null ? List.of() : request.productIds().stream()
+                .filter(Objects::nonNull)
+                .toList();
+
+        if (productIds.size() > 4) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Featured menu accepts up to 4 products");
+        }
+        if (productIds.stream().distinct().count() != productIds.size()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Featured menu products must be unique");
+        }
+
+        List<Product> products = productRepository.findAll();
+        products.forEach(product -> {
+            product.setFeaturedMenu(false);
+            product.setFeaturedMenuOrder(null);
+        });
+
+        for (int index = 0; index < productIds.size(); index++) {
+            UUID productId = productIds.get(index);
+            Product product = products.stream()
+                    .filter(candidate -> productId.equals(candidate.getId()))
+                    .findFirst()
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product not found"));
+            product.setFeaturedMenu(true);
+            product.setFeaturedMenuOrder(index + 1);
+        }
+
+        productRepository.saveAll(products);
+
+        return products.stream()
+                .filter(product -> Boolean.TRUE.equals(product.getFeaturedMenu()))
+                .sorted((first, second) -> Integer.compare(
+                        first.getFeaturedMenuOrder() == null ? Integer.MAX_VALUE : first.getFeaturedMenuOrder(),
+                        second.getFeaturedMenuOrder() == null ? Integer.MAX_VALUE : second.getFeaturedMenuOrder()))
+                .map(ProductResponse::from)
+                .toList();
+    }
+
     @GetMapping("/categories")
     public List<Category> categories() {
         return categoryRepository.findAll(Sort.by(Sort.Direction.ASC, "sortOrder"));
@@ -472,6 +513,9 @@ public class AdminController {
         }
     }
 
+    public record FeaturedMenuRequest(List<UUID> productIds) {
+    }
+
     public record ImageRequest(
             @JsonAlias("url") String imageUrl,
             Integer sortOrder) {
@@ -705,6 +749,8 @@ public class AdminController {
             BigDecimal salePrice,
             String badge,
             Boolean active,
+            Boolean featuredMenu,
+            Integer featuredMenuOrder,
             String videoUrl,
             List<ProductController.ProductImageResponse> images,
             List<ProductController.ProductVariantResponse> variants) {
@@ -723,6 +769,8 @@ public class AdminController {
                     product.getSalePrice(),
                     product.getBadge(),
                     product.getActive(),
+                    product.getFeaturedMenu(),
+                    product.getFeaturedMenuOrder(),
                     product.getVideoUrl(),
                     product.getImages().stream().map(ProductController.ProductImageResponse::from).toList(),
                     product.getVariants().stream().map(ProductController.ProductVariantResponse::from).toList());

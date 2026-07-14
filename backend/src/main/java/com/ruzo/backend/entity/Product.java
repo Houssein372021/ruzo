@@ -76,6 +76,12 @@ public class Product {
     @Column(name = "video_url")
     private String videoUrl;
 
+    @Column(name = "featured_menu")
+    private Boolean featuredMenu = false;
+
+    @Column(name = "featured_menu_order")
+    private Integer featuredMenuOrder;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

@@ -50,6 +50,8 @@ export type Product = {
   badge?: string | null;
   isNew?: boolean | null;
   isBestSeller?: boolean | null;
+  featuredMenu?: boolean | null;
+  featuredMenuOrder?: number | null;
   active?: boolean | null;
   isActive?: boolean | null;
   videoUrl?: string | null;

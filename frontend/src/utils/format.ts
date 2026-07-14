@@ -1,7 +1,7 @@
 import type { Language } from "../types";
 
-export const FREE_DELIVERY_THRESHOLD = 70;
-export const DELIVERY_FEE = 7;
+export const FREE_DELIVERY_THRESHOLD = 100;
+export const DELIVERY_FEE = 5;
 
 export function formatCurrency(value: number, language: Language) {
   return new Intl.NumberFormat(language === "ar" ? "ar" : "en", {

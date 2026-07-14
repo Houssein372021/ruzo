@@ -7,4 +7,4 @@ Disallow: /order-confirmation/
 Disallow: /favorites
 Disallow: /review/
 
-Sitemap: https://www.rüzo.com/sitemap.xml
+Sitemap: https://www.xn--rzo-hoa.com/sitemap.xml

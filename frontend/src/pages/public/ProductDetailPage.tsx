@@ -26,6 +26,13 @@ import {
 
 const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
 
+const getSizeRank = (size: string) => {
+  const normalizedSize = size.trim().toUpperCase();
+  const sizeIndex = SIZE_ORDER.indexOf(normalizedSize);
+
+  return sizeIndex === -1 ? Number.MAX_SAFE_INTEGER : sizeIndex;
+};
+
 export function ProductDetailPage() {
   const { slug } = useParams();
   const { language, t } = useI18n();
@@ -88,15 +95,11 @@ export function ProductDetailPage() {
         .map((variant) => variant.size) ?? [],
     );
 
-    return [...availableSizes].sort((sizeA, sizeB) => {
+    const sortedSizes = [...availableSizes].sort((sizeA, sizeB) => {
       const normalizedA = sizeA.trim().toUpperCase();
       const normalizedB = sizeB.trim().toUpperCase();
-
-      const indexA = SIZE_ORDER.indexOf(normalizedA);
-      const indexB = SIZE_ORDER.indexOf(normalizedB);
-
-      const rankA = indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA;
-      const rankB = indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB;
+      const rankA = getSizeRank(sizeA);
+      const rankB = getSizeRank(sizeB);
 
       if (rankA !== rankB) {
         return rankA - rankB;
@@ -104,7 +107,9 @@ export function ProductDetailPage() {
 
       return normalizedA.localeCompare(normalizedB);
     });
-  }, [product, selectedColor]);
+
+    return language === "ar" ? sortedSizes.reverse() : sortedSizes;
+  }, [language, product, selectedColor]);
 
   const selectedVariant = useMemo<ProductVariant | undefined>(
     () =>
@@ -516,10 +521,7 @@ export function ProductDetailPage() {
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
                 {t("size")}
               </p>
-              <div
-                dir={language === "ar" ? "rtl" : "ltr"}
-                className="flex flex-row flex-wrap gap-2"
-              >
+              <div dir="ltr" className="flex flex-row flex-wrap gap-2">
                 {sizes.map((sizeOption) => (
                   <button
                     key={sizeOption}

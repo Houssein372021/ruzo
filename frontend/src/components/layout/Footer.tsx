@@ -5,8 +5,8 @@ import { useI18n } from "../../hooks/useI18n";
 
 export function Footer() {
   const { t } = useI18n();
-  const TIKTOK_URL = "https://www.tiktok.com/@ton_identifiant";
-  const TIKTOK_HANDLE = "@ton_identifiant";
+  const TIKTOK_URL = "https://www.tiktok.com/@ruzobeirut";
+  const TIKTOK_HANDLE = "@ruzobeirut";
   type IconProps = React.SVGProps<SVGSVGElement>;
 
   function TikTokIcon({ className, ...props }: IconProps) {

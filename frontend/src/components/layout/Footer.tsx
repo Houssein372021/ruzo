@@ -5,7 +5,23 @@ import { useI18n } from "../../hooks/useI18n";
 
 export function Footer() {
   const { t } = useI18n();
+  const TIKTOK_URL = "https://www.tiktok.com/@ton_identifiant";
+  const TIKTOK_HANDLE = "@ton_identifiant";
+  type IconProps = React.SVGProps<SVGSVGElement>;
 
+  function TikTokIcon({ className, ...props }: IconProps) {
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        fill="currentColor"
+        aria-hidden="true"
+        className={className}
+        {...props}
+      >
+        <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 1 1-2-2.75V9.4a6.34 6.34 0 1 0 5.45 6.27V8.73a8.16 8.16 0 0 0 4.77 1.52V6.82c-.34 0-.67-.05-1-.13Z" />
+      </svg>
+    );
+  }
   const menuLinks = [
     { to: "/about", label: t("about") },
     { to: "/contact", label: t("contact") },
@@ -63,7 +79,7 @@ export function Footer() {
                   rel="noreferrer"
                   className="luxury-link-underline mt-1 inline-flex w-fit"
                 >
-                  +961 78 70 79 79 test
+                  +961 78 70 79 79
                 </a>
               </div>
             </div>
@@ -83,6 +99,17 @@ export function Footer() {
               >
                 <InstagramIcon className="h-4 w-4" />
                 {INSTAGRAM_HANDLE}
+              </a>
+
+              <a
+                href={TIKTOK_URL}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={`TikTok ${TIKTOK_HANDLE}`}
+                className="luxury-link-underline inline-flex w-fit items-center gap-2"
+              >
+                <TikTokIcon className="h-4 w-4" />
+                {TIKTOK_HANDLE}
               </a>
             </div>
           </div>

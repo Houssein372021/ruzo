@@ -60,7 +60,7 @@ export function AboutPage() {
           ],
           collectionTitle: "مجموعة مبنية حول القطع التي ترتديها فعلاً.",
           collectionCopy:
-            "من Metallic Magenta Set إلى Black Midi Dress والطبقات الشفافة، RÜZO يبني خزانة صغيرة لكنها مؤثرة.",
+            "من Bisou Set إلى  Essential Linen Dress Dress والطبقات الشفافة، RÜZO يبني خزانة صغيرة لكنها مؤثرة.",
           categories: "التصنيفات",
         }
       : {
@@ -89,7 +89,7 @@ export function AboutPage() {
           ],
           collectionTitle: "A wardrobe edit built around the pieces you actually wear.",
           collectionCopy:
-            "From the Metallic Magenta Set to the Black Midi Dress and sheer layers, RÜZO keeps the collection focused, expressive, and easy to style.",
+            "From the Bisou Set to the Essential Linen Dress and sheer layers, RÜZO keeps the collection focused, expressive, and easy to style.",
           categories: "Categories",
         };
 

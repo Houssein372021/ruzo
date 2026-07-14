@@ -24,6 +24,8 @@ import {
   uniqueValues,
 } from "../../utils/product";
 
+const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
+
 export function ProductDetailPage() {
   const { slug } = useParams();
   const { language, t } = useI18n();
@@ -75,15 +77,34 @@ export function ProductDetailPage() {
     [product],
   );
 
-  const sizes = useMemo(
-    () =>
-      uniqueValues(
-        product?.variants
-          .filter((variant) => (!selectedColor || variant.color === selectedColor) && variant.stock > 0)
-          .map((variant) => variant.size) ?? [],
-      ),
-    [product, selectedColor],
-  );
+  const sizes = useMemo(() => {
+    const availableSizes = uniqueValues(
+      product?.variants
+        .filter(
+          (variant) =>
+            (!selectedColor || variant.color === selectedColor) &&
+            variant.stock > 0,
+        )
+        .map((variant) => variant.size) ?? [],
+    );
+
+    return [...availableSizes].sort((sizeA, sizeB) => {
+      const normalizedA = sizeA.trim().toUpperCase();
+      const normalizedB = sizeB.trim().toUpperCase();
+
+      const indexA = SIZE_ORDER.indexOf(normalizedA);
+      const indexB = SIZE_ORDER.indexOf(normalizedB);
+
+      const rankA = indexA === -1 ? Number.MAX_SAFE_INTEGER : indexA;
+      const rankB = indexB === -1 ? Number.MAX_SAFE_INTEGER : indexB;
+
+      if (rankA !== rankB) {
+        return rankA - rankB;
+      }
+
+      return normalizedA.localeCompare(normalizedB);
+    });
+  }, [product, selectedColor]);
 
   const selectedVariant = useMemo<ProductVariant | undefined>(
     () =>
@@ -495,7 +516,10 @@ export function ProductDetailPage() {
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
                 {t("size")}
               </p>
-              <div className="flex flex-wrap gap-2">
+              <div
+                dir={language === "ar" ? "rtl" : "ltr"}
+                className="flex flex-row flex-wrap gap-2"
+              >
                 {sizes.map((sizeOption) => (
                   <button
                     key={sizeOption}

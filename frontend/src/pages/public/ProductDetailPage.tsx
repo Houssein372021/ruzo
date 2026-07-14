@@ -511,11 +511,7 @@ export function ProductDetailPage() {
                   </button>
                 ))}
               </div>
-              {selectedVariant ? (
-                <p className="mt-3 text-xs font-medium uppercase tracking-[0.16em] text-[#6B0F1A]">
-                  {t("stock")}: {selectedVariant.stock}
-                </p>
-              ) : null}
+              
             </div>
 
             <div className="grid grid-cols-[auto_minmax(0,1fr)_52px] items-center gap-3 pt-1">

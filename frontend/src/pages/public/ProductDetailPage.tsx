@@ -166,8 +166,8 @@ export function ProductDetailPage() {
     return (
       <>
         <Seo
-          title="Rüzo Product | Feminine Activewear"
-          description="Shop RÜZO activewear at rüzo: sport bras, sets, and leggings."
+          title="RÜZO Product | Beirut Womenswear"
+          description="Shop RÜZO womenswear: satin sets, fluid dresses, sharp tops, tailored bottoms, and outerwear."
           path={`/products/${slug ?? ""}`}
         />
         <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -181,8 +181,8 @@ export function ProductDetailPage() {
     return (
       <>
         <Seo
-          title="Product not found | Rüzo"
-          description="This Rüzo product is not available."
+          title="Product not found | RÜZO"
+          description="This RÜZO product is not available."
           path={`/products/${slug ?? ""}`}
           robots="noindex,nofollow"
         />
@@ -218,10 +218,10 @@ export function ProductDetailPage() {
   const activeMobileMedia = mobileMediaItems[activeMobileMediaIndex];
   const productImage = getProductImage(product);
   const productImageUrl = productImage
-    ? new URL(productImage, "https://www.rüzo.com").toString()
-    : "https://www.rüzo.com/site-icon-512.png";
+    ? new URL(productImage, "https://www.xn--rzo-hoa.com").toString()
+    : "https://www.xn--rzo-hoa.com/ruzo-logo-icon.png";
   const productDescription =
-    description || "Sculpted Rüzo activewear with a refined everyday finish.";
+    description || "Modern RÜZO womenswear with a refined everyday finish.";
 
   const handleAddToCart = () => {
     if (!selectedVariant || selectedVariant.stock <= 0) {
@@ -280,7 +280,7 @@ export function ProductDetailPage() {
                   ? "https://schema.org/InStock"
                   : "https://schema.org/OutOfStock",
                 itemCondition: "https://schema.org/NewCondition",
-                url: `https://www.rüzo.com/products/${product.slug}`,
+                url: `https://www.xn--rzo-hoa.com/products/${product.slug}`,
                 seller: {
                   "@type": "Organization",
                   name: "RÜZO",
@@ -294,19 +294,19 @@ export function ProductDetailPage() {
                   "@type": "ListItem",
                   position: 1,
                   name: "Home",
-                  item: "https://www.rüzo.com/",
+                  item: "https://www.xn--rzo-hoa.com/",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: product.category?.nameEn ?? "Products",
-                  item: `https://www.rüzo.com/collections/${product.category?.slug ?? "sets"}`,
+                  item: `https://www.xn--rzo-hoa.com/collections/${product.category?.slug ?? "sets"}`,
                 },
                 {
                   "@type": "ListItem",
                   position: 3,
                   name: productName,
-                  item: `https://www.rüzo.com/products/${product.slug}`,
+                  item: `https://www.xn--rzo-hoa.com/products/${product.slug}`,
                 },
               ],
             },

@@ -306,7 +306,7 @@ export function HomePage() {
   return (
     <div className="bg-[#FFFFFF]">
       <Seo
-        title="RÜZO | Beirut womenswear"
+        title="RÜZO | Beirut Womenswear"
         description="Shop RÜZO womenswear: satin sets, dresses, bottoms, tops, and outerwear designed for polished everyday dressing."
         path="/"
         image={storyImageUrl}
@@ -315,29 +315,29 @@ export function HomePage() {
           "@graph": [
             {
               "@type": "Organization",
-              "@id": "https://www.rüzo.com/#organization",
+              "@id": "https://www.xn--rzo-hoa.com/#organization",
               name: "RÜZO",
               alternateName: ["Rüzo", "rüzo"],
-              url: "https://www.rüzo.com/",
-              logo: "https://www.rüzo.com/site-icon-512.png",
+              url: "https://www.xn--rzo-hoa.com/",
+              logo: "https://www.xn--rzo-hoa.com/ruzo-logo-icon.png",
               sameAs: [INSTAGRAM_URL],
             },
             {
               "@type": "WebSite",
-              "@id": "https://www.rüzo.com/#website",
+              "@id": "https://www.xn--rzo-hoa.com/#website",
               name: "RÜZO",
               alternateName: ["Rüzo", "rüzo"],
-              url: "https://www.rüzo.com/",
+              url: "https://www.xn--rzo-hoa.com/",
               publisher: {
-                "@id": "https://www.rüzo.com/#organization",
+                "@id": "https://www.xn--rzo-hoa.com/#organization",
               },
             },
             {
               "@type": "ClothingStore",
-              "@id": "https://www.rüzo.com/#store",
+              "@id": "https://www.xn--rzo-hoa.com/#store",
               name: "RÜZO",
-              url: "https://www.rüzo.com/",
-              image: `https://www.rüzo.com${storyImageUrl}`,
+              url: "https://www.xn--rzo-hoa.com/",
+              image: `https://www.xn--rzo-hoa.com${storyImageUrl}`,
               priceRange: "$$",
             },
           ],

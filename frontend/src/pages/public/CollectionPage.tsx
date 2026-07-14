@@ -210,8 +210,8 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
   return (
     <>
       <Seo
-        title={`${collectionName} | RÜZO Activewear`}
-        description={`Shop ${collectionName} by RÜZO at rüzo. Women's activewear with sculpted support and refined everyday comfort.`}
+        title={`${collectionName} | RÜZO Womenswear`}
+        description={`Shop ${collectionName} by RÜZO: satin sets, fluid dresses, sharp tops, tailored bottoms, and outerwear.`}
         path={`/collections/${normalizedCategorySlug}`}
         jsonLd={{
           "@context": "https://schema.org",
@@ -219,9 +219,9 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
             {
               "@type": "CollectionPage",
               name: `${collectionName} | RÜZO`,
-              url: `https://www.rüzo.com/collections/${normalizedCategorySlug}`,
+              url: `https://www.xn--rzo-hoa.com/collections/${normalizedCategorySlug}`,
               isPartOf: {
-                "@id": "https://www.rüzo.com/#website",
+                "@id": "https://www.xn--rzo-hoa.com/#website",
               },
             },
             {
@@ -231,13 +231,13 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
                   "@type": "ListItem",
                   position: 1,
                   name: "Home",
-                  item: "https://www.rüzo.com/",
+                  item: "https://www.xn--rzo-hoa.com/",
                 },
                 {
                   "@type": "ListItem",
                   position: 2,
                   name: collectionName,
-                  item: `https://www.rüzo.com/collections/${normalizedCategorySlug}`,
+                  item: `https://www.xn--rzo-hoa.com/collections/${normalizedCategorySlug}`,
                 },
               ],
             },
@@ -247,7 +247,7 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
               itemListElement: categoryProducts.slice(0, 12).map((product, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
-                url: `https://www.rüzo.com/products/${product.slug}`,
+                url: `https://www.xn--rzo-hoa.com/products/${product.slug}`,
                 name: product.nameEn,
               })),
             },

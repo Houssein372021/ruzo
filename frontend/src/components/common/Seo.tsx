@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 
-const SITE_URL = "https://www.rüzo.com";
-const DEFAULT_TITLE = "RÜZO | Women's Activewear at rüzo";
+const SITE_URL = "https://www.xn--rzo-hoa.com";
+const DEFAULT_TITLE = "RÜZO | Beirut Womenswear";
 const DEFAULT_DESCRIPTION =
-  "Shop RÜZO activewear at rüzo: sculpting sets, sport bras, and leggings designed for confident everyday movement.";
-const DEFAULT_IMAGE = "/site-icon-512.png";
+  "Discover RÜZO, a Beirut-born womenswear label shaped around satin sets, fluid dresses, sharp tops, tailored bottoms, and outerwear made to move from day to night.";
+const DEFAULT_IMAGE = "/ruzo-logo-icon.png";
 
 type SeoProps = {
   title?: string;
@@ -41,11 +41,20 @@ export function Seo({
     upsertMeta("property", "og:type", type);
     upsertMeta("property", "og:url", canonicalUrl);
     upsertMeta("property", "og:image", imageUrl);
-    upsertMeta("property", "og:site_name", "Rüzo");
-    upsertMeta("name", "twitter:card", image === DEFAULT_IMAGE ? "summary" : "summary_large_image");
+    upsertMeta("property", "og:image:secure_url", imageUrl);
+    upsertMeta("property", "og:image:alt", "RÜZO");
+    upsertMeta("property", "og:site_name", "RÜZO");
+    upsertMeta("name", "twitter:card", "summary_large_image");
     upsertMeta("name", "twitter:title", title);
     upsertMeta("name", "twitter:description", description);
     upsertMeta("name", "twitter:image", imageUrl);
+    upsertMeta("name", "twitter:image:alt", "RÜZO");
+
+    if (image === DEFAULT_IMAGE) {
+      upsertMeta("property", "og:image:width", "1254");
+      upsertMeta("property", "og:image:height", "1254");
+    }
+
     upsertCanonical(canonicalUrl);
 
     const scriptId = "page-json-ld";

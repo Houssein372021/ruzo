@@ -17,25 +17,30 @@ spring:
   mail:
     host: ${SMTP_HOST:smtp.ionos.com}
     port: ${SMTP_PORT:587}
-    username: ${SMTP_USERNAME:noreply@rüzo.com}
+    username: ${SMTP_USERNAME:noreply@xn--rzo-hoa.com}
     password: ${SMTP_PASSWORD:}
     properties:
       mail:
         smtp:
           auth: true
+          connectiontimeout: 10000
+          timeout: 10000
+          writetimeout: 10000
           starttls:
             enable: true
             required: true
+          ssl:
+            trust: ${SMTP_HOST:smtp.ionos.com}
 
 server:
   port: ${SERVER_PORT:8080}
 
 smtp:
-  sender-email: ${SMTP_SENDER_EMAIL:noreply@rüzo.com}
+  sender-email: ${SMTP_SENDER_EMAIL:noreply@xn--rzo-hoa.com}
   sender-name: ${SMTP_SENDER_NAME:RÜZO}
 
 site:
-  owner-email: ${SITE_OWNER_EMAIL:housseinghannoum@803gmail.com}
+  owner-email: ${SITE_OWNER_EMAIL:noreply@xn--rzo-hoa.com}
   public-url: ${SITE_PUBLIC_URL:https://www.rüzo.com}
 
 ruzo:

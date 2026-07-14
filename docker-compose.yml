@@ -38,11 +38,11 @@ services:
       RUZO_UPLOADS_DIRECTORY: /app/uploads
       SMTP_HOST: ${SMTP_HOST:-smtp.ionos.com}
       SMTP_PORT: ${SMTP_PORT:-587}
-      SMTP_USERNAME: ${SMTP_USERNAME:-noreply@rüzo.com}
+      SMTP_USERNAME: ${SMTP_USERNAME:-noreply@xn--rzo-hoa.com}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
-      SMTP_SENDER_EMAIL: ${SMTP_SENDER_EMAIL:-noreply@rüzo.com}
+      SMTP_SENDER_EMAIL: ${SMTP_SENDER_EMAIL:-noreply@xn--rzo-hoa.com}
       SMTP_SENDER_NAME: ${SMTP_SENDER_NAME:-RÜZO}
-      SITE_OWNER_EMAIL: ${SITE_OWNER_EMAIL:-housseinghannoum@803gmail.com}
+      SITE_OWNER_EMAIL: ${SITE_OWNER_EMAIL:-noreply@xn--rzo-hoa.com}
       SITE_PUBLIC_URL: ${SITE_PUBLIC_URL:-http://localhost:25173}
 
     ports:

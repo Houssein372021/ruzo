@@ -121,6 +121,7 @@ public class EmailNotificationService {
       helper.setSubject(subject);
       helper.setText(textContent, htmlContent);
       mailSender.send(message);
+      LOGGER.info("Sent SMTP email '{}' to {}", subject, recipient.email());
     } catch (MessagingException exception) {
       throw new IllegalStateException("Failed to build SMTP email message", exception);
     } catch (java.io.UnsupportedEncodingException exception) {

@@ -309,7 +309,6 @@ export function HomePage() {
         title="RÜZO | Beirut Womenswear"
         description="Shop RÜZO womenswear: satin sets, dresses, bottoms, tops, and outerwear designed for polished everyday dressing."
         path="/"
-        image={storyImageUrl}
         jsonLd={{
           "@context": "https://schema.org",
           "@graph": [
@@ -319,7 +318,7 @@ export function HomePage() {
               name: "RÜZO",
               alternateName: ["Rüzo", "rüzo"],
               url: "https://www.xn--rzo-hoa.com/",
-              logo: "https://www.xn--rzo-hoa.com/ruzo-logo-icon.png",
+              logo: "https://www.xn--rzo-hoa.com/ruzo-share-logo.jpeg",
               sameAs: [INSTAGRAM_URL],
             },
             {

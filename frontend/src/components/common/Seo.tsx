@@ -4,7 +4,7 @@ const SITE_URL = "https://www.xn--rzo-hoa.com";
 const DEFAULT_TITLE = "RÜZO | Beirut Womenswear";
 const DEFAULT_DESCRIPTION =
   "Discover RÜZO, a Beirut-born womenswear label shaped around satin sets, fluid dresses, sharp tops, tailored bottoms, and outerwear made to move from day to night.";
-const DEFAULT_IMAGE = "/ruzo-logo-icon.png";
+const DEFAULT_IMAGE = "/ruzo-share-logo.jpeg";
 
 type SeoProps = {
   title?: string;
@@ -42,6 +42,7 @@ export function Seo({
     upsertMeta("property", "og:url", canonicalUrl);
     upsertMeta("property", "og:image", imageUrl);
     upsertMeta("property", "og:image:secure_url", imageUrl);
+    upsertMeta("property", "og:image:type", imageUrl.endsWith(".jpeg") || imageUrl.endsWith(".jpg") ? "image/jpeg" : "image/webp");
     upsertMeta("property", "og:image:alt", "RÜZO");
     upsertMeta("property", "og:site_name", "RÜZO");
     upsertMeta("name", "twitter:card", "summary_large_image");
@@ -51,8 +52,8 @@ export function Seo({
     upsertMeta("name", "twitter:image:alt", "RÜZO");
 
     if (image === DEFAULT_IMAGE) {
-      upsertMeta("property", "og:image:width", "1254");
-      upsertMeta("property", "og:image:height", "1254");
+      upsertMeta("property", "og:image:width", "4500");
+      upsertMeta("property", "og:image:height", "4500");
     }
 
     upsertCanonical(canonicalUrl);

@@ -219,7 +219,7 @@ export function ProductDetailPage() {
   const productImage = getProductImage(product);
   const productImageUrl = productImage
     ? new URL(productImage, "https://www.xn--rzo-hoa.com").toString()
-    : "https://www.xn--rzo-hoa.com/ruzo-logo-icon.png";
+    : "https://www.xn--rzo-hoa.com/ruzo-share-logo.jpeg";
   const productDescription =
     description || "Modern RÜZO womenswear with a refined everyday finish.";
 

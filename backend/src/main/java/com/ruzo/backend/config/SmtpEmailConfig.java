@@ -22,7 +22,7 @@ public class SmtpEmailConfig {
 
     public SmtpEmailConfig(
             @Value("${spring.mail.host:smtp.ionos.com}") String host,
-            @Value("${spring.mail.username:noreply@xn--rzo-hoa.com}") String username,
+            @Value("${spring.mail.username:noreply@rüzo.com}") String username,
             @Value("${spring.mail.password:}") String password,
             @Value("${smtp.sender-email:noreply@xn--rzo-hoa.com}") String senderEmail,
             @Value("${smtp.sender-name:RÜZO}") String senderName,

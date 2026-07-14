@@ -45,7 +45,10 @@ services:
       RUZO_UPLOADS_DIRECTORY: /app/uploads
       SMTP_HOST: ${SMTP_HOST:-smtp.ionos.com}
       SMTP_PORT: ${SMTP_PORT:-587}
-      SMTP_USERNAME: ${SMTP_USERNAME:-noreply@xn--rzo-hoa.com}
+      SMTP_SSL_ENABLE: ${SMTP_SSL_ENABLE:-false}
+      SMTP_STARTTLS_ENABLE: ${SMTP_STARTTLS_ENABLE:-true}
+      SMTP_STARTTLS_REQUIRED: ${SMTP_STARTTLS_REQUIRED:-true}
+      SMTP_USERNAME: ${SMTP_USERNAME:-noreply@rüzo.com}
       SMTP_PASSWORD: ${SMTP_PASSWORD}
       SMTP_SENDER_EMAIL: ${SMTP_SENDER_EMAIL:-noreply@xn--rzo-hoa.com}
       SMTP_SENDER_NAME: ${SMTP_SENDER_NAME:-RÜZO}

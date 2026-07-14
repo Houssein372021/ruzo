@@ -17,7 +17,7 @@ spring:
   mail:
     host: ${SMTP_HOST:smtp.ionos.com}
     port: ${SMTP_PORT:587}
-    username: ${SMTP_USERNAME:noreply@xn--rzo-hoa.com}
+    username: ${SMTP_USERNAME:noreply@rüzo.com}
     password: ${SMTP_PASSWORD:}
     properties:
       mail:
@@ -27,9 +27,10 @@ spring:
           timeout: 10000
           writetimeout: 10000
           starttls:
-            enable: true
-            required: true
+            enable: ${SMTP_STARTTLS_ENABLE:true}
+            required: ${SMTP_STARTTLS_REQUIRED:true}
           ssl:
+            enable: ${SMTP_SSL_ENABLE:false}
             trust: ${SMTP_HOST:smtp.ionos.com}
 
 server:

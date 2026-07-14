@@ -177,24 +177,24 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html>
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;">
             <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:28px;text-align:center;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:28px;text-align:center;">
                 <div style="font-size:26px;letter-spacing:10px;font-weight:700;">RÜZO</div>
               </div>
-              <div style="background:#ffffff;padding:32px;border:1px solid #ded2c5;">
-                <p style="margin:0 0 8px;color:#8b725f;letter-spacing:3px;text-transform:uppercase;font-size:12px;">Order confirmation</p>
+              <div style="background:#FFFFFF;padding:32px;border:1px solid #E6E6E6;">
+                <p style="margin:0 0 8px;color:#6B0F1A;letter-spacing:3px;text-transform:uppercase;font-size:12px;">Order confirmation</p>
                 <h1 style="margin:0 0 20px;font-size:28px;font-weight:400;">Thank you, %s.</h1>
-                <p style="line-height:1.7;color:#5c473c;">Thank you for your order. We'll notify you when your order is on the way.</p>
-                <div style="margin:24px 0;padding:18px;background:#fbf7f1;border:1px solid #ded2c5;">
+                <p style="line-height:1.7;color:#080808;">Thank you for your order. We'll notify you when your order is on the way.</p>
+                <div style="margin:24px 0;padding:18px;background:#FFFFFF;border:1px solid #E6E6E6;">
                   <strong>Order number:</strong> %s
                 </div>
                 <table style="width:100%%;border-collapse:collapse;margin-top:24px;">
                   <thead>
                     <tr>
-                      <th align="left" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">Item</th>
-                      <th align="center" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">Qty</th>
-                      <th align="right" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">Total</th>
+                      <th align="left" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">Item</th>
+                      <th align="center" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">Qty</th>
+                      <th align="right" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">Total</th>
                     </tr>
                   </thead>
                   <tbody>%s</tbody>
@@ -202,8 +202,8 @@ public class EmailNotificationService {
                 <div style="margin-top:24px;text-align:right;font-size:18px;">
                   <strong>Total: %s</strong>
                 </div>
-                <div style="margin-top:28px;padding-top:20px;border-top:1px solid #ded2c5;">
-                  <p style="margin:0 0 8px;color:#8b725f;font-size:12px;text-transform:uppercase;letter-spacing:2px;">Delivery address</p>
+                <div style="margin-top:28px;padding-top:20px;border-top:1px solid #E6E6E6;">
+                  <p style="margin:0 0 8px;color:#6B0F1A;font-size:12px;text-transform:uppercase;letter-spacing:2px;">Delivery address</p>
                   <p style="margin:0;line-height:1.7;">%s</p>
                 </div>
               </div>
@@ -227,24 +227,24 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html lang="ar" dir="rtl">
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;direction:rtl;text-align:right;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;direction:rtl;text-align:right;">
             <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:28px;text-align:center;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:28px;text-align:center;">
                 <div style="font-size:26px;letter-spacing:10px;font-weight:700;">RÜZO</div>
               </div>
-              <div style="background:#ffffff;padding:32px;border:1px solid #ded2c5;">
-                <p style="margin:0 0 8px;color:#8b725f;letter-spacing:3px;text-transform:uppercase;font-size:12px;">تأكيد الطلب</p>
+              <div style="background:#FFFFFF;padding:32px;border:1px solid #E6E6E6;">
+                <p style="margin:0 0 8px;color:#6B0F1A;letter-spacing:3px;text-transform:uppercase;font-size:12px;">تأكيد الطلب</p>
                 <h1 style="margin:0 0 20px;font-size:28px;font-weight:400;">شكرا لك، %s.</h1>
-                <p style="line-height:1.7;color:#5c473c;">شكرا لطلبك. سنخبرك عندما يكون طلبك في الطريق إليك.</p>
-                <div style="margin:24px 0;padding:18px;background:#fbf7f1;border:1px solid #ded2c5;">
+                <p style="line-height:1.7;color:#080808;">شكرا لطلبك. سنخبرك عندما يكون طلبك في الطريق إليك.</p>
+                <div style="margin:24px 0;padding:18px;background:#FFFFFF;border:1px solid #E6E6E6;">
                   <strong>رقم الطلب:</strong> %s
                 </div>
                 <table style="width:100%%;border-collapse:collapse;margin-top:24px;">
                   <thead>
                     <tr>
-                      <th align="right" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">المنتج</th>
-                      <th align="center" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">الكمية</th>
-                      <th align="left" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">الإجمالي</th>
+                      <th align="right" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">المنتج</th>
+                      <th align="center" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">الكمية</th>
+                      <th align="left" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">الإجمالي</th>
                     </tr>
                   </thead>
                   <tbody>%s</tbody>
@@ -252,8 +252,8 @@ public class EmailNotificationService {
                 <div style="margin-top:24px;text-align:left;font-size:18px;">
                   <strong>الإجمالي: %s</strong>
                 </div>
-                <div style="margin-top:28px;padding-top:20px;border-top:1px solid #ded2c5;">
-                  <p style="margin:0 0 8px;color:#8b725f;font-size:12px;text-transform:uppercase;letter-spacing:2px;">عنوان التوصيل</p>
+                <div style="margin-top:28px;padding-top:20px;border-top:1px solid #E6E6E6;">
+                  <p style="margin:0 0 8px;color:#6B0F1A;font-size:12px;text-transform:uppercase;letter-spacing:2px;">عنوان التوصيل</p>
                   <p style="margin:0;line-height:1.7;">%s</p>
                 </div>
               </div>
@@ -282,20 +282,20 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html>
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;">
             <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:28px;text-align:center;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:28px;text-align:center;">
                 <div style="font-size:26px;letter-spacing:10px;font-weight:700;">RÜZO</div>
               </div>
-              <div style="background:#ffffff;padding:32px;border:1px solid #ded2c5;">
-                <p style="margin:0 0 8px;color:#8b725f;letter-spacing:3px;text-transform:uppercase;font-size:12px;">Verified review</p>
+              <div style="background:#FFFFFF;padding:32px;border:1px solid #E6E6E6;">
+                <p style="margin:0 0 8px;color:#6B0F1A;letter-spacing:3px;text-transform:uppercase;font-size:12px;">Verified review</p>
                 <h1 style="margin:0 0 20px;font-size:28px;font-weight:400;">How did your RÜZO pieces feel?</h1>
-                <p style="line-height:1.7;color:#5c473c;">Hi %s, your order has been delivered. We would love to hear your experience with the pieces you purchased.</p>
-                <div style="margin:24px 0;padding:18px;background:#fbf7f1;border:1px solid #ded2c5;">
+                <p style="line-height:1.7;color:#080808;">Hi %s, your order has been delivered. We would love to hear your experience with the pieces you purchased.</p>
+                <div style="margin:24px 0;padding:18px;background:#FFFFFF;border:1px solid #E6E6E6;">
                   <strong>Order number:</strong> %s
                 </div>
-                <a href="%s" style="display:inline-block;background:#4b2e24;color:#f8f4ec;text-decoration:none;padding:14px 22px;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;">Write a review</a>
-                <p style="margin:24px 0 0;line-height:1.7;color:#5c473c;">Your review will appear on the site after admin approval.</p>
+                <a href="%s" style="display:inline-block;background:#6B0F1A;color:#FFFFFF;text-decoration:none;padding:14px 22px;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;">Write a review</a>
+                <p style="margin:24px 0 0;line-height:1.7;color:#080808;">Your review will appear on the site after admin approval.</p>
               </div>
             </div>
           </body>
@@ -312,20 +312,20 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html lang="ar" dir="rtl">
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;direction:rtl;text-align:right;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;direction:rtl;text-align:right;">
             <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:28px;text-align:center;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:28px;text-align:center;">
                 <div style="font-size:26px;letter-spacing:10px;font-weight:700;">RÜZO</div>
               </div>
-              <div style="background:#ffffff;padding:32px;border:1px solid #ded2c5;">
-                <p style="margin:0 0 8px;color:#8b725f;letter-spacing:3px;text-transform:uppercase;font-size:12px;">تقييم مؤكد</p>
+              <div style="background:#FFFFFF;padding:32px;border:1px solid #E6E6E6;">
+                <p style="margin:0 0 8px;color:#6B0F1A;letter-spacing:3px;text-transform:uppercase;font-size:12px;">تقييم مؤكد</p>
                 <h1 style="margin:0 0 20px;font-size:28px;font-weight:400;">كيف كانت تجربتك مع قطع RÜZO؟</h1>
-                <p style="line-height:1.7;color:#5c473c;">مرحبا %s، تم تسليم طلبك. يسعدنا أن تشاركي تجربتك مع القطع التي اشتريتها.</p>
-                <div style="margin:24px 0;padding:18px;background:#fbf7f1;border:1px solid #ded2c5;">
+                <p style="line-height:1.7;color:#080808;">مرحبا %s، تم تسليم طلبك. يسعدنا أن تشاركي تجربتك مع القطع التي اشتريتها.</p>
+                <div style="margin:24px 0;padding:18px;background:#FFFFFF;border:1px solid #E6E6E6;">
                   <strong>رقم الطلب:</strong> %s
                 </div>
-                <a href="%s" style="display:inline-block;background:#4b2e24;color:#f8f4ec;text-decoration:none;padding:14px 22px;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;">اكتبي تقييما</a>
-                <p style="margin:24px 0 0;line-height:1.7;color:#5c473c;">سيظهر تقييمك على الموقع بعد موافقة الإدارة.</p>
+                <a href="%s" style="display:inline-block;background:#6B0F1A;color:#FFFFFF;text-decoration:none;padding:14px 22px;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;">اكتبي تقييما</a>
+                <p style="margin:24px 0 0;line-height:1.7;color:#080808;">سيظهر تقييمك على الموقع بعد موافقة الإدارة.</p>
               </div>
             </div>
           </body>
@@ -429,16 +429,16 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html>
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;">
             <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:28px;text-align:center;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:28px;text-align:center;">
                 <div style="font-size:26px;letter-spacing:10px;font-weight:700;">RÜZO</div>
               </div>
-              <div style="background:#ffffff;padding:32px;border:1px solid #ded2c5;">
-                <p style="margin:0 0 8px;color:#8b725f;letter-spacing:3px;text-transform:uppercase;font-size:12px;">Shipping update</p>
+              <div style="background:#FFFFFF;padding:32px;border:1px solid #E6E6E6;">
+                <p style="margin:0 0 8px;color:#6B0F1A;letter-spacing:3px;text-transform:uppercase;font-size:12px;">Shipping update</p>
                 <h1 style="margin:0 0 20px;font-size:28px;font-weight:400;">Your order is on the way.</h1>
-                <p style="line-height:1.7;color:#5c473c;">Good news, %s. Your RÜZO order has been sent to delivery.</p>
-                <div style="margin:24px 0;padding:18px;background:#fbf7f1;border:1px solid #ded2c5;">
+                <p style="line-height:1.7;color:#080808;">Good news, %s. Your RÜZO order has been sent to delivery.</p>
+                <div style="margin:24px 0;padding:18px;background:#FFFFFF;border:1px solid #E6E6E6;">
                   <strong>Order number:</strong> %s
                 </div>
                 <table style="width:100%%;border-collapse:collapse;">
@@ -446,7 +446,7 @@ public class EmailNotificationService {
                   %s
                   %s
                 </table>
-                <p style="margin:28px 0 0;line-height:1.7;color:#5c473c;">We'll contact you if any additional delivery details are needed.</p>
+                <p style="margin:28px 0 0;line-height:1.7;color:#080808;">We'll contact you if any additional delivery details are needed.</p>
               </div>
             </div>
           </body>
@@ -464,16 +464,16 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html lang="ar" dir="rtl">
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;direction:rtl;text-align:right;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;direction:rtl;text-align:right;">
             <div style="max-width:640px;margin:0 auto;padding:32px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:28px;text-align:center;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:28px;text-align:center;">
                 <div style="font-size:26px;letter-spacing:10px;font-weight:700;">RÜZO</div>
               </div>
-              <div style="background:#ffffff;padding:32px;border:1px solid #ded2c5;">
-                <p style="margin:0 0 8px;color:#8b725f;letter-spacing:3px;text-transform:uppercase;font-size:12px;">تحديث التوصيل</p>
+              <div style="background:#FFFFFF;padding:32px;border:1px solid #E6E6E6;">
+                <p style="margin:0 0 8px;color:#6B0F1A;letter-spacing:3px;text-transform:uppercase;font-size:12px;">تحديث التوصيل</p>
                 <h1 style="margin:0 0 20px;font-size:28px;font-weight:400;">طلبك في الطريق إليك.</h1>
-                <p style="line-height:1.7;color:#5c473c;">خبر جميل، %s. تم إرسال طلبك من RÜZO إلى التوصيل.</p>
-                <div style="margin:24px 0;padding:18px;background:#fbf7f1;border:1px solid #ded2c5;">
+                <p style="line-height:1.7;color:#080808;">خبر جميل، %s. تم إرسال طلبك من RÜZO إلى التوصيل.</p>
+                <div style="margin:24px 0;padding:18px;background:#FFFFFF;border:1px solid #E6E6E6;">
                   <strong>رقم الطلب:</strong> %s
                 </div>
                 <table style="width:100%%;border-collapse:collapse;">
@@ -481,7 +481,7 @@ public class EmailNotificationService {
                   %s
                   %s
                 </table>
-                <p style="margin:28px 0 0;line-height:1.7;color:#5c473c;">سنتواصل معك إذا احتجنا إلى أي تفاصيل إضافية للتسليم.</p>
+                <p style="margin:28px 0 0;line-height:1.7;color:#080808;">سنتواصل معك إذا احتجنا إلى أي تفاصيل إضافية للتسليم.</p>
               </div>
             </div>
           </body>
@@ -507,21 +507,21 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html>
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;">
             <div style="max-width:720px;margin:0 auto;padding:28px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:24px;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:24px;">
                 <div style="font-size:24px;letter-spacing:10px;font-weight:700;">RÜZO</div>
-                <p style="margin:14px 0 0;color:#eadfce;">New order received</p>
+                <p style="margin:14px 0 0;color:#FFFFFF;">New order received</p>
               </div>
-              <div style="background:#ffffff;padding:28px;border:1px solid #ded2c5;">
+              <div style="background:#FFFFFF;padding:28px;border:1px solid #E6E6E6;">
                 %s
                 <h2 style="margin:28px 0 12px;font-size:18px;">Products</h2>
                 <table style="width:100%%;border-collapse:collapse;">
                   <thead>
                     <tr>
-                      <th align="left" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">Item</th>
-                      <th align="center" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">Qty</th>
-                      <th align="right" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">Total</th>
+                      <th align="left" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">Item</th>
+                      <th align="center" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">Qty</th>
+                      <th align="right" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">Total</th>
                     </tr>
                   </thead>
                   <tbody>%s</tbody>
@@ -548,21 +548,21 @@ public class EmailNotificationService {
     return """
         <!doctype html>
         <html lang="ar" dir="rtl">
-          <body style="margin:0;background:#f8f4ec;font-family:Arial,sans-serif;color:#2b1d17;direction:rtl;text-align:right;">
+          <body style="margin:0;background:#FFFFFF;font-family:Arial,sans-serif;color:#080808;direction:rtl;text-align:right;">
             <div style="max-width:720px;margin:0 auto;padding:28px 20px;">
-              <div style="background:#4b2e24;color:#f8f4ec;padding:24px;">
+              <div style="background:#6B0F1A;color:#FFFFFF;padding:24px;">
                 <div style="font-size:24px;letter-spacing:10px;font-weight:700;">RÜZO</div>
-                <p style="margin:14px 0 0;color:#eadfce;">تم استلام طلب جديد</p>
+                <p style="margin:14px 0 0;color:#FFFFFF;">تم استلام طلب جديد</p>
               </div>
-              <div style="background:#ffffff;padding:28px;border:1px solid #ded2c5;">
+              <div style="background:#FFFFFF;padding:28px;border:1px solid #E6E6E6;">
                 %s
                 <h2 style="margin:28px 0 12px;font-size:18px;">المنتجات</h2>
                 <table style="width:100%%;border-collapse:collapse;">
                   <thead>
                     <tr>
-                      <th align="right" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">المنتج</th>
-                      <th align="center" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">الكمية</th>
-                      <th align="left" style="padding:10px 0;border-bottom:1px solid #ded2c5;color:#8b725f;font-size:12px;text-transform:uppercase;">الإجمالي</th>
+                      <th align="right" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">المنتج</th>
+                      <th align="center" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">الكمية</th>
+                      <th align="left" style="padding:10px 0;border-bottom:1px solid #E6E6E6;color:#6B0F1A;font-size:12px;text-transform:uppercase;">الإجمالي</th>
                     </tr>
                   </thead>
                   <tbody>%s</tbody>
@@ -616,8 +616,8 @@ public class EmailNotificationService {
 
     return """
         <tr>
-          <td style="width:180px;padding:8px 0;color:#8b725f;font-size:12px;text-transform:uppercase;letter-spacing:2px;">%s</td>
-          <td style="padding:8px 0;color:#2b1d17;">%s</td>
+          <td style="width:180px;padding:8px 0;color:#6B0F1A;font-size:12px;text-transform:uppercase;letter-spacing:2px;">%s</td>
+          <td style="padding:8px 0;color:#080808;">%s</td>
         </tr>
         """
         .formatted(escape(label), escape(value));
@@ -629,12 +629,12 @@ public class EmailNotificationService {
 
     return """
         <tr>
-          <td align="%s" style="padding:14px 0;border-bottom:1px solid #eee3d7;">
+          <td align="%s" style="padding:14px 0;border-bottom:1px solid #E6E6E6;">
             <strong>%s</strong>
-            <div style="margin-top:4px;color:#8b725f;font-size:13px;">%s</div>
+            <div style="margin-top:4px;color:#6B0F1A;font-size:13px;">%s</div>
           </td>
-          <td align="center" style="padding:14px 0;border-bottom:1px solid #eee3d7;">%d</td>
-          <td align="%s" style="padding:14px 0;border-bottom:1px solid #eee3d7;">%s</td>
+          <td align="center" style="padding:14px 0;border-bottom:1px solid #E6E6E6;">%d</td>
+          <td align="%s" style="padding:14px 0;border-bottom:1px solid #E6E6E6;">%s</td>
         </tr>
         """.formatted(
         productAlign,

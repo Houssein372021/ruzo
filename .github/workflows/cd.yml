@@ -49,8 +49,15 @@ jobs:
             PROJECT_PATH="${{ secrets.VPS_PROJECT_PATH || '/opt/ruzo' }}"
 
             cd "$PROJECT_PATH"
-            git checkout main
             git fetch origin main
-            git pull --ff-only origin main
+            git checkout main
+
+            if ! git diff --quiet || ! git diff --cached --quiet; then
+              echo "Local tracked changes detected on VPS. Stashing them before deployment."
+              git status --short
+              git stash push --message "cd-auto-stash-$(date -u +%Y%m%dT%H%M%SZ)"
+            fi
+
+            git reset --hard origin/main
             docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build --remove-orphans
             docker image prune -f

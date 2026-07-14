@@ -76,10 +76,10 @@ export function Header() {
         {
           title: isArabic ? "قطع مختارة" : "Featured pieces",
           links: [
-            { to: "/products/metallic-magenta-set", label: "Metallic Magenta Set" },
-            { to: "/products/black-midi-dress", label: "Black Midi Dress" },
-            { to: "/products/lemon-satin-set", label: "Lemon Satin Set" },
-            { to: "/products/red-halter-dress", label: "Red Halter Dress" },
+            { to: "/products/the-piping-set", label: "The Piping Set" },
+            { to: "/products/the-nescafe-column-dress", label: "The Nescafe Column Dress" },
+            { to: "/products/the-bisou-set", label: "The Bisou Set" },
+            { to: "/products/the-positano-3-pieces-set", label: "The Positano 3 Pieces Set" },
           ],
         },
       ],

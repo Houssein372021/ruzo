@@ -249,6 +249,7 @@ public class AdminController {
     }
 
     @PatchMapping("/orders/{id}/status")
+    @Transactional
     public ResponseEntity<AdminOrderResponse> updateOrderStatus(
             @PathVariable @NonNull UUID id,
             @RequestBody OrderStatusRequest request) {
@@ -265,6 +266,11 @@ public class AdminController {
                     if (order.getReviewToken() == null || order.getReviewToken().isBlank()) {
                         order.setReviewToken(UUID.randomUUID().toString().replace("-", ""));
                     }
+
+                    if (previousStatus != OrderStatus.DELIVERED && nextStatus == OrderStatus.DELIVERED) {
+                        decrementStockForDeliveredOrder(order);
+                    }
+
                     order.setStatus(nextStatus);
                     Order savedOrder = orderRepository.save(order);
 
@@ -280,6 +286,48 @@ public class AdminController {
                     return ResponseEntity.ok(AdminOrderResponse.from(savedOrder));
                 })
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    private void decrementStockForDeliveredOrder(Order order) {
+        if (order.getItems() == null || order.getItems().isEmpty()) {
+            return;
+        }
+
+        for (OrderItem item : order.getItems()) {
+            if (item.getProduct() == null || item.getProduct().getId() == null) {
+                LOGGER.warn("Cannot decrement stock for order item {} without product", item.getId());
+                continue;
+            }
+
+            String color = firstNonBlank(item.getColor(), item.getColorName());
+            String size = item.getSize();
+            if (color.isBlank() || size == null || size.isBlank()) {
+                LOGGER.warn("Cannot decrement stock for order item {} without color or size", item.getId());
+                continue;
+            }
+
+            ProductVariant variant = productVariantRepository
+                    .findFirstByProduct_IdAndColorIgnoreCaseAndSizeIgnoreCase(
+                            item.getProduct().getId(),
+                            color,
+                            size)
+                    .orElse(null);
+
+            if (variant == null) {
+                LOGGER.warn(
+                        "Cannot decrement stock for order item {} because variant was not found: product={}, color={}, size={}",
+                        item.getId(),
+                        item.getProduct().getId(),
+                        color,
+                        size);
+                continue;
+            }
+
+            int currentStock = variant.getStock() == null ? 0 : variant.getStock();
+            int quantity = item.getQuantity() == null || item.getQuantity() < 1 ? 1 : item.getQuantity();
+            variant.setStock(Math.max(currentStock - quantity, 0));
+            productVariantRepository.save(variant);
+        }
     }
 
     @GetMapping("/customers")

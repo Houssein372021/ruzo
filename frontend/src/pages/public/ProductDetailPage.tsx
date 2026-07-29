@@ -24,13 +24,40 @@ import {
   uniqueValues,
 } from "../../utils/product";
 
-const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
+const SIZE_ORDER = ["XS", "S", "M", "L"];
 
 const getSizeRank = (size: string) => {
   const normalizedSize = size.trim().toUpperCase();
   const sizeIndex = SIZE_ORDER.indexOf(normalizedSize);
 
   return sizeIndex === -1 ? Number.MAX_SAFE_INTEGER : sizeIndex;
+};
+
+const normalizeSize = (size: string) => size.trim().toUpperCase();
+
+const getDisplayedSizes = (language: string) => {
+  const sizes = [...SIZE_ORDER];
+
+  return language === "ar" ? sizes.reverse() : sizes;
+};
+
+const getVariantForSize = (
+  variants: ProductVariant[],
+  color: string,
+  size: string,
+) =>
+  variants.find(
+    (variant) =>
+      variant.color === color &&
+      normalizeSize(variant.size) === normalizeSize(size),
+  );
+
+const getFirstAvailableVariant = (variants: ProductVariant[], color?: string) => {
+  const eligibleVariants = color ? variants.filter((variant) => variant.color === color) : variants;
+
+  return [...eligibleVariants]
+    .sort((variantA, variantB) => getSizeRank(variantA.size) - getSizeRank(variantB.size))
+    .find((variant) => variant.stock > 0);
 };
 
 export function ProductDetailPage() {
@@ -61,7 +88,7 @@ export function ProductDetailPage() {
           return;
         }
 
-        const firstVariant = productData.variants.find((variant) => variant.stock > 0) ?? productData.variants[0];
+        const firstVariant = getFirstAvailableVariant(productData.variants) ?? productData.variants[0];
         setProduct(productData);
         setAllProducts(productsData);
         setSelectedImage(firstVariant?.imageUrl || getProductImage(productData));
@@ -84,32 +111,7 @@ export function ProductDetailPage() {
     [product],
   );
 
-  const sizes = useMemo(() => {
-    const availableSizes = uniqueValues(
-      product?.variants
-        .filter(
-          (variant) =>
-            (!selectedColor || variant.color === selectedColor) &&
-            variant.stock > 0,
-        )
-        .map((variant) => variant.size) ?? [],
-    );
-
-    const sortedSizes = [...availableSizes].sort((sizeA, sizeB) => {
-      const normalizedA = sizeA.trim().toUpperCase();
-      const normalizedB = sizeB.trim().toUpperCase();
-      const rankA = getSizeRank(sizeA);
-      const rankB = getSizeRank(sizeB);
-
-      if (rankA !== rankB) {
-        return rankA - rankB;
-      }
-
-      return normalizedA.localeCompare(normalizedB);
-    });
-
-    return language === "ar" ? sortedSizes.reverse() : sortedSizes;
-  }, [language, product, selectedColor]);
+  const sizes = useMemo(() => getDisplayedSizes(language), [language]);
 
   const selectedVariant = useMemo<ProductVariant | undefined>(
     () =>
@@ -514,13 +516,12 @@ export function ProductDetailPage() {
                       }`}
                       style={{ backgroundColor: variant?.colorHex ?? color }}
                       onClick={() => {
-                        const firstAvailableVariant =
-                          product.variants.find((item) => item.color === color && item.stock > 0) ??
-                          product.variants.find((item) => item.color === color);
+                        const firstAvailableVariant = getFirstAvailableVariant(product.variants, color);
+                        const fallbackVariant = product.variants.find((item) => item.color === color);
                         setSelectedColor(color);
                         setSelectedSize(firstAvailableVariant?.size ?? "");
                         setQuantity(1);
-                        scrollToMedia(firstAvailableVariant?.imageUrl ?? variant?.imageUrl ?? selectedImage);
+                        scrollToMedia(firstAvailableVariant?.imageUrl ?? fallbackVariant?.imageUrl ?? variant?.imageUrl ?? selectedImage);
                       }}
                     />
                   );
@@ -533,23 +534,45 @@ export function ProductDetailPage() {
                 {t("size")}
               </p>
               <div dir="ltr" className="flex flex-row flex-wrap gap-2">
-                {sizes.map((sizeOption) => (
-                  <button
-                    key={sizeOption}
-                    type="button"
-                    className={`h-11 min-w-11 border px-5 text-sm transition ${
-                      selectedSize === sizeOption
-                        ? "border-[#6B0F1A] bg-[#6B0F1A] text-[#FFFFFF]"
-                        : "border-[#080808]/14 hover:border-[#6B0F1A]"
-                    }`}
-                    onClick={() => {
-                      setSelectedSize(sizeOption);
-                      setQuantity(1);
-                    }}
-                  >
-                    {sizeOption}
-                  </button>
-                ))}
+                {sizes.map((sizeOption) => {
+                  const sizeVariant = getVariantForSize(product.variants, selectedColor, sizeOption);
+                  const isAvailable = Boolean(sizeVariant && sizeVariant.stock > 0);
+                  const isSelected = normalizeSize(selectedSize) === normalizeSize(sizeOption);
+
+                  return (
+                    <button
+                      key={sizeOption}
+                      type="button"
+                      disabled={!isAvailable}
+                      aria-disabled={!isAvailable}
+                      aria-label={
+                        isAvailable
+                          ? sizeOption
+                          : `${sizeOption} - out of stock`
+                      }
+                      title={isAvailable ? sizeOption : "Out of stock"}
+                      className={`relative h-11 min-w-11 overflow-hidden border px-5 text-sm transition ${
+                        isSelected && isAvailable
+                          ? "border-[#6B0F1A] bg-[#6B0F1A] text-[#FFFFFF]"
+                          : isAvailable
+                            ? "border-[#080808]/14 hover:border-[#6B0F1A]"
+                            : "cursor-not-allowed border-[#080808]/10 bg-[#F7F4F1] text-[#080808]/34"
+                      }`}
+                      onClick={() => {
+                        if (!isAvailable) {
+                          return;
+                        }
+                        setSelectedSize(sizeOption);
+                        setQuantity(1);
+                      }}
+                    >
+                      <span className={!isAvailable ? "line-through" : undefined}>{sizeOption}</span>
+                      {!isAvailable ? (
+                        <span className="pointer-events-none absolute left-1/2 top-1/2 h-px w-[145%] -translate-x-1/2 -translate-y-1/2 rotate-[-28deg] bg-[#080808]/24" />
+                      ) : null}
+                    </button>
+                  );
+                })}
               </div>
               
             </div>

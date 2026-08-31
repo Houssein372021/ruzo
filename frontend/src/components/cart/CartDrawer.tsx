@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingBag, X } from "lucide-react";
+import { productsApi } from "../../api/products";
 import { useI18n } from "../../hooks/useI18n";
 import { selectCartTotals, useCartStore } from "../../store/cartStore";
+import { hasCartItemSale, syncCartItemsWithProducts } from "../../utils/cart";
 import {
   DELIVERY_FEE,
   FREE_DELIVERY_THRESHOLD,
@@ -19,11 +22,40 @@ export function CartDrawer() {
   const closeCart = useCartStore((state) => state.closeCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const replaceItems = useCartStore((state) => state.replaceItems);
   const { quantity, subtotal } = selectCartTotals(items);
   const deliveryFee = getDeliveryFee(subtotal);
   const remaining = getFreeDeliveryRemaining(subtotal);
   const total = subtotal + deliveryFee;
   const freeDeliveryProgress = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
+
+  useEffect(() => {
+    if (!isOpen || items.length === 0) {
+      return;
+    }
+
+    let isMounted = true;
+
+    productsApi
+      .getAll()
+      .then((products) => {
+        if (!isMounted) {
+          return;
+        }
+
+        const syncedItems = syncCartItemsWithProducts(items, products);
+        if (JSON.stringify(syncedItems) !== JSON.stringify(items)) {
+          replaceItems(syncedItems);
+        }
+      })
+      .catch(() => {
+        // The backend still recalculates prices during checkout.
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, items, replaceItems]);
 
   return (
     <AnimatePresence>
@@ -117,8 +149,17 @@ export function CartDrawer() {
                                 {[item.color, item.size].filter(Boolean).join(" / ")}
                               </p>
                             </div>
-                            <p className="text-sm font-semibold">
-                              {formatCurrency(item.price * item.quantity, language)}
+                            <p className="text-right text-sm font-semibold">
+                              {hasCartItemSale(item) ? (
+                                <span className="flex flex-col items-end gap-1">
+                                  <span>{formatCurrency(item.price * item.quantity, language)}</span>
+                                  <span className="text-xs font-medium text-[#6B0F1A]/70 line-through">
+                                    {formatCurrency((item.originalPrice ?? item.price) * item.quantity, language)}
+                                  </span>
+                                </span>
+                              ) : (
+                                formatCurrency(item.price * item.quantity, language)
+                              )}
                             </p>
                           </div>
                           <div className="mt-4 flex items-center justify-between">

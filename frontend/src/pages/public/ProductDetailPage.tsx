@@ -16,6 +16,8 @@ import { useFavoritesStore } from "../../store/favoritesStore";
 import type { Product, ProductVariant } from "../../types";
 import { formatCurrency } from "../../utils/format";
 import {
+  getDiscountPercentage,
+  getEffectiveProductPrice,
   getProductDescription,
   getProductImage,
   getProductImageUrl,
@@ -206,7 +208,8 @@ export function ProductDetailPage() {
   const description = getProductDescription(product, language);
   const shortDescription =
     (language === "ar" ? product.shortDescriptionAr : product.shortDescriptionEn)?.trim() || description;
-  const displayPrice = product.salePrice ?? product.price;
+  const displayPrice = getEffectiveProductPrice(product);
+  const discountPercentage = getDiscountPercentage(product);
   const productName = getProductName(product, language);
   const mobileMediaItems = [
     ...mediaImages.map((image) => ({
@@ -480,13 +483,22 @@ export function ProductDetailPage() {
               </span>
             </div>
           ) : null}
-          <div className="mt-3 flex items-baseline gap-3 text-2xl">
-            <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
-            {product.salePrice ? (
-              <span className="text-base text-[#6B0F1A] line-through">
+          <div className="mt-3 flex flex-wrap items-baseline gap-3 text-2xl">
+            {discountPercentage ? (
+              <>
+                <span className="text-base text-[#6B0F1A]/70 line-through">
+                  {formatCurrency(product.price, language)}
+                </span>
+                <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
+                <span className="border border-[#6B0F1A]/20 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]">
+                  -{discountPercentage}%
+                </span>
+              </>
+            ) : (
+              <span className="font-semibold">
                 {formatCurrency(product.price, language)}
               </span>
-            ) : null}
+            )}
           </div>
           {shortDescription ? <p className="mt-5 text-sm leading-8 text-[#080808]/66">{shortDescription}</p> : null}
 

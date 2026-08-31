@@ -7,6 +7,7 @@ import com.ruzo.backend.repository.CustomerRepository;
 import com.ruzo.backend.repository.OrderRepository;
 import com.ruzo.backend.repository.ProductRepository;
 import com.ruzo.backend.repository.ProductVariantRepository;
+import com.ruzo.backend.util.ProductPricing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -103,7 +104,7 @@ public class OrderService {
             int quantity = itemRequest.quantity() == null || itemRequest.quantity() < 1
                     ? 1
                     : itemRequest.quantity();
-            BigDecimal unitPrice = itemRequest.unitPrice() == null ? product.getPrice() : itemRequest.unitPrice();
+            BigDecimal unitPrice = ProductPricing.effectivePrice(product);
             BigDecimal itemTotal = unitPrice.multiply(BigDecimal.valueOf(quantity));
             String productName = firstNonBlank(itemRequest.productName(), product.getNameEn(), product.getSlug());
             String color = requiredText(itemRequest.color());

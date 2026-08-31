@@ -8,7 +8,7 @@ import { selectCartTotals, useCartStore } from "../../store/cartStore";
 import { useFavoritesStore } from "../../store/favoritesStore";
 import type { Category, Language, Product } from "../../types";
 import { formatCurrency } from "../../utils/format";
-import { getProductImage, getProductName } from "../../utils/product";
+import { getEffectiveProductPrice, getProductImage, getProductName } from "../../utils/product";
 import { TopBar, type TopBarItem, type TopBarMegaMenuColumn } from "./TopBar";
 
 function getCategoryLabel(category: Category, isArabic: boolean) {
@@ -342,7 +342,7 @@ function SearchOverlay({
                     ) : null}
                   </div>
                   <p className="text-sm font-semibold text-[#080808]">
-                    {formatCurrency(product.salePrice ?? product.price, language)}
+                    {formatCurrency(getEffectiveProductPrice(product), language)}
                   </p>
                 </Link>
               );

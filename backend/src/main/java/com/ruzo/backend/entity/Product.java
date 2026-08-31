@@ -67,6 +67,9 @@ public class Product {
     @Column(name = "sale_price")
     private BigDecimal salePrice;
 
+    @Column(name = "on_sale")
+    private Boolean onSale = false;
+
     @Column(name = "badge")
     private String badge;
 

@@ -47,6 +47,9 @@ export type Product = {
   descriptionAr?: string | null;
   price: number;
   salePrice?: number | null;
+  onSale?: boolean | null;
+  effectivePrice?: number | null;
+  discountPercentage?: number | null;
   badge?: string | null;
   isNew?: boolean | null;
   isBestSeller?: boolean | null;
@@ -67,6 +70,10 @@ export type FavoriteItem = {
   nameEn: string;
   nameAr: string;
   price: number;
+  originalPrice?: number | null;
+  salePrice?: number | null;
+  onSale?: boolean | null;
+  discountPercentage?: number | null;
   imageUrl?: string | null;
   categorySlug?: string | null;
 };

@@ -5,6 +5,7 @@ import com.ruzo.backend.entity.Product;
 import com.ruzo.backend.entity.ProductImage;
 import com.ruzo.backend.entity.ProductVariant;
 import com.ruzo.backend.repository.ProductRepository;
+import com.ruzo.backend.util.ProductPricing;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
@@ -65,6 +66,9 @@ public class ProductController {
             String descriptionAr,
             BigDecimal price,
             BigDecimal salePrice,
+            Boolean onSale,
+            BigDecimal effectivePrice,
+            Integer discountPercentage,
             String badge,
             Boolean active,
             Boolean featuredMenu,
@@ -87,6 +91,9 @@ public class ProductController {
                     product.getDescriptionAr(),
                     product.getPrice(),
                     product.getSalePrice(),
+                    product.getOnSale(),
+                    ProductPricing.effectivePrice(product),
+                    ProductPricing.discountPercentage(product),
                     product.getBadge(),
                     product.getActive(),
                     product.getFeaturedMenu(),

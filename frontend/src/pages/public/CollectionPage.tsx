@@ -10,7 +10,7 @@ import { ProductCard } from "../../components/product/ProductCard";
 import { useI18n } from "../../hooks/useI18n";
 import type { Category, Product } from "../../types";
 import type { TranslationKey } from "../../i18n/translations";
-import { uniqueValues } from "../../utils/product";
+import { getEffectiveProductPrice, uniqueValues } from "../../utils/product";
 
 type CollectionPageProps = {
   categorySlug: string;
@@ -127,9 +127,10 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
       const matchesColor = color === "all" || product.variants.some((variant) => variant.color === color);
       const matchesAvailability =
         availability === "all" || product.variants.some((variant) => variant.stock > 0);
+      const effectivePrice = getEffectiveProductPrice(product);
       const matchesPrice =
         price === "all" ||
-        (price === "under-50" ? product.price < 50 : product.price >= 50);
+        (price === "under-50" ? effectivePrice < 50 : effectivePrice >= 50);
       const searchableProduct = [
         product.nameEn,
         product.nameAr,
@@ -151,10 +152,10 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
 
     return [...filtered].sort((first, second) => {
       if (sort === "price-low") {
-        return first.price - second.price;
+        return getEffectiveProductPrice(first) - getEffectiveProductPrice(second);
       }
       if (sort === "price-high") {
-        return second.price - first.price;
+        return getEffectiveProductPrice(second) - getEffectiveProductPrice(first);
       }
       return 0;
     });

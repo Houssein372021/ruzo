@@ -10,7 +10,8 @@ import { Seo } from "../../components/common/Seo";
 import { useI18n } from "../../hooks/useI18n";
 import { selectCartTotals, useCartStore } from "../../store/cartStore";
 import { useCheckoutStore } from "../../store/checkoutStore";
-import type { CartItem, CustomerInfo, OrderPayload, Product } from "../../types";
+import type { CustomerInfo, OrderPayload } from "../../types";
+import { hasCartItemSale, syncCartItemsWithProducts } from "../../utils/cart";
 import { formatCurrency, getDeliveryFee } from "../../utils/format";
 
 type CheckoutForm = CustomerInfo & {
@@ -31,42 +32,6 @@ const emptyCustomer: CheckoutForm = {
   paymentMethod: "cash-on-delivery",
   saveDetails: true,
 };
-
-function syncCartItemsWithProducts(items: CartItem[], products: Product[]): CartItem[] {
-  const productMap = new Map(products.map((product) => [product.id, product]));
-
-  return items
-    .map((item) => {
-      const product = productMap.get(item.id);
-      if (!product) {
-        return null;
-      }
-
-      const variant =
-        product.variants.find((candidate) => candidate.id === item.variantId) ??
-        product.variants.find(
-          (candidate) => candidate.color === item.color && candidate.size === item.size,
-        );
-
-      if (!variant || variant.stock <= 0) {
-        return null;
-      }
-
-      const syncedItem: CartItem = {
-        ...item,
-        variantId: variant.id,
-        color: variant.color,
-        colorHex: variant.colorHex,
-        size: variant.size,
-        stock: variant.stock,
-        imageUrl: variant.imageUrl ?? item.imageUrl,
-        quantity: Math.min(item.quantity, variant.stock),
-      };
-
-      return syncedItem;
-    })
-    .filter((item): item is CartItem => item !== null && item.quantity > 0);
-}
 
 export function CheckoutPage() {
   const { language, t } = useI18n();
@@ -272,7 +237,16 @@ export function CheckoutPage() {
                   {[item.color, item.size].filter(Boolean).join(" / ")} x {item.quantity}
                 </p>
                 <p className="mt-2 text-sm font-semibold">
-                  {formatCurrency(item.price * item.quantity, language)}
+                  {hasCartItemSale(item) ? (
+                    <span className="flex flex-wrap items-baseline gap-2">
+                      <span>{formatCurrency(item.price * item.quantity, language)}</span>
+                      <span className="text-xs font-medium text-[#6B0F1A]/70 line-through">
+                        {formatCurrency((item.originalPrice ?? item.price) * item.quantity, language)}
+                      </span>
+                    </span>
+                  ) : (
+                    formatCurrency(item.price * item.quantity, language)
+                  )}
                 </p>
               </div>
             </div>

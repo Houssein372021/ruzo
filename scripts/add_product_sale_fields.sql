@@ -1,0 +1,9 @@
+ALTER TABLE products
+    ADD COLUMN IF NOT EXISTS sale_price NUMERIC(10, 2);
+
+ALTER TABLE products
+    ADD COLUMN IF NOT EXISTS on_sale BOOLEAN NOT NULL DEFAULT FALSE;
+
+UPDATE products
+SET on_sale = FALSE
+WHERE on_sale IS NULL;

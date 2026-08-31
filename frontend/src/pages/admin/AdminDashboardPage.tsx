@@ -8,6 +8,7 @@ import { useI18n } from "../../hooks/useI18n";
 import type { TranslationKey } from "../../i18n/translations";
 import type { AdminDashboard, OrderStatus } from "../../types";
 import { formatCurrency } from "../../utils/format";
+import { getEffectiveProductPrice } from "../../utils/product";
 
 const orderStatusTranslationKeys: Record<OrderStatus, TranslationKey> = {
   NEW: "statusNew",
@@ -107,7 +108,7 @@ export function AdminDashboardPage() {
                 <tr key={product.id}>
                   <td>{language === "ar" ? product.nameAr : product.nameEn}</td>
                   <td>{product.category ? (language === "ar" ? product.category.nameAr : product.category.nameEn) : ""}</td>
-                  <td>{formatCurrency(product.price, language)}</td>
+                  <td>{formatCurrency(getEffectiveProductPrice(product), language)}</td>
                 </tr>
               ))}
             </tbody>

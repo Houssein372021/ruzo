@@ -10,7 +10,8 @@ import { Seo } from "../../components/common/Seo";
 import { useI18n } from "../../hooks/useI18n";
 import { selectCartTotals, useCartStore } from "../../store/cartStore";
 import { useCheckoutStore } from "../../store/checkoutStore";
-import type { CartItem, CustomerInfo, OrderPayload, Product } from "../../types";
+import type { CustomerInfo, OrderPayload } from "../../types";
+import { hasCartItemSale, syncCartItemsWithProducts } from "../../utils/cart";
 import { formatCurrency, getDeliveryFee } from "../../utils/format";
 
 type CheckoutForm = CustomerInfo & {
@@ -31,42 +32,6 @@ const emptyCustomer: CheckoutForm = {
   paymentMethod: "cash-on-delivery",
   saveDetails: true,
 };
-
-function syncCartItemsWithProducts(items: CartItem[], products: Product[]): CartItem[] {
-  const productMap = new Map(products.map((product) => [product.id, product]));
-
-  return items
-    .map((item) => {
-      const product = productMap.get(item.id);
-      if (!product) {
-        return null;
-      }
-
-      const variant =
-        product.variants.find((candidate) => candidate.id === item.variantId) ??
-        product.variants.find(
-          (candidate) => candidate.color === item.color && candidate.size === item.size,
-        );
-
-      if (!variant || variant.stock <= 0) {
-        return null;
-      }
-
-      const syncedItem: CartItem = {
-        ...item,
-        variantId: variant.id,
-        color: variant.color,
-        colorHex: variant.colorHex,
-        size: variant.size,
-        stock: variant.stock,
-        imageUrl: variant.imageUrl ?? item.imageUrl,
-        quantity: Math.min(item.quantity, variant.stock),
-      };
-
-      return syncedItem;
-    })
-    .filter((item): item is CartItem => item !== null && item.quantity > 0);
-}
 
 export function CheckoutPage() {
   const { language, t } = useI18n();
@@ -184,7 +149,7 @@ export function CheckoutPage() {
       <Seo title="Checkout | Rüzo" description="Rüzo checkout." path="/checkout" robots="noindex,nofollow" />
       <section className="mx-auto grid max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1fr_420px] lg:px-8">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">{t("checkoutEyebrow")}</p>
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#080808]">{t("checkoutEyebrow")}</p>
           <h1 className="mt-3 text-4xl font-semibold">{t("customerInfo")}</h1>
 
           <form className="mt-8 grid gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -226,15 +191,15 @@ export function CheckoutPage() {
             <textarea {...register("notes")} className="checkout-input min-h-28 py-3" />
           </CheckoutInput>
           <div>
-            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#6B0F1A]">
+            <p className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
               {t("paymentMethod")}
             </p>
-            <label className="flex min-h-20 items-start gap-3 border border-[#080808]/14 bg-[#FFFFFF] p-4 text-[#6B0F1A] transition has-[:checked]:border-[#6B0F1A] has-[:checked]:bg-[#FFFFFF]">
+            <label className="flex min-h-20 items-start gap-3 border border-[#080808]/14 bg-[#FFFFFF] p-4 text-[#080808] transition has-[:checked]:border-[#080808] has-[:checked]:bg-[#FFFFFF]">
               <input
                 type="radio"
                 value="cash-on-delivery"
                 {...register("paymentMethod", { required: requiredMessage })}
-                className="mt-1 accent-[#6B0F1A]"
+                className="mt-1 accent-[#080808]"
               />
               <span>
                 <span className="block text-sm font-semibold">{t("cashOnDelivery")}</span>
@@ -245,15 +210,15 @@ export function CheckoutPage() {
             </label>
           </div>
           <label className="flex items-center gap-2 text-sm text-[#080808]/66">
-            <input type="checkbox" {...register("saveDetails")} className="accent-[#6B0F1A]" />
+            <input type="checkbox" {...register("saveDetails")} className="accent-[#080808]" />
             {t("saveDetails")}
           </label>
 
-          {error ? <p className="bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
+          {error ? <p className="bg-[#F7F7F7] px-4 py-3 text-sm text-[#080808]">{error}</p> : null}
           <button
             type="submit"
             disabled={formState.isSubmitting}
-            className="h-14 bg-[#6B0F1A] text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808] disabled:opacity-60"
+            className="h-14 bg-[#080808] text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808] disabled:opacity-60"
           >
             {formState.isSubmitting ? t("loading") : t("placeOrder")}
           </button>
@@ -272,7 +237,16 @@ export function CheckoutPage() {
                   {[item.color, item.size].filter(Boolean).join(" / ")} x {item.quantity}
                 </p>
                 <p className="mt-2 text-sm font-semibold">
-                  {formatCurrency(item.price * item.quantity, language)}
+                  {hasCartItemSale(item) ? (
+                    <span className="flex flex-wrap items-baseline gap-2">
+                      <span>{formatCurrency(item.price * item.quantity, language)}</span>
+                      <span className="text-xs font-medium text-[#080808]/70 line-through">
+                        {formatCurrency((item.originalPrice ?? item.price) * item.quantity, language)}
+                      </span>
+                    </span>
+                  ) : (
+                    formatCurrency(item.price * item.quantity, language)
+                  )}
                 </p>
               </div>
             </div>
@@ -311,11 +285,11 @@ type CheckoutInputProps = {
 function CheckoutInput({ label, error, children }: CheckoutInputProps) {
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#6B0F1A]">
+      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
         {label}
       </span>
       {children}
-      {error ? <span className="mt-1 block text-xs text-red-700">{error}</span> : null}
+      {error ? <span className="mt-1 block text-xs text-[#080808]">{error}</span> : null}
     </label>
   );
 }

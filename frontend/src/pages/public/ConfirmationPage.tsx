@@ -18,8 +18,8 @@ export function ConfirmationPage() {
       />
       <section className="grid min-h-[70vh] place-items-center px-4 text-center">
         <div className="max-w-xl">
-          <CheckCircle2 className="mx-auto h-14 w-14 text-[#6B0F1A]" />
-          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">Rüzo</p>
+          <CheckCircle2 className="mx-auto h-14 w-14 text-[#080808]" />
+          <p className="mt-6 text-xs font-semibold uppercase tracking-[0.28em] text-[#080808]">Rüzo</p>
           <h1 className="mt-3 text-4xl font-semibold">{t("confirmation")}</h1>
           <p className="mt-4 text-sm text-[#080808]/66">
             {t("orderNumber")}: <span className="font-semibold text-[#080808]">{orderNumber}</span>
@@ -29,7 +29,7 @@ export function ConfirmationPage() {
           </p>
           <Link
             to="/"
-            className="mt-8 inline-flex bg-[#6B0F1A] px-7 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808]"
+            className="mt-8 inline-flex bg-[#080808] px-7 py-4 text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808]"
           >
             {t("backHome")}
           </Link>

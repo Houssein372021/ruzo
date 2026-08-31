@@ -109,7 +109,7 @@ function CarouselArrowButton({ direction, label, onClick }: CarouselArrowButtonP
       type="button"
       aria-label={label}
       onClick={onClick}
-      className={`absolute top-[42%] z-10 grid h-11 w-11 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] ${positionClass}`}
+      className={`absolute top-[42%] z-10 grid h-11 w-11 place-items-center bg-[#FFFFFF]/94 text-[#080808] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#080808] hover:text-[#FFFFFF] ${positionClass}`}
     >
       <Icon className="h-6 w-6 stroke-[2.2]" />
     </button>
@@ -358,7 +358,7 @@ export function HomePage() {
           <source src={heroVideoWebmUrl} type="video/webm" />
         </video>
         <div className="absolute inset-0 bg-[#080808]/34" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(to_top,rgba(8,8,8,0.82),rgba(107,15,26,0.2),rgba(8,8,8,0))]" />
+        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(to_top,rgba(8,8,8,0.82),rgba(8,8,8,0.2),rgba(8,8,8,0))]" />
         <div className="relative z-10 mx-auto flex min-h-[calc(100vh-104px)] max-w-[1500px] items-end justify-center px-5 pb-14 text-center sm:pb-20 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
@@ -374,7 +374,7 @@ export function HomePage() {
             ) : null}
             <Link
               to={primaryCollectionPath}
-              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#6B0F1A] hover:bg-[#6B0F1A]"
+              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#080808] hover:bg-[#080808]"
             >
               {copy.discoverCollection}
             </Link>
@@ -385,7 +385,7 @@ export function HomePage() {
       <section className="mx-auto max-w-[1500px] px-5 py-16 sm:py-20 lg:px-8">
         <div className="flex items-end justify-between gap-5">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]">
               {copy.trendingTitle}
             </p>
             <h2 className="font-display mt-2 text-3xl text-[#080808] sm:text-4xl">
@@ -426,7 +426,7 @@ export function HomePage() {
                     type="button"
                     aria-label={productPreviousLabel}
                     onClick={bestSellersCarousel.previous}
-                    className="absolute left-0 top-[42%] z-10 grid h-11 w-11 -translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:-translate-x-4"
+                    className="absolute left-0 top-[42%] z-10 grid h-11 w-11 -translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#080808] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#080808] hover:text-[#FFFFFF] sm:-translate-x-4"
                   >
                     <ChevronLeft className="h-6 w-6 stroke-[2.2]" />
                   </button>
@@ -434,7 +434,7 @@ export function HomePage() {
                     type="button"
                     aria-label={productNextLabel}
                     onClick={bestSellersCarousel.next}
-                    className="absolute right-0 top-[42%] z-10 grid h-11 w-11 translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#6B0F1A] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#6B0F1A] hover:text-[#FFFFFF] sm:translate-x-4"
+                    className="absolute right-0 top-[42%] z-10 grid h-11 w-11 translate-x-2 place-items-center bg-[#FFFFFF]/94 text-[#080808] shadow-[0_12px_34px_rgba(8,8,8,0.12)] backdrop-blur transition hover:bg-[#080808] hover:text-[#FFFFFF] sm:translate-x-4"
                   >
                     <ChevronRight className="h-6 w-6 stroke-[2.2]" />
                   </button>
@@ -457,7 +457,7 @@ export function HomePage() {
 
           <div className="mt-12 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {composedRealityImages.map((image) => (
-              <figure key={image.src} className="bg-[#F7F3F0]">
+              <figure key={image.src} className="bg-[#F7F7F7]">
                 <img
                   src={image.src}
                   alt={image.alt}
@@ -473,7 +473,7 @@ export function HomePage() {
       <section className="mx-auto max-w-[1500px] px-5 py-16 sm:py-20 lg:px-8">
         <div className="flex items-end justify-between gap-5">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]">
               {t("newArrivals")}
             </p>
             <h2 className="font-display mt-2 text-3xl text-[#080808] sm:text-4xl">
@@ -570,9 +570,9 @@ export function HomePage() {
                           className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
                         />
                       ) : (
-                        <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#6B0F1A_35%,#080808_100%)]" />
+                        <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#080808_35%,#080808_100%)]" />
                       )}
-                      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.78),rgba(107,15,26,0.22),rgba(8,8,8,0.02))]" />
+                      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.78),rgba(8,8,8,0.22),rgba(8,8,8,0.02))]" />
                       <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF] sm:p-6">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/78">
                           {t("ruzoEdit")}
@@ -580,7 +580,7 @@ export function HomePage() {
                         <h3 className="font-display mt-2 text-3xl leading-tight sm:text-4xl lg:text-3xl xl:text-4xl">
                           {category.title}
                         </h3>
-                        <span className="mt-5 inline-flex min-h-9 items-center gap-3 border border-[#FFFFFF]/78 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition group-hover:border-[#6B0F1A] group-hover:bg-[#6B0F1A]">
+                        <span className="mt-5 inline-flex min-h-9 items-center gap-3 border border-[#FFFFFF]/78 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition group-hover:border-[#080808] group-hover:bg-[#080808]">
                           {t("shopNow")}
                           <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
                         </span>
@@ -632,7 +632,7 @@ export function HomePage() {
             </p>
             <Link
               to="/collections/sets"
-              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/75 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] transition hover:border-[#6B0F1A] hover:bg-[#6B0F1A]"
+              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/75 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] transition hover:border-[#080808] hover:bg-[#080808]"
             >
               {t("shopNow")}
             </Link>
@@ -643,7 +643,7 @@ export function HomePage() {
       <section className="bg-[#FFFFFF]">
         <div className="mx-auto grid max-w-[1500px] gap-10 px-5 py-16 sm:py-20 lg:grid-cols-[0.8fr_1.2fr] lg:px-8">
           <div>
-            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#6B0F1A]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]">
               {copy.detailEyebrow}
             </p>
             <h2 className="font-display mt-3 text-5xl leading-tight text-[#080808]">
@@ -659,7 +659,7 @@ export function HomePage() {
 
               return (
                 <div key={promise.title} className="border-t border-[#080808]/10 pt-5">
-                  <Icon className="h-8 w-8 stroke-[1.6] text-[#6B0F1A]" />
+                  <Icon className="h-8 w-8 stroke-[1.6] text-[#080808]" />
                   <h3 className="mt-5 text-sm font-semibold uppercase leading-6 tracking-[0.16em] text-[#080808]">
                     {promise.title}
                   </h3>

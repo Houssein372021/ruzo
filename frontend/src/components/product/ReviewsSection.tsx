@@ -50,7 +50,7 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
           <h2 className="font-display text-3xl">{t("reviews")}</h2>
           <div className="mt-5 flex items-baseline gap-3">
             <span className="font-display text-5xl">{summary.average.toFixed(1)}</span>
-            <span className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">/ 5</span>
+            <span className="text-xs font-semibold uppercase tracking-display text-[#080808]">/ 5</span>
           </div>
           <StarRating value={summary.average} size={18} className="mt-2" />
           <p className="mt-2 text-xs text-[#080808]/66">
@@ -72,13 +72,13 @@ export function ReviewsSection({ productId }: ReviewsSectionProps) {
                       <StarRating value={review.rating} />
                       <span className="text-sm font-semibold">{review.customerName}</span>
                       {review.verifiedPurchase ? (
-                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]">
+                        <span className="text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-[#080808]">
                           {t("verifiedPurchase")}
                         </span>
                       ) : null}
                     </div>
                     {review.createdAt ? (
-                      <time className="text-xs text-[#6B0F1A]">
+                      <time className="text-xs text-[#080808]">
                         {new Date(review.createdAt).toLocaleDateString()}
                       </time>
                     ) : null}

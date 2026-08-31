@@ -8,7 +8,7 @@ import { selectCartTotals, useCartStore } from "../../store/cartStore";
 import { useFavoritesStore } from "../../store/favoritesStore";
 import type { Category, Language, Product } from "../../types";
 import { formatCurrency } from "../../utils/format";
-import { getProductImage, getProductName } from "../../utils/product";
+import { getEffectiveProductPrice, getProductImage, getProductName } from "../../utils/product";
 import { TopBar, type TopBarItem, type TopBarMegaMenuColumn } from "./TopBar";
 
 function getCategoryLabel(category: Category, isArabic: boolean) {
@@ -185,14 +185,14 @@ export function Header() {
           <div className="flex flex-col items-end gap-1.5">
             <div className="hidden items-center gap-2 text-[10px] font-medium uppercase tracking-[0.08em] text-[#080808]/65 lg:flex">
               <span>{language === "en" ? t("languageEnglish") : t("languageArabic")}</span>
-              <span className="h-3 w-px bg-[#6B0F1A]/45" />
+              <span className="h-3 w-px bg-[#080808]/45" />
               <span>{t("lebanon")}</span>
             </div>
 
             <div className="flex items-center gap-1 text-[#080808] sm:gap-3">
               <button
                 type="button"
-                className="grid h-7 min-w-7 place-items-center border border-[#080808]/12 px-1 text-[10px] font-semibold uppercase tracking-[0.12em] transition hover:border-[#6B0F1A] hover:text-[#6B0F1A] sm:px-2 sm:text-[11px] sm:tracking-[0.18em]"
+                className="grid h-7 min-w-7 place-items-center border border-[#080808]/12 px-1 text-[10px] font-semibold uppercase tracking-[0.12em] transition hover:border-[#080808] hover:text-[#080808] sm:px-2 sm:text-[11px] sm:tracking-[0.18em]"
                 onClick={toggleLanguage}
                 aria-label={t("switchLanguage")}
               >
@@ -201,7 +201,7 @@ export function Header() {
               <button
                 type="button"
                 aria-label={t("search")}
-                className="grid h-7 w-6 place-items-center transition-colors hover:text-[#6B0F1A] sm:w-7"
+                className="grid h-7 w-6 place-items-center transition-colors hover:text-[#080808] sm:w-7"
                 onClick={() => setIsSearchOpen(true)}
               >
                 <Search className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
@@ -209,11 +209,11 @@ export function Header() {
               <Link
                 to="/favorites"
                 aria-label={t("favorites")}
-                className="relative grid h-7 w-6 place-items-center transition-colors hover:text-[#6B0F1A] sm:w-7"
+                className="relative grid h-7 w-6 place-items-center transition-colors hover:text-[#080808] sm:w-7"
               >
                 <Heart className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                 {favoriteCount > 0 ? (
-                  <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#6B0F1A] px-1 text-[10px] leading-none text-[#FFFFFF]">
+                  <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#080808] px-1 text-[10px] leading-none text-[#FFFFFF]">
                     {favoriteCount}
                   </span>
                 ) : null}
@@ -221,12 +221,12 @@ export function Header() {
               <button
                 type="button"
                 aria-label={t("cart")}
-                className="relative grid h-7 w-6 place-items-center transition-colors hover:text-[#6B0F1A] sm:w-7"
+                className="relative grid h-7 w-6 place-items-center transition-colors hover:text-[#080808] sm:w-7"
                 onClick={openCart}
               >
                 <ShoppingBag className="h-4 w-4 sm:h-[18px] sm:w-[18px]" />
                 {cartCount > 0 ? (
-                  <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#6B0F1A] px-1 text-[10px] leading-none text-[#FFFFFF]">
+                  <span className="absolute -end-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#080808] px-1 text-[10px] leading-none text-[#FFFFFF]">
                     {cartCount}
                   </span>
                 ) : null}
@@ -237,7 +237,7 @@ export function Header() {
         mobileActions={
           <button
             type="button"
-            className="inline-flex h-9 min-w-11 items-center justify-center border border-[#080808]/14 px-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#080808] transition-colors hover:border-[#6B0F1A] hover:text-[#6B0F1A]"
+            className="inline-flex h-9 min-w-11 items-center justify-center border border-[#080808]/14 px-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-[#080808] transition-colors hover:border-[#080808] hover:text-[#080808]"
             onClick={toggleLanguage}
             aria-label={t("switchLanguage")}
           >
@@ -287,7 +287,7 @@ function SearchOverlay({
     <div className="fixed inset-0 z-50 bg-[#080808]/35 px-4 py-6 backdrop-blur-sm sm:px-6" role="dialog" aria-modal="true">
       <div className="mx-auto max-w-3xl border border-[#080808]/10 bg-[#FFFFFF] shadow-[0_28px_90px_rgba(8,8,8,0.18)]">
         <div className="flex items-center gap-3 border-b border-[#080808]/10 px-4 py-4 sm:px-6">
-          <Search className="h-5 w-5 shrink-0 text-[#6B0F1A]" />
+          <Search className="h-5 w-5 shrink-0 text-[#080808]" />
           <input
             value={query}
             onChange={(event) => onQueryChange(event.target.value)}
@@ -298,7 +298,7 @@ function SearchOverlay({
           <button
             type="button"
             aria-label="Close search"
-            className="grid h-10 w-10 place-items-center text-[#080808] transition hover:text-[#6B0F1A]"
+            className="grid h-10 w-10 place-items-center text-[#080808] transition hover:text-[#080808]"
             onClick={onClose}
           >
             <X className="h-5 w-5" />
@@ -320,9 +320,9 @@ function SearchOverlay({
                   key={product.id}
                   to={`/products/${product.slug}`}
                   onClick={onClose}
-                  className="grid grid-cols-[72px_1fr_auto] items-center gap-4 border border-[#080808]/8 p-2 transition hover:border-[#6B0F1A]/25 hover:bg-[#6B0F1A]/5"
+                  className="grid grid-cols-[72px_1fr_auto] items-center gap-4 border border-[#080808]/8 p-2 transition hover:border-[#080808]/25 hover:bg-[#080808]/5"
                 >
-                  <div className="aspect-[3/4] overflow-hidden bg-[#F7F4EF]">
+                  <div className="aspect-[3/4] overflow-hidden bg-[#F7F7F7]">
                     {image ? (
                       <img
                         src={image}
@@ -336,13 +336,13 @@ function SearchOverlay({
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-[#080808]">{productName}</p>
                     {product.category ? (
-                      <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]">
+                      <p className="mt-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-[#080808]">
                         {language === "ar" ? product.category.nameAr : product.category.nameEn}
                       </p>
                     ) : null}
                   </div>
                   <p className="text-sm font-semibold text-[#080808]">
-                    {formatCurrency(product.salePrice ?? product.price, language)}
+                    {formatCurrency(getEffectiveProductPrice(product), language)}
                   </p>
                 </Link>
               );

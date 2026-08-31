@@ -63,7 +63,7 @@ export function TopBar({
             <button
               type="button"
               aria-label={t("menu")}
-              className="-ms-2 grid h-10 w-10 place-items-center text-[#080808] transition hover:text-[#6B0F1A] lg:hidden"
+              className="-ms-2 grid h-10 w-10 place-items-center text-[#080808] transition hover:text-[#080808] lg:hidden"
               onClick={toggleMobileMenu}
             >
               {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -81,7 +81,7 @@ export function TopBar({
 
         <Link
           to={brandTo}
-          className="font-display text-center text-[1.45rem] uppercase leading-none tracking-[0.12em] text-[#6B0F1A] transition hover:text-[#080808] sm:text-[2.25rem] sm:tracking-[0.18em]"
+          className="font-display text-center text-[1.45rem] uppercase leading-none tracking-[0.12em] text-[#080808] transition hover:text-[#080808] sm:text-[2.25rem] sm:tracking-[0.18em]"
         >
           RÜZO
           {eyebrow ? (
@@ -152,13 +152,13 @@ function TopBarNavLink({
         <div className="border-b border-[#080808]/8">
           <button
             type="button"
-            className="flex w-full items-center justify-between gap-4 py-4 text-left text-[13px] uppercase tracking-[0.28em] text-[#080808] transition hover:text-[#6B0F1A]"
+            className="flex w-full items-center justify-between gap-4 py-4 text-left text-[13px] uppercase tracking-[0.28em] text-[#080808] transition hover:text-[#080808]"
             onClick={onToggle}
             aria-expanded={isOpen}
           >
             <span>{item.label}</span>
             <ChevronDown
-              className={`h-4 w-4 shrink-0 transition-transform ${isOpen ? "rotate-180 text-[#6B0F1A]" : ""}`}
+              className={`h-4 w-4 shrink-0 transition-transform ${isOpen ? "rotate-180 text-[#080808]" : ""}`}
             />
           </button>
 
@@ -171,7 +171,7 @@ function TopBarNavLink({
                 transition={{ duration: 0.18, ease: "easeOut" }}
                 className="overflow-hidden"
               >
-                <div className="grid gap-5 border-s border-[#6B0F1A]/20 pb-5 ps-4 normal-case tracking-normal">
+                <div className="grid gap-5 border-s border-[#080808]/20 pb-5 ps-4 normal-case tracking-normal">
                   {item.megaMenu.map((column) => (
                     <MobileMegaMenuColumn key={column.title} column={column} onClick={onClick} />
                   ))}
@@ -189,7 +189,7 @@ function TopBarNavLink({
         onClick={onClick}
         className={({ isActive }) =>
           `border-b border-[#080808]/8 py-4 text-[13px] uppercase tracking-[0.28em] transition-colors ${
-            isActive ? "text-[#6B0F1A]" : "text-[#080808] hover:text-[#6B0F1A]"
+            isActive ? "text-[#080808]" : "text-[#080808] hover:text-[#080808]"
           }`
         }
       >
@@ -205,7 +205,7 @@ function TopBarNavLink({
         onClick={onClick}
         className={({ isActive }) =>
           `flex shrink-0 items-center gap-2 whitespace-nowrap transition-colors ${
-            isActive ? "text-[#6B0F1A]" : "text-[#080808]/68 hover:text-[#6B0F1A]"
+            isActive ? "text-[#080808]" : "text-[#080808]/68 hover:text-[#080808]"
           }`
         }
       >
@@ -230,7 +230,7 @@ function MobileMegaMenuColumn({
     <div>
       <button
         type="button"
-        className="flex w-full items-center justify-between gap-3 py-1 text-left text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6B0F1A]"
+        className="flex w-full items-center justify-between gap-3 py-1 text-left text-[10px] font-semibold uppercase tracking-[0.18em] text-[#080808]"
         onClick={() => setIsOpen((value) => !value)}
         aria-expanded={isOpen}
       >
@@ -255,7 +255,7 @@ function MobileMegaMenuColumn({
                   key={`${column.title}-${link.to}`}
                   to={link.to}
                   onClick={onClick}
-                  className="-ms-2 block px-2 py-2.5 text-sm text-[#080808]/72 transition hover:bg-[#6B0F1A]/5 hover:text-[#6B0F1A]"
+                  className="-ms-2 block px-2 py-2.5 text-sm text-[#080808]/72 transition hover:bg-[#080808]/5 hover:text-[#080808]"
                 >
                   {link.label}
                 </Link>
@@ -282,12 +282,12 @@ function TopBarMegaMenu({ columns }: { columns: TopBarMegaMenuColumn[] }) {
                 <Link
                   key={`${column.title}-${link.to}`}
                   to={link.to}
-                  className="group/link -mx-3 flex min-h-[54px] items-center justify-between gap-5 border border-transparent px-3 py-2 text-[13px] uppercase tracking-[0.08em] text-[#080808]/80 transition hover:border-[#6B0F1A]/15 hover:bg-[#6B0F1A]/5 hover:text-[#6B0F1A]"
+                  className="group/link -mx-3 flex min-h-[54px] items-center justify-between gap-5 border border-transparent px-3 py-2 text-[13px] uppercase tracking-[0.08em] text-[#080808]/80 transition hover:border-[#080808]/15 hover:bg-[#080808]/5 hover:text-[#080808]"
                 >
                   <span className="min-w-0">
                     <span className="block">{link.label}</span>
                     {link.description ? (
-                      <span className="mt-1 block text-[11px] normal-case leading-5 tracking-normal text-[#080808]/45 transition group-hover/link:text-[#6B0F1A]/70">
+                      <span className="mt-1 block text-[11px] normal-case leading-5 tracking-normal text-[#080808]/45 transition group-hover/link:text-[#080808]/70">
                         {link.description}
                       </span>
                     ) : null}

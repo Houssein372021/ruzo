@@ -16,7 +16,7 @@ export function SectionHeading({ eyebrow, title, copy }: SectionHeadingProps) {
       className="mx-auto max-w-2xl text-center"
     >
       {eyebrow ? (
-        <p className="mb-3 text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-display text-[#080808]">
           {eyebrow}
         </p>
       ) : null}

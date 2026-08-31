@@ -18,7 +18,7 @@ export function StarRating({ value, size = 14, className = "" }: StarRatingProps
             <Star className="absolute inset-0 text-[#080808]/20" style={{ width: size, height: size }} />
             {filled || half ? (
               <span className="absolute inset-0 overflow-hidden" style={{ width: half ? size / 2 : size }}>
-                <Star className="fill-[#6B0F1A] text-[#6B0F1A]" style={{ width: size, height: size }} />
+                <Star className="fill-[#080808] text-[#080808]" style={{ width: size, height: size }} />
               </span>
             ) : null}
           </span>
@@ -46,7 +46,7 @@ export function InteractiveStars({ value, onChange }: InteractiveStarsProps) {
         >
           <Star
             className={
-              star <= value ? "h-5 w-5 fill-[#6B0F1A] text-[#6B0F1A]" : "h-5 w-5 text-[#080808]/25"
+              star <= value ? "h-5 w-5 fill-[#080808] text-[#080808]" : "h-5 w-5 text-[#080808]/25"
             }
           />
         </button>

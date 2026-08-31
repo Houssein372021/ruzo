@@ -1,8 +1,11 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ShoppingBag, X } from "lucide-react";
+import { productsApi } from "../../api/products";
 import { useI18n } from "../../hooks/useI18n";
 import { selectCartTotals, useCartStore } from "../../store/cartStore";
+import { hasCartItemSale, syncCartItemsWithProducts } from "../../utils/cart";
 import {
   DELIVERY_FEE,
   FREE_DELIVERY_THRESHOLD,
@@ -19,11 +22,40 @@ export function CartDrawer() {
   const closeCart = useCartStore((state) => state.closeCart);
   const updateQuantity = useCartStore((state) => state.updateQuantity);
   const removeItem = useCartStore((state) => state.removeItem);
+  const replaceItems = useCartStore((state) => state.replaceItems);
   const { quantity, subtotal } = selectCartTotals(items);
   const deliveryFee = getDeliveryFee(subtotal);
   const remaining = getFreeDeliveryRemaining(subtotal);
   const total = subtotal + deliveryFee;
   const freeDeliveryProgress = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
+
+  useEffect(() => {
+    if (!isOpen || items.length === 0) {
+      return;
+    }
+
+    let isMounted = true;
+
+    productsApi
+      .getAll()
+      .then((products) => {
+        if (!isMounted) {
+          return;
+        }
+
+        const syncedItems = syncCartItemsWithProducts(items, products);
+        if (JSON.stringify(syncedItems) !== JSON.stringify(items)) {
+          replaceItems(syncedItems);
+        }
+      })
+      .catch(() => {
+        // The backend still recalculates prices during checkout.
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen, items, replaceItems]);
 
   return (
     <AnimatePresence>
@@ -49,7 +81,7 @@ export function CartDrawer() {
           >
             <div className="flex items-center justify-between border-b border-[#080808]/10 px-6 py-5">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">
+                <p className="text-xs font-semibold uppercase tracking-display text-[#080808]">
                   {t("cart")}
                 </p>
                 <h2 className="font-display mt-1 text-2xl text-[#080808]">
@@ -69,12 +101,12 @@ export function CartDrawer() {
             {items.length === 0 ? (
               <div className="grid flex-1 place-items-center px-8 text-center">
                 <div>
-                  <ShoppingBag className="mx-auto h-10 w-10 text-[#6B0F1A]" />
+                  <ShoppingBag className="mx-auto h-10 w-10 text-[#080808]" />
                   <p className="mt-4 text-lg font-semibold">{t("emptyCart")}</p>
                   <Link
                     to="/collections/sets"
                     onClick={closeCart}
-                    className="mt-6 inline-flex bg-[#6B0F1A] px-6 py-3 text-sm font-semibold text-[#FFFFFF]"
+                    className="mt-6 inline-flex bg-[#080808] px-6 py-3 text-sm font-semibold text-[#FFFFFF]"
                   >
                     {t("continueShopping")}
                   </Link>
@@ -92,7 +124,7 @@ export function CartDrawer() {
                   </p>
                   <div className="h-0.5 overflow-hidden bg-[#FFFFFF]/18">
                     <div
-                      className="h-full bg-[#6B0F1A] transition-all duration-500"
+                      className="h-full bg-[#080808] transition-all duration-500"
                       style={{ width: `${freeDeliveryProgress}%` }}
                     />
                   </div>
@@ -117,8 +149,17 @@ export function CartDrawer() {
                                 {[item.color, item.size].filter(Boolean).join(" / ")}
                               </p>
                             </div>
-                            <p className="text-sm font-semibold">
-                              {formatCurrency(item.price * item.quantity, language)}
+                            <p className="text-right text-sm font-semibold">
+                              {hasCartItemSale(item) ? (
+                                <span className="flex flex-col items-end gap-1">
+                                  <span>{formatCurrency(item.price * item.quantity, language)}</span>
+                                  <span className="text-xs font-medium text-[#080808]/70 line-through">
+                                    {formatCurrency((item.originalPrice ?? item.price) * item.quantity, language)}
+                                  </span>
+                                </span>
+                              ) : (
+                                formatCurrency(item.price * item.quantity, language)
+                              )}
                             </p>
                           </div>
                           <div className="mt-4 flex items-center justify-between">
@@ -129,7 +170,7 @@ export function CartDrawer() {
                             />
                             <button
                               type="button"
-                              className="text-xs font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]"
+                              className="text-xs font-semibold uppercase tracking-[0.16em] text-[#080808]"
                               onClick={() => removeItem(item.lineId)}
                             >
                               {t("remove")}
@@ -161,7 +202,7 @@ export function CartDrawer() {
                   <Link
                     to="/checkout"
                     onClick={closeCart}
-                    className="mt-5 flex h-12 items-center justify-center bg-[#6B0F1A] text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808]"
+                    className="mt-5 flex h-12 items-center justify-center bg-[#080808] text-sm font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808]"
                   >
                     {t("checkout")}
                   </Link>

@@ -17,6 +17,7 @@ import com.ruzo.backend.repository.ProductRepository;
 import com.ruzo.backend.repository.ProductVariantRepository;
 import com.ruzo.backend.repository.ReviewRepository;
 import com.ruzo.backend.service.EmailNotificationService;
+import com.ruzo.backend.util.ProductPricing;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -422,7 +423,15 @@ public class AdminController {
         product.setShortDescriptionAr(request.shortDescriptionAr());
         product.setDescriptionEn(request.descriptionEn());
         product.setDescriptionAr(request.descriptionAr());
-        product.setPrice(request.price() == null ? BigDecimal.ZERO : request.price());
+        boolean onSale = Boolean.TRUE.equals(request.onSale());
+        try {
+            ProductPricing.validateProductPricing(request.price(), onSale, request.salePrice());
+        } catch (IllegalArgumentException exception) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, exception.getMessage(), exception);
+        }
+        product.setPrice(request.price());
+        product.setOnSale(onSale);
+        product.setSalePrice(request.salePrice());
         product.setActive(request.active() == null || request.active());
         product.setVideoUrl(request.videoUrl());
         if (product.getCreatedAt() == null) {
@@ -597,6 +606,8 @@ public class AdminController {
             String descriptionEn,
             String descriptionAr,
             BigDecimal price,
+            Boolean onSale,
+            BigDecimal salePrice,
             UUID categoryId,
             String videoUrl,
             String imageUrl,
@@ -843,6 +854,9 @@ public class AdminController {
             String descriptionAr,
             BigDecimal price,
             BigDecimal salePrice,
+            Boolean onSale,
+            BigDecimal effectivePrice,
+            Integer discountPercentage,
             String badge,
             Boolean active,
             Boolean featuredMenu,
@@ -863,6 +877,9 @@ public class AdminController {
                     product.getDescriptionAr(),
                     product.getPrice(),
                     product.getSalePrice(),
+                    product.getOnSale(),
+                    ProductPricing.effectivePrice(product),
+                    ProductPricing.discountPercentage(product),
                     product.getBadge(),
                     product.getActive(),
                     product.getFeaturedMenu(),

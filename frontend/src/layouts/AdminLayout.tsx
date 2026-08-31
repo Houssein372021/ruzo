@@ -39,7 +39,7 @@ export function AdminLayout() {
   const logoutButton = (
     <button
       type="button"
-      className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-[#5F5659] transition hover:text-[#6B0F1A]"
+      className="flex items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-[#555555] transition hover:text-[#080808]"
       onClick={handleLogout}
     >
       <LogOut className="h-4 w-4" />
@@ -61,12 +61,12 @@ export function AdminLayout() {
         />
       </div>
 
-      <aside className="hidden min-h-screen border-r border-[#E6D9DE] bg-[#F4EEF0] xl:flex xl:flex-col">
-        <div className="border-b border-[#E6D9DE] px-6 py-8">
+      <aside className="hidden min-h-screen border-r border-[#E5E5E5] bg-[#F7F7F7] xl:flex xl:flex-col">
+        <div className="border-b border-[#E5E5E5] px-6 py-8">
           <Link to="/admin/dashboard" className="block text-xl uppercase tracking-[0.32em] text-[#080808]">
             RÜZO
           </Link>
-          <span className="mt-2 block text-[0.62rem] uppercase tracking-[0.28em] text-[#8A2638]">
+          <span className="mt-2 block text-[0.62rem] uppercase tracking-[0.28em] text-[#444444]">
             {t("admin")}
           </span>
         </div>
@@ -79,8 +79,8 @@ export function AdminLayout() {
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2.5 text-sm transition ${
                   isActive
-                    ? "bg-[#6B0F1A] font-semibold text-[#FFFFFF]"
-                    : "text-[#080808] hover:bg-[#F0E5E8]"
+                    ? "bg-[#080808] font-semibold text-[#FFFFFF]"
+                    : "text-[#080808] hover:bg-[#EFEFEF]"
                 }`
               }
             >
@@ -90,12 +90,12 @@ export function AdminLayout() {
           ))}
         </nav>
 
-        <div className="mt-auto border-t border-[#E6D9DE] px-5 py-5">
-          <p className="mb-3 text-xs text-[#5F5659]">admin@ruzo.local</p>
+        <div className="mt-auto border-t border-[#E5E5E5] px-5 py-5">
+          <p className="mb-3 text-xs text-[#555555]">admin@ruzo.local</p>
           <AdminLanguageButton className="mb-3 w-full justify-start bg-[#FFFFFF]" />
           <button
             type="button"
-            className="flex items-center gap-2 text-xs text-[#5F5659] transition hover:text-[#6B0F1A]"
+            className="flex items-center gap-2 text-xs text-[#555555] transition hover:text-[#080808]"
             onClick={handleLogout}
           >
             <LogOut className="h-3.5 w-3.5" />

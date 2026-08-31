@@ -34,7 +34,7 @@ export function AdminImageUpload({ label, value, onChange }: AdminImageUploadPro
 
   return (
     <div>
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#080808]">
         {label}
       </span>
       <div className="grid gap-3">
@@ -58,7 +58,7 @@ export function AdminImageUpload({ label, value, onChange }: AdminImageUploadPro
             onChange={(event) => handleFileChange(event.target.files?.[0])}
           />
         </div>
-        {error ? <p className="text-xs text-red-700">{error}</p> : null}
+        {error ? <p className="text-xs text-[#080808]">{error}</p> : null}
         {value ? <img src={value} alt="" className="aspect-video w-full border border-[#080808]/10 object-cover" /> : null}
       </div>
     </div>

@@ -118,7 +118,7 @@ export function AboutPage() {
 
             <div className="flex items-center">
               <div className="max-w-2xl">
-                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#080808]">
                   {copy.eyebrow}
                 </p>
                 <h1 className="font-display mt-5 text-5xl leading-[1.05] text-[#080808] sm:text-6xl lg:text-7xl">
@@ -134,7 +134,7 @@ export function AboutPage() {
                 <div className="mt-9 flex flex-wrap items-center gap-x-8 gap-y-4">
                   <Link
                     to={primaryCollectionPath}
-                    className="inline-flex min-h-12 items-center justify-center border border-[#6B0F1A] bg-[#6B0F1A] px-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF] transition hover:bg-[#080808] hover:border-[#080808]"
+                    className="inline-flex min-h-12 items-center justify-center border border-[#080808] bg-[#080808] px-6 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF] transition hover:bg-[#080808] hover:border-[#080808]"
                   >
                     {copy.shop}
                   </Link>
@@ -156,7 +156,7 @@ export function AboutPage() {
         <section className="border-b border-[#080808]/10">
           <div className="mx-auto grid max-w-[1500px] gap-10 px-5 py-14 sm:py-20 lg:grid-cols-[0.74fr_1.26fr] lg:px-8">
             <div>
-              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6B0F1A]">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#080808]">
                 {copy.valuesTitle}
               </p>
               <h2 className="font-display mt-4 max-w-md text-4xl leading-tight text-[#080808] sm:text-5xl">
@@ -178,7 +178,7 @@ export function AboutPage() {
 
         <section className="mx-auto grid max-w-[1500px] gap-px bg-[#080808]/10 lg:grid-cols-3">
           <div className="bg-[#FFFFFF] p-5 sm:p-8 lg:col-span-1">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#6B0F1A]">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-[#080808]">
               {copy.categories}
             </p>
             <p className="mt-5 text-sm leading-8 text-[#080808]/66">{copy.collectionCopy}</p>
@@ -187,7 +187,7 @@ export function AboutPage() {
                 <Link
                   key={category.slug}
                   to={`/collections/${category.slug}`}
-                  className="flex items-center justify-between border-b border-[#080808]/10 py-3 text-sm font-medium text-[#080808] transition hover:text-[#6B0F1A]"
+                  className="flex items-center justify-between border-b border-[#080808]/10 py-3 text-sm font-medium text-[#080808] transition hover:text-[#080808]"
                 >
                   <span>{language === "ar" ? category.nameAr : category.nameEn}</span>
                   <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />

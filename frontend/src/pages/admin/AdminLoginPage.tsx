@@ -37,7 +37,7 @@ export function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F4EEF0]">
+    <div className="min-h-screen bg-[#F7F7F7]">
       <Seo
         title="Admin Login | Rüzo"
         description="Rüzo admin login."
@@ -46,10 +46,10 @@ export function AdminLoginPage() {
       />
       <TopBar eyebrow={t("admin")} navItems={[]} actions={<AdminLanguageButton />} />
       <main className="grid min-h-[calc(100vh-4rem)] place-items-center px-4 py-10">
-        <section className="w-full max-w-[384px] border border-[#E6D9DE] bg-[#FFFFFF] px-8 py-9">
+        <section className="w-full max-w-[384px] border border-[#E5E5E5] bg-[#FFFFFF] px-8 py-9">
           <div className="text-center">
             <p className="text-xl uppercase tracking-[0.34em]">RÜZO</p>
-            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[#8A2638]">{t("admin")}</p>
+            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[#444444]">{t("admin")}</p>
           </div>
           <form className="mt-7 grid gap-5" onSubmit={handleSubmit(onSubmit)}>
             <p className="font-display text-lg text-[#080808]">{t("adminLogin")}</p>
@@ -65,7 +65,7 @@ export function AdminLoginPage() {
               {...register("password", { required: true })}
               className="admin-input min-h-11 bg-[#FFFFFF]"
             />
-            {error ? <p className="border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p> : null}
+            {error ? <p className="border border-[#080808]/20 bg-[#F7F7F7] px-4 py-3 text-sm text-[#080808]">{error}</p> : null}
             <button
               type="submit"
               disabled={formState.isSubmitting}

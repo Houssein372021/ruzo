@@ -64,10 +64,10 @@ export function FavoritesPage() {
       <section className="mx-auto max-w-7xl px-5 py-16 lg:px-10">
         <div className="mb-10 flex items-end justify-between border-b border-[#080808]/10 pb-8">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-display text-[#6B0F1A]">{t("ruzoEdit")}</p>
+            <p className="text-xs font-semibold uppercase tracking-display text-[#080808]">{t("ruzoEdit")}</p>
             <h1 className="font-display mt-3 text-5xl">{t("favorites")}</h1>
           </div>
-          <Heart className="h-7 w-7 text-[#6B0F1A]" />
+          <Heart className="h-7 w-7 text-[#080808]" />
         </div>
 
         <div className="grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 lg:grid-cols-4">

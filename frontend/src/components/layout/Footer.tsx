@@ -30,7 +30,7 @@ export function Footer() {
 
   return (
     <footer className="border-t border-[#FFFFFF]/12 bg-[#080808] text-[#FFFFFF]">
-      <section className="border-t border-[#FFFFFF]/12 bg-[#6B0F1A] text-[#FFFFFF]">
+      <section className="border-t border-[#FFFFFF]/12 bg-[#080808] text-[#FFFFFF]">
         <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-x-8 gap-y-12 px-5 py-14 lg:grid-cols-[1.15fr_0.65fr_0.95fr_0.7fr] lg:px-8">
           <div className="col-span-2 lg:col-span-1">
             <Link

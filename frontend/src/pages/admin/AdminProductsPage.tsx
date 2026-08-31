@@ -7,7 +7,7 @@ import { AdminPanel } from "../../components/admin/AdminPanel";
 import { useI18n } from "../../hooks/useI18n";
 import type { Category, Product } from "../../types";
 import { formatCurrency } from "../../utils/format";
-import { getProductImageUrl } from "../../utils/product";
+import { getDiscountPercentage, getEffectiveProductPrice, getProductImageUrl } from "../../utils/product";
 
 type ProductImageForm = {
   imageUrl: string;
@@ -32,6 +32,8 @@ type ProductForm = {
   descriptionEn: string;
   descriptionAr: string;
   price: string;
+  onSale: boolean;
+  salePrice: string;
   categoryId: string;
   videoUrl: string;
   active: boolean;
@@ -61,6 +63,8 @@ const createEmptyProductForm = (categoryId = ""): ProductForm => ({
   descriptionEn: "",
   descriptionAr: "",
   price: "",
+  onSale: false,
+  salePrice: "",
   categoryId,
   videoUrl: "",
   active: true,
@@ -196,12 +200,28 @@ export function AdminProductsPage() {
       }),
     [products, search],
   );
+  const formPrice = Number(form.price || 0);
+  const formSalePrice = Number(form.salePrice || 0);
+  const formDiscountPercentage =
+    form.onSale && formPrice > 0 && formSalePrice > 0 && formSalePrice < formPrice
+      ? Math.round(((formPrice - formSalePrice) / formPrice) * 100)
+      : null;
 
   const handleSave = async () => {
     setError("");
     const categoryId = form.categoryId || categories[0]?.id;
     if (!categoryId) {
       setError(t("required"));
+      return;
+    }
+    const price = Number(form.price || 0);
+    const salePrice = Number(form.salePrice || 0);
+    if (price <= 0) {
+      setError(t("priceValidationError"));
+      return;
+    }
+    if (form.onSale && (salePrice <= 0 || salePrice >= price)) {
+      setError(t("salePriceValidationError"));
       return;
     }
 
@@ -230,7 +250,9 @@ export function AdminProductsPage() {
       shortDescriptionAr: form.shortDescriptionAr.trim(),
       descriptionEn: form.descriptionEn.trim(),
       descriptionAr: form.descriptionAr.trim(),
-      price: Number(form.price || 0),
+      price,
+      onSale: form.onSale,
+      salePrice: form.salePrice.trim() ? salePrice : undefined,
       categoryId,
       videoUrl: form.videoUrl.trim() || undefined,
       active: form.active,
@@ -271,6 +293,8 @@ export function AdminProductsPage() {
       descriptionEn: product.descriptionEn ?? "",
       descriptionAr: product.descriptionAr ?? "",
       price: String(product.price),
+      onSale: Boolean(product.onSale),
+      salePrice: product.salePrice == null ? "" : String(product.salePrice),
       categoryId: product.category?.id ?? categories[0]?.id ?? "",
       videoUrl: product.videoUrl ?? "",
       active: product.active ?? product.isActive ?? true,
@@ -419,7 +443,7 @@ export function AdminProductsPage() {
             <button type="button" className="admin-primary-button" onClick={saveFeaturedMenu}>
               {t("save")}
             </button>
-            {featuredStatus ? <span className="text-sm font-semibold text-[#6B0F1A]">{featuredStatus}</span> : null}
+            {featuredStatus ? <span className="text-sm font-semibold text-[#080808]">{featuredStatus}</span> : null}
           </div>
         </div>
       </AdminPanel>
@@ -428,7 +452,7 @@ export function AdminProductsPage() {
           title={t("products")}
           action={
             <label className="relative">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8A2638]" />
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#444444]" />
               <input
                 value={search}
                 onChange={(event) => setSearch(event.target.value)}
@@ -453,7 +477,7 @@ export function AdminProductsPage() {
                 <tr key={product.id}>
                   <td>
                     <div className="font-semibold">{language === "ar" ? product.nameAr : product.nameEn}</div>
-                    <div className="text-xs text-[#8A2638]">{product.slug}</div>
+                    <div className="text-xs text-[#444444]">{product.slug}</div>
                   </td>
                   <td>
                     {product.category
@@ -462,7 +486,20 @@ export function AdminProductsPage() {
                         : product.category.nameEn
                       : "-"}
                   </td>
-                  <td>{formatCurrency(product.price, language)}</td>
+                  <td>
+                    {getDiscountPercentage(product) ? (
+                      <div className="grid gap-1">
+                        <span className="font-semibold">
+                          {formatCurrency(getEffectiveProductPrice(product), language)}
+                        </span>
+                        <span className="text-xs text-[#444444] line-through">
+                          {formatCurrency(product.price, language)}
+                        </span>
+                      </div>
+                    ) : (
+                      formatCurrency(product.price, language)
+                    )}
+                  </td>
                   <td>{product.variants.reduce((sum, variant) => sum + (variant.stock ?? 0), 0)}</td>
                   <td>
                     <div className="flex gap-2">
@@ -529,10 +566,51 @@ export function AdminProductsPage() {
               <AdminInput label={t("price")} type="number" value={form.price} onChange={(value) => setForm({ ...form, price: value })} />
               <AdminInput label={t("videoUrl")} value={form.videoUrl} onChange={(value) => setForm({ ...form, videoUrl: value })} />
             </div>
+            <div className="grid gap-3 border border-[#E5E5E5] p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
+                    {t("onSale")}
+                  </p>
+                  <p className="mt-1 text-xs leading-5 text-[#080808]/60">{t("saleAdminHint")}</p>
+                </div>
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={form.onSale}
+                  className={`relative h-7 w-12 border transition ${
+                    form.onSale ? "border-[#080808] bg-[#080808]" : "border-[#E5E5E5] bg-white"
+                  }`}
+                  onClick={() => setForm({ ...form, onSale: !form.onSale })}
+                >
+                  <span
+                    className={`absolute top-1 h-5 w-5 bg-white shadow-sm transition ${
+                      form.onSale ? "left-6" : "left-1"
+                    }`}
+                  />
+                </button>
+              </div>
+              {form.onSale ? (
+                <div className="grid gap-2">
+                  <AdminInput
+                    label={t("salePrice")}
+                    type="number"
+                    value={form.salePrice}
+                    onChange={(value) => setForm({ ...form, salePrice: value })}
+                  />
+                  {formDiscountPercentage ? (
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#080808]">
+                      {formatCurrency(formPrice, language)} -&gt; {formatCurrency(formSalePrice, language)} ·{" "}
+                      {formDiscountPercentage}% {t("discountOff")}
+                    </p>
+                  ) : null}
+                </div>
+              ) : null}
+            </div>
 
             <FormSection title={t("productImages")} actionLabel={t("addImage")} onAdd={addImage}>
               {form.images.map((image, index) => (
-                <div key={`${index}-${image.sortOrder}`} className="grid gap-3 border border-[#E6D9DE] p-3">
+                <div key={`${index}-${image.sortOrder}`} className="grid gap-3 border border-[#E5E5E5] p-3">
                   <div className="grid grid-cols-[1fr_40px] gap-2">
                     <AdminInput
                       label={t("sortOrder")}
@@ -560,7 +638,7 @@ export function AdminProductsPage() {
 
             <FormSection title={t("variants")} actionLabel={t("addVariant")} onAdd={addVariant}>
               {form.variants.map((variant, index) => (
-                <div key={index} className="grid gap-3 border border-[#E6D9DE] p-3">
+                <div key={index} className="grid gap-3 border border-[#E5E5E5] p-3">
                   <div className="grid grid-cols-[1fr_1fr_40px] gap-2">
                     <AdminInput
                       label={t("variantColor")}
@@ -652,7 +730,7 @@ type AdminInputProps = {
 function AdminInput({ label, value, onChange, type = "text" }: AdminInputProps) {
   return (
     <label className="block min-w-0">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
         {label}
       </span>
       <input
@@ -668,7 +746,7 @@ function AdminInput({ label, value, onChange, type = "text" }: AdminInputProps) 
 function AdminTextarea({ label, value, onChange }: AdminInputProps) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
         {label}
       </span>
       <textarea
@@ -693,7 +771,7 @@ function AdminSelect({
 }) {
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
+      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
         {label}
       </span>
       <select
@@ -719,7 +797,7 @@ function FormSection({
   children: ReactNode;
 }) {
   return (
-    <section className="grid gap-3 border-t border-[#E6D9DE] pt-4">
+    <section className="grid gap-3 border-t border-[#E5E5E5] pt-4">
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#080808]">{title}</h3>
         <button type="button" className="admin-secondary-button" onClick={onAdd}>

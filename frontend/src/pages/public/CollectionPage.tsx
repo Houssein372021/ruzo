@@ -10,7 +10,7 @@ import { ProductCard } from "../../components/product/ProductCard";
 import { useI18n } from "../../hooks/useI18n";
 import type { Category, Product } from "../../types";
 import type { TranslationKey } from "../../i18n/translations";
-import { uniqueValues } from "../../utils/product";
+import { getEffectiveProductPrice, uniqueValues } from "../../utils/product";
 
 type CollectionPageProps = {
   categorySlug: string;
@@ -127,9 +127,10 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
       const matchesColor = color === "all" || product.variants.some((variant) => variant.color === color);
       const matchesAvailability =
         availability === "all" || product.variants.some((variant) => variant.stock > 0);
+      const effectivePrice = getEffectiveProductPrice(product);
       const matchesPrice =
         price === "all" ||
-        (price === "under-50" ? product.price < 50 : product.price >= 50);
+        (price === "under-50" ? effectivePrice < 50 : effectivePrice >= 50);
       const searchableProduct = [
         product.nameEn,
         product.nameAr,
@@ -151,10 +152,10 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
 
     return [...filtered].sort((first, second) => {
       if (sort === "price-low") {
-        return first.price - second.price;
+        return getEffectiveProductPrice(first) - getEffectiveProductPrice(second);
       }
       if (sort === "price-high") {
-        return second.price - first.price;
+        return getEffectiveProductPrice(second) - getEffectiveProductPrice(first);
       }
       return 0;
     });
@@ -257,7 +258,7 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
       <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="flex flex-col justify-between gap-6 border-b border-[#080808]/10 pb-8 lg:flex-row lg:items-end">
           <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">{t("collectionEyebrow")}</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#080808]">{t("collectionEyebrow")}</p>
             <h1 className="mt-3 text-4xl font-semibold text-[#080808] sm:text-5xl">{collectionName}</h1>
           </div>
           <div className="hidden items-center gap-2 text-sm text-[#080808]/62 lg:flex">
@@ -269,20 +270,20 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
         <div className="mt-5 max-w-3xl">
           <label className="relative block">
             <span className="sr-only">{t("searchProducts")}</span>
-            <Search className="pointer-events-none absolute top-1/2 h-5 w-5 -translate-y-1/2 text-[#6B0F1A] [inset-inline-start:1rem]" />
+            <Search className="pointer-events-none absolute top-1/2 h-5 w-5 -translate-y-1/2 text-[#080808] [inset-inline-start:1rem]" />
             <input
               type="search"
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
               placeholder={t("searchProducts")}
-              className="h-14 w-full border border-[#080808]/14 bg-[#FFFFFF] px-4 text-base text-[#080808] outline-none transition placeholder:text-[#080808]/42 focus:border-[#6B0F1A] focus:bg-white focus:shadow-[0_0_0_3px_rgba(107,15,26,0.12)] [padding-inline-end:3rem] [padding-inline-start:3rem] sm:h-16 sm:text-lg"
+              className="h-14 w-full border border-[#080808]/14 bg-[#FFFFFF] px-4 text-base text-[#080808] outline-none transition placeholder:text-[#080808]/42 focus:border-[#080808] focus:bg-white focus:shadow-[0_0_0_3px_rgba(8,8,8,0.12)] [padding-inline-end:3rem] [padding-inline-start:3rem] sm:h-16 sm:text-lg"
             />
             {searchQuery ? (
               <button
                 type="button"
                 aria-label={t("clearSearch")}
                 onClick={() => setSearchQuery("")}
-                className="absolute top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center border border-transparent text-[#6B0F1A] transition hover:border-[#080808]/16 hover:bg-[#080808]/5 [inset-inline-end:0.75rem]"
+                className="absolute top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center border border-transparent text-[#080808] transition hover:border-[#080808]/16 hover:bg-[#080808]/5 [inset-inline-end:0.75rem]"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -298,12 +299,12 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
           <button
             type="button"
             onClick={() => setIsFilterOpen(true)}
-            className="inline-flex h-11 items-center justify-center gap-2 border border-[#6B0F1A] bg-[#6B0F1A] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#FFFFFF] transition hover:border-[#080808] hover:bg-[#080808]"
+            className="inline-flex h-11 items-center justify-center gap-2 border border-[#080808] bg-[#080808] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#FFFFFF] transition hover:border-[#080808] hover:bg-[#080808]"
           >
             <SlidersHorizontal className="h-4 w-4" />
             <span>{t("filters")}</span>
             {activeFilterCount > 0 ? (
-              <span className="grid h-5 min-w-5 place-items-center bg-[#FFFFFF] px-1 text-xs text-[#6B0F1A]">
+              <span className="grid h-5 min-w-5 place-items-center bg-[#FFFFFF] px-1 text-xs text-[#080808]">
                 {activeFilterCount}
               </span>
             ) : null}
@@ -343,7 +344,7 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
             onClick={() => setIsFilterOpen(false)}
           />
           <div className="absolute inset-x-0 bottom-0 max-h-[88vh] overflow-y-auto rounded-t-lg bg-[#FFFFFF] px-4 pb-6 pt-4 shadow-2xl">
-            <div className="mx-auto h-1 w-10 bg-[#6B0F1A]" />
+            <div className="mx-auto h-1 w-10 bg-[#080808]" />
             <div className="mt-5 flex items-center justify-between gap-4">
               <div>
                 <h2 id="collection-filters-title" className="text-2xl font-semibold text-[#080808]">
@@ -357,7 +358,7 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
                 type="button"
                 aria-label={t("closeFilters")}
                 onClick={() => setIsFilterOpen(false)}
-                className="grid h-10 w-10 place-items-center border border-[#080808]/14 bg-[#FFFFFF] text-[#6B0F1A] transition hover:border-[#6B0F1A]"
+                className="grid h-10 w-10 place-items-center border border-[#080808]/14 bg-[#FFFFFF] text-[#080808] transition hover:border-[#080808]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -370,14 +371,14 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
                 type="button"
                 onClick={resetFilters}
                 disabled={activeFilterCount === 0}
-                className="h-12 border border-[#080808]/14 bg-[#FFFFFF] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#6B0F1A] transition enabled:hover:border-[#6B0F1A] disabled:cursor-not-allowed disabled:text-[#080808]/35"
+                className="h-12 border border-[#080808]/14 bg-[#FFFFFF] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#080808] transition enabled:hover:border-[#080808] disabled:cursor-not-allowed disabled:text-[#080808]/35"
               >
                 {t("clearFilters")}
               </button>
               <button
                 type="button"
                 onClick={() => setIsFilterOpen(false)}
-                className="h-12 bg-[#6B0F1A] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#FFFFFF] transition hover:bg-[#080808]"
+                className="h-12 bg-[#080808] px-4 text-sm font-semibold uppercase tracking-[0.16em] text-[#FFFFFF] transition hover:bg-[#080808]"
               >
                 {t("showProducts", { count: String(filteredProducts.length) })}
               </button>
@@ -401,13 +402,13 @@ function FilterSelect({ label, value, options, onChange }: FilterSelectProps) {
 
   return (
     <label className="block">
-      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#6B0F1A]">
+      <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
         {label}
       </span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="h-11 w-full border border-[#080808]/14 bg-white px-3 text-sm outline-none transition focus:border-[#6B0F1A] focus:shadow-[0_0_0_3px_rgba(107,15,26,0.12)]"
+        className="h-11 w-full border border-[#080808]/14 bg-white px-3 text-sm outline-none transition focus:border-[#080808] focus:shadow-[0_0_0_3px_rgba(8,8,8,0.12)]"
       >
         {options.map((option) => (
           <option key={option} value={option}>

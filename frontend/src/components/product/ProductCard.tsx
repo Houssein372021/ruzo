@@ -7,7 +7,15 @@ import { useI18n } from "../../hooks/useI18n";
 import { useCartStore } from "../../store/cartStore";
 import { useFavoritesStore } from "../../store/favoritesStore";
 import { formatCurrency } from "../../utils/format";
-import { getHoverImage, getProductImage, getProductName, toFavoriteItem, uniqueValues } from "../../utils/product";
+import {
+  getDiscountPercentage,
+  getEffectiveProductPrice,
+  getHoverImage,
+  getProductImage,
+  getProductName,
+  toFavoriteItem,
+  uniqueValues,
+} from "../../utils/product";
 import { StarRating } from "./StarRating";
 
 type ProductCardProps = {
@@ -27,7 +35,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
   const hasHoverImage = Boolean(hoverImage && hoverImage !== image);
   const colors = uniqueValues(product.variants.map((variant) => variant.color)).slice(0, 5);
   const firstVariant = product.variants.find((variant) => variant.stock > 0) ?? product.variants[0];
-  const displayPrice = product.salePrice ?? product.price;
+  const favoriteItem = toFavoriteItem(product);
+  const displayPrice = getEffectiveProductPrice(product);
+  const discountPercentage = getDiscountPercentage(product);
 
   const handleQuickAdd = () => {
     if (!firstVariant || firstVariant.stock <= 0) {
@@ -35,13 +45,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     }
 
     addItem({
-      ...toFavoriteItem(product),
+      ...favoriteItem,
       variantId: firstVariant?.id,
       color: firstVariant?.color,
       colorHex: firstVariant?.colorHex,
       size: firstVariant?.size,
       stock: firstVariant?.stock,
-      imageUrl: firstVariant?.imageUrl ?? toFavoriteItem(product).imageUrl,
+      imageUrl: firstVariant?.imageUrl ?? favoriteItem.imageUrl,
     });
   };
 
@@ -63,7 +73,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         }
       }}
     >
-      <div className="relative overflow-hidden border border-[#080808]/10 bg-[#F7F3F0]">
+      <div className="relative overflow-hidden border border-[#080808]/10 bg-[#F7F7F7]">
         <Link to={`/products/${product.slug}`} className="block">
           <img
             src={image}
@@ -96,24 +106,24 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           ) : null}
         </Link>
 
-        {product.badge || product.isNew || product.isBestSeller ? (
-          <span className="absolute left-3 top-3 border border-[#080808]/10 bg-[#FFFFFF]/96 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6B0F1A]">
-            {product.badge ?? (product.isNew ? t("newest") : t("bestSellers"))}
+        {discountPercentage || product.badge || product.isNew || product.isBestSeller ? (
+          <span className="absolute left-3 top-3 border border-[#080808]/10 bg-[#FFFFFF]/96 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#080808]">
+            {discountPercentage ? `-${discountPercentage}%` : product.badge ?? (product.isNew ? t("newest") : t("bestSellers"))}
           </span>
         ) : null}
 
         <button
           type="button"
           aria-label={t("favorites")}
-          className="absolute right-3 top-3 grid h-9 w-9 place-items-center border border-[#080808]/12 bg-[#FFFFFF]/94 text-[#080808] backdrop-blur transition hover:border-[#6B0F1A] hover:text-[#6B0F1A]"
-          onClick={() => toggleFavorite(toFavoriteItem(product))}
+          className="absolute right-3 top-3 grid h-9 w-9 place-items-center border border-[#080808]/12 bg-[#FFFFFF]/94 text-[#080808] backdrop-blur transition hover:border-[#080808] hover:text-[#080808]"
+          onClick={() => toggleFavorite(favoriteItem)}
         >
-          <Heart className={isFavorite ? "h-4 w-4 fill-[#6B0F1A] text-[#6B0F1A]" : "h-4 w-4"} />
+          <Heart className={isFavorite ? "h-4 w-4 fill-[#080808] text-[#080808]" : "h-4 w-4"} />
         </button>
 
         <button
           type="button"
-          className="absolute inset-x-0 bottom-0 flex min-h-11 translate-y-full items-center justify-center gap-2 bg-[#080808]/92 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF] transition duration-300 hover:bg-[#6B0F1A] group-hover:translate-y-0"
+          className="absolute inset-x-0 bottom-0 flex min-h-11 translate-y-full items-center justify-center gap-2 bg-[#080808]/92 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF] transition duration-300 hover:bg-[#080808] group-hover:translate-y-0"
           onClick={handleQuickAdd}
         >
           <ShoppingBag className="h-4 w-4" />
@@ -131,19 +141,19 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               {getProductName(product, language)}
             </Link>
             {product.category ? (
-            <p className="mt-1 truncate text-[11px] uppercase tracking-[0.16em] text-[#6B0F1A]">
+              <p className="mt-1 truncate text-[11px] uppercase tracking-[0.16em] text-[#080808]">
                 {language === "ar" ? product.category.nameAr : product.category.nameEn}
               </p>
             ) : null}
           </div>
 
           <div className="shrink-0 text-right text-sm text-[#080808]">
-            {product.salePrice ? (
-              <p>
-                <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
-                <span className="ms-2 text-[#6B0F1A] line-through">
+            {discountPercentage ? (
+              <p className="flex flex-wrap items-baseline justify-end gap-x-2 gap-y-1">
+                <span className="text-[#080808]/70 line-through">
                   {formatCurrency(product.price, language)}
                 </span>
+                <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
               </p>
             ) : (
               <p className="font-semibold">{formatCurrency(product.price, language)}</p>
@@ -168,7 +178,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           {(product.reviewCount ?? 0) > 0 ? (
             <div className="flex items-center gap-1.5">
               <StarRating value={product.avgRating ?? 0} size={12} />
-              <span className="text-[11px] text-[#6B0F1A]">({product.reviewCount})</span>
+              <span className="text-[11px] text-[#080808]">({product.reviewCount})</span>
             </div>
           ) : null}
         </div>

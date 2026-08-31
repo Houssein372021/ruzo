@@ -16,6 +16,8 @@ import { useFavoritesStore } from "../../store/favoritesStore";
 import type { Product, ProductVariant } from "../../types";
 import { formatCurrency } from "../../utils/format";
 import {
+  getDiscountPercentage,
+  getEffectiveProductPrice,
   getProductDescription,
   getProductImage,
   getProductImageUrl,
@@ -206,7 +208,8 @@ export function ProductDetailPage() {
   const description = getProductDescription(product, language);
   const shortDescription =
     (language === "ar" ? product.shortDescriptionAr : product.shortDescriptionEn)?.trim() || description;
-  const displayPrice = product.salePrice ?? product.price;
+  const displayPrice = getEffectiveProductPrice(product);
+  const discountPercentage = getDiscountPercentage(product);
   const productName = getProductName(product, language);
   const mobileMediaItems = [
     ...mediaImages.map((image) => ({
@@ -328,7 +331,7 @@ export function ProductDetailPage() {
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
       <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="min-w-0 overflow-hidden lg:hidden">
-          <div className="mx-auto max-w-full overflow-hidden bg-[#f2eee7] px-4 py-5">
+          <div className="mx-auto max-w-full overflow-hidden bg-[#F2F2F2] px-4 py-5">
             <div className="relative mx-auto max-w-[360px] overflow-hidden">
               {activeMobileMedia?.type === "image" ? (
                 <img
@@ -350,7 +353,7 @@ export function ProductDetailPage() {
                     type="button"
                     aria-label={t("previousImage")}
                     onClick={() => goToMobileImage(-1)}
-                    className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#080808]/85 text-white shadow-sm transition hover:bg-[#6B0F1A]"
+                    className="absolute left-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#080808]/85 text-white shadow-sm transition hover:bg-[#080808]"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </button>
@@ -358,7 +361,7 @@ export function ProductDetailPage() {
                     type="button"
                     aria-label={t("nextImage")}
                     onClick={() => goToMobileImage(1)}
-                    className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#080808]/85 text-white shadow-sm transition hover:bg-[#6B0F1A]"
+                    className="absolute right-2 top-1/2 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-[#080808]/85 text-white shadow-sm transition hover:bg-[#080808]"
                   >
                     <ChevronRight className="h-5 w-5" />
                   </button>
@@ -380,7 +383,7 @@ export function ProductDetailPage() {
                     {item.type === "image" ? (
                       <img src={item.url} alt="" className="h-full w-full object-cover" />
                     ) : (
-                      <span className="grid h-full w-full place-items-center bg-[#6B0F1A] text-[10px] font-semibold uppercase tracking-display text-[#FFFFFF]">
+                      <span className="grid h-full w-full place-items-center bg-[#080808] text-[10px] font-semibold uppercase tracking-display text-[#FFFFFF]">
                         {t("video")}
                       </span>
                     )}
@@ -408,8 +411,8 @@ export function ProductDetailPage() {
             {product.videoUrl ? (
               <button
                 type="button"
-                className={`w-20 shrink-0 border bg-[#6B0F1A] text-[10px] font-semibold uppercase tracking-display text-[#FFFFFF] ${
-                  selectedImage === product.videoUrl ? "border-[#6B0F1A]" : "border-transparent"
+                className={`w-20 shrink-0 border bg-[#080808] text-[10px] font-semibold uppercase tracking-display text-[#FFFFFF] ${
+                  selectedImage === product.videoUrl ? "border-[#080808]" : "border-transparent"
                 }`}
                 onClick={() => scrollToMedia(product.videoUrl)}
               >
@@ -427,7 +430,7 @@ export function ProductDetailPage() {
                 initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
                 className={`snap-start overflow-hidden bg-[#FFFFFF] ring-1 transition ${
-                  selectedImage === image.imageUrl ? "ring-[#6B0F1A]" : "ring-transparent"
+                  selectedImage === image.imageUrl ? "ring-[#080808]" : "ring-transparent"
                 }`}
               >
                 <img
@@ -447,7 +450,7 @@ export function ProductDetailPage() {
                 initial={{ opacity: 0.8 }}
                 animate={{ opacity: 1 }}
                 className={`snap-start overflow-hidden bg-[#080808] ring-1 transition ${
-                  selectedImage === product.videoUrl ? "ring-[#6B0F1A]" : "ring-transparent"
+                  selectedImage === product.videoUrl ? "ring-[#080808]" : "ring-transparent"
                 }`}
               >
                 <video
@@ -464,7 +467,7 @@ export function ProductDetailPage() {
         </div>
 
         <aside className="lg:sticky lg:top-32 lg:self-start">
-          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#6B0F1A]">
+          <p className="text-xs font-semibold uppercase tracking-[0.28em] text-[#080808]">
             {product.category ? (language === "ar" ? product.category.nameAr : product.category.nameEn) : "Rüzo"}
           </p>
           <div className="mt-3">
@@ -475,18 +478,27 @@ export function ProductDetailPage() {
           {(product.reviewCount ?? 0) > 0 ? (
             <div className="mt-4 flex items-center gap-2">
               <StarRating value={product.avgRating ?? 0} />
-              <span className="text-xs text-[#6B0F1A]">
+              <span className="text-xs text-[#080808]">
                 {t("basedOnReviews", { count: String(product.reviewCount ?? 0) })}
               </span>
             </div>
           ) : null}
-          <div className="mt-3 flex items-baseline gap-3 text-2xl">
-            <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
-            {product.salePrice ? (
-              <span className="text-base text-[#6B0F1A] line-through">
+          <div className="mt-3 flex flex-wrap items-baseline gap-3 text-2xl">
+            {discountPercentage ? (
+              <>
+                <span className="text-base text-[#080808]/70 line-through">
+                  {formatCurrency(product.price, language)}
+                </span>
+                <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
+                <span className="border border-[#080808]/20 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#080808]">
+                  -{discountPercentage}%
+                </span>
+              </>
+            ) : (
+              <span className="font-semibold">
                 {formatCurrency(product.price, language)}
               </span>
-            ) : null}
+            )}
           </div>
           {shortDescription ? <p className="mt-5 text-sm leading-8 text-[#080808]/66">{shortDescription}</p> : null}
 
@@ -495,7 +507,7 @@ export function ProductDetailPage() {
               <p className="mb-3 text-xs font-semibold uppercase tracking-[0.2em] text-[#080808]">
                 {t("color")}:{" "}
                 {selectedColor ? (
-                  <span className="font-medium tracking-[0.18em] text-[#6B0F1A]">
+                  <span className="font-medium tracking-[0.18em] text-[#080808]">
                     {selectedColor.toUpperCase()}
                   </span>
                 ) : null}
@@ -511,8 +523,8 @@ export function ProductDetailPage() {
                       aria-label={t("colorOption", { color })}
                       className={`h-10 w-10 rounded-full border border-[#080808]/14 ring-1 transition ${
                         selectedColor === color
-                          ? "ring-[#6B0F1A] ring-offset-2 ring-offset-[#FFFFFF]"
-                          : "ring-transparent hover:ring-[#6B0F1A]"
+                          ? "ring-[#080808] ring-offset-2 ring-offset-[#FFFFFF]"
+                          : "ring-transparent hover:ring-[#080808]"
                       }`}
                       style={{ backgroundColor: variant?.colorHex ?? color }}
                       onClick={() => {
@@ -553,10 +565,10 @@ export function ProductDetailPage() {
                       title={isAvailable ? sizeOption : "Out of stock"}
                       className={`relative h-11 min-w-11 overflow-hidden border px-5 text-sm transition ${
                         isSelected && isAvailable
-                          ? "border-[#6B0F1A] bg-[#6B0F1A] text-[#FFFFFF]"
+                          ? "border-[#080808] bg-[#080808] text-[#FFFFFF]"
                           : isAvailable
-                            ? "border-[#080808]/14 hover:border-[#6B0F1A]"
-                            : "cursor-not-allowed border-[#080808]/10 bg-[#F7F4F1] text-[#080808]/34"
+                            ? "border-[#080808]/14 hover:border-[#080808]"
+                            : "cursor-not-allowed border-[#080808]/10 bg-[#F7F7F7] text-[#080808]/34"
                       }`}
                       onClick={() => {
                         if (!isAvailable) {
@@ -587,7 +599,7 @@ export function ProductDetailPage() {
               <button
                 type="button"
                 disabled={!selectedVariant || selectedVariant.stock <= 0}
-                className="flex h-[52px] min-w-0 items-center justify-center bg-[#6B0F1A] px-4 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808] max-[420px]:px-2 max-[420px]:text-[0.64rem] max-[420px]:tracking-[0.08em]"
+                className="flex h-[52px] min-w-0 items-center justify-center bg-[#080808] px-4 text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition hover:bg-[#080808] max-[420px]:px-2 max-[420px]:text-[0.64rem] max-[420px]:tracking-[0.08em]"
                 onClick={handleAddToCart}
               >
                 {t("addToCart")}
@@ -595,10 +607,10 @@ export function ProductDetailPage() {
               <button
                 type="button"
                 aria-label={t("favorites")}
-                className="grid h-[52px] w-[52px] place-items-center border border-[#080808]/14 bg-transparent text-[#080808] transition hover:border-[#6B0F1A] hover:text-[#6B0F1A]"
+                className="grid h-[52px] w-[52px] place-items-center border border-[#080808]/14 bg-transparent text-[#080808] transition hover:border-[#080808] hover:text-[#080808]"
                 onClick={() => toggleFavorite(favoriteItem)}
               >
-                <Heart className={isFavorite ? "h-5 w-5 fill-[#6B0F1A] text-[#6B0F1A]" : "h-5 w-5"} />
+                <Heart className={isFavorite ? "h-5 w-5 fill-[#080808] text-[#080808]" : "h-5 w-5"} />
               </button>
             </div>
           </div>
@@ -611,7 +623,7 @@ export function ProductDetailPage() {
               <div key={item.id}>
                 <button
                   type="button"
-                  className="flex w-full items-center justify-between py-4 text-xs font-medium uppercase tracking-[0.24em] text-[#24191D]"
+                  className="flex w-full items-center justify-between py-4 text-xs font-medium uppercase tracking-[0.24em] text-[#111111]"
                   onClick={() => setOpenAccordion(openAccordion === item.id ? "" : item.id)}
                 >
                   {item.label}

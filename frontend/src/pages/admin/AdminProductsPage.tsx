@@ -492,7 +492,11 @@ export function AdminProductsPage() {
                         <span className="font-semibold">
                           {formatCurrency(getEffectiveProductPrice(product), language)}
                         </span>
+<<<<<<< HEAD
                         <span className="text-xs text-[#444444] line-through">
+=======
+                        <span className="text-xs text-[#8A2638] line-through">
+>>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                           {formatCurrency(product.price, language)}
                         </span>
                       </div>
@@ -566,10 +570,17 @@ export function AdminProductsPage() {
               <AdminInput label={t("price")} type="number" value={form.price} onChange={(value) => setForm({ ...form, price: value })} />
               <AdminInput label={t("videoUrl")} value={form.videoUrl} onChange={(value) => setForm({ ...form, videoUrl: value })} />
             </div>
+<<<<<<< HEAD
             <div className="grid gap-3 border border-[#E5E5E5] p-3">
               <div className="flex items-center justify-between gap-3">
                 <div>
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
+=======
+            <div className="grid gap-3 border border-[#E6D9DE] p-3">
+              <div className="flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#8A2638]">
+>>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                     {t("onSale")}
                   </p>
                   <p className="mt-1 text-xs leading-5 text-[#080808]/60">{t("saleAdminHint")}</p>
@@ -579,7 +590,11 @@ export function AdminProductsPage() {
                   role="switch"
                   aria-checked={form.onSale}
                   className={`relative h-7 w-12 border transition ${
+<<<<<<< HEAD
                     form.onSale ? "border-[#080808] bg-[#080808]" : "border-[#E5E5E5] bg-white"
+=======
+                    form.onSale ? "border-[#6B0F1A] bg-[#6B0F1A]" : "border-[#E6D9DE] bg-white"
+>>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                   }`}
                   onClick={() => setForm({ ...form, onSale: !form.onSale })}
                 >
@@ -599,7 +614,11 @@ export function AdminProductsPage() {
                     onChange={(value) => setForm({ ...form, salePrice: value })}
                   />
                   {formDiscountPercentage ? (
+<<<<<<< HEAD
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#080808]">
+=======
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-[#6B0F1A]">
+>>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                       {formatCurrency(formPrice, language)} -&gt; {formatCurrency(formSalePrice, language)} ·{" "}
                       {formDiscountPercentage}% {t("discountOff")}
                     </p>

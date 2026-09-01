@@ -240,11 +240,7 @@ export function CheckoutPage() {
                   {hasCartItemSale(item) ? (
                     <span className="flex flex-wrap items-baseline gap-2">
                       <span>{formatCurrency(item.price * item.quantity, language)}</span>
-<<<<<<< HEAD
                       <span className="text-xs font-medium text-[#080808]/70 line-through">
-=======
-                      <span className="text-xs font-medium text-[#6B0F1A]/70 line-through">
->>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                         {formatCurrency((item.originalPrice ?? item.price) * item.quantity, language)}
                       </span>
                     </span>

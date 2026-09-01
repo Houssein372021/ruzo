@@ -107,11 +107,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         </Link>
 
         {discountPercentage || product.badge || product.isNew || product.isBestSeller ? (
-<<<<<<< HEAD
           <span className="absolute left-3 top-3 border border-[#080808]/10 bg-[#FFFFFF]/96 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#080808]">
-=======
-          <span className="absolute left-3 top-3 border border-[#080808]/10 bg-[#FFFFFF]/96 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#6B0F1A]">
->>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
             {discountPercentage ? `-${discountPercentage}%` : product.badge ?? (product.isNew ? t("newest") : t("bestSellers"))}
           </span>
         ) : null}
@@ -119,11 +115,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         <button
           type="button"
           aria-label={t("favorites")}
-<<<<<<< HEAD
           className="absolute right-3 top-3 grid h-9 w-9 place-items-center border border-[#080808]/12 bg-[#FFFFFF]/94 text-[#080808] backdrop-blur transition hover:border-[#080808] hover:text-[#080808]"
-=======
-          className="absolute right-3 top-3 grid h-9 w-9 place-items-center border border-[#080808]/12 bg-[#FFFFFF]/94 text-[#080808] backdrop-blur transition hover:border-[#6B0F1A] hover:text-[#6B0F1A]"
->>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
           onClick={() => toggleFavorite(favoriteItem)}
         >
           <Heart className={isFavorite ? "h-4 w-4 fill-[#080808] text-[#080808]" : "h-4 w-4"} />
@@ -149,11 +141,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
               {getProductName(product, language)}
             </Link>
             {product.category ? (
-<<<<<<< HEAD
               <p className="mt-1 truncate text-[11px] uppercase tracking-[0.16em] text-[#080808]">
-=======
-              <p className="mt-1 truncate text-[11px] uppercase tracking-[0.16em] text-[#6B0F1A]">
->>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                 {language === "ar" ? product.category.nameAr : product.category.nameEn}
               </p>
             ) : null}
@@ -162,11 +150,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="shrink-0 text-right text-sm text-[#080808]">
             {discountPercentage ? (
               <p className="flex flex-wrap items-baseline justify-end gap-x-2 gap-y-1">
-<<<<<<< HEAD
                 <span className="text-[#080808]/70 line-through">
-=======
-                <span className="text-[#6B0F1A]/70 line-through">
->>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                   {formatCurrency(product.price, language)}
                 </span>
                 <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>

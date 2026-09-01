@@ -486,19 +486,11 @@ export function ProductDetailPage() {
           <div className="mt-3 flex flex-wrap items-baseline gap-3 text-2xl">
             {discountPercentage ? (
               <>
-<<<<<<< HEAD
                 <span className="text-base text-[#080808]/70 line-through">
                   {formatCurrency(product.price, language)}
                 </span>
                 <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
                 <span className="border border-[#080808]/20 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#080808]">
-=======
-                <span className="text-base text-[#6B0F1A]/70 line-through">
-                  {formatCurrency(product.price, language)}
-                </span>
-                <span className="font-semibold">{formatCurrency(displayPrice, language)}</span>
-                <span className="border border-[#6B0F1A]/20 px-2.5 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#6B0F1A]">
->>>>>>> 68094bb4f23a53ec8ac9027c497222d605c320e7
                   -{discountPercentage}%
                 </span>
               </>

@@ -55,13 +55,13 @@ export function AdminLoginPage() {
             <p className="font-display text-lg text-[#080808]">{t("adminLogin")}</p>
             <input
               type="email"
-              placeholder="admin@ruzo.local"
+              placeholder="email"
               {...register("email", { required: true })}
               className="admin-input min-h-11 bg-[#FFFFFF]"
             />
             <input
               type="password"
-              placeholder="Ruzo@2026"
+              placeholder="Password"
               {...register("password", { required: true })}
               className="admin-input min-h-11 bg-[#FFFFFF]"
             />

@@ -6,8 +6,8 @@
   --ruzo-accent-soft: #D9D9D9;
   --ruzo-black: #080808;
   --ruzo-border: #E5E5E5;
-  --font-display: "Barlow Condensed", "Arial Narrow", "Aptos Narrow", sans-serif;
-  --font-body: "Inter", Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+  --font-display: "Pinyon Script", "Brush Script MT", cursive;
+  --font-body: "Assistant", Arial, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", sans-serif;
   --font-sans: var(--font-body);
   color: #080808;
@@ -33,37 +33,69 @@ body {
   background: var(--ruzo-white);
   font-family: var(--font-body);
   font-weight: 400;
-  line-height: 1.6;
+  font-size: 0.9375rem;
+  line-height: 1.8;
+  letter-spacing: 0.0375rem;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.font-display,
-.section-title,
-.category-title {
+.public-shell .font-display,
+.public-shell .section-title,
+.public-shell .category-title {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: 0.035em;
+  font-weight: 400;
+  line-height: 1.222;
+  letter-spacing: 0.050625rem;
 }
 
-h1 {
-  font-size: clamp(2.8rem, 6vw, 5.5rem);
+.public-shell h1,
+.public-shell h1[class] {
+  font-family: var(--font-display);
+  font-size: 2.53125rem;
+  font-weight: 400;
+  line-height: 1.222;
+  letter-spacing: 0.050625rem;
 }
 
-h2 {
-  font-size: clamp(2rem, 4vw, 3.5rem);
+.public-shell h2,
+.public-shell h2[class] {
+  font-family: var(--font-display);
+  font-size: 1.6875rem;
+  font-weight: 400;
+  line-height: 1.222;
+  letter-spacing: 0.050625rem;
 }
 
-h3 {
-  font-size: clamp(1.35rem, 2.2vw, 2.35rem);
+.public-shell h3.font-display {
+  font-size: 1.434375rem;
 }
 
 [dir="rtl"] body {
+  font-family: var(--font-body);
+}
+
+[dir="rtl"] .public-shell h1,
+[dir="rtl"] .public-shell h1[class],
+[dir="rtl"] .public-shell h2,
+[dir="rtl"] .public-shell h2[class],
+[dir="rtl"] .public-shell h3.font-display,
+[dir="rtl"] .public-shell .font-display,
+[dir="rtl"] .public-shell .section-title,
+[dir="rtl"] .public-shell .category-title {
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.admin-shell,
+.admin-shell h1,
+.admin-shell h2,
+.admin-shell h3,
+.admin-shell h4,
+.admin-shell h5,
+.admin-shell h6,
+.admin-shell .font-display,
+.admin-shell .section-title,
+.admin-shell .category-title {
   font-family: var(--font-body);
 }
 
@@ -83,8 +115,7 @@ label {
 button {
   cursor: pointer;
   font-family: var(--font-body);
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.0625rem;
 }
 
 .button,
@@ -97,8 +128,8 @@ nav a,
 
 .button,
 .nav-link {
-  font-weight: 600;
-  letter-spacing: 0.02em;
+  font-weight: 400;
+  letter-spacing: 0.0625rem;
 }
 
 .font-display.uppercase,
@@ -107,7 +138,7 @@ h2.uppercase,
 h3.uppercase,
 .section-title.uppercase,
 .category-title.uppercase {
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08125rem;
 }
 
 img {
@@ -120,7 +151,23 @@ img {
 }
 
 .tracking-display {
-  letter-spacing: 0.18em;
+  letter-spacing: 0.08125rem;
+}
+
+@media (min-width: 750px) {
+  .public-shell h1,
+  .public-shell h1[class] {
+    font-size: 3.375rem;
+  }
+
+  .public-shell h2,
+  .public-shell h2[class] {
+    font-size: 2.025rem;
+  }
+
+  .public-shell h3.font-display {
+    font-size: 1.51875rem;
+  }
 }
 
 .text-balance {
@@ -180,7 +227,7 @@ img {
   border: 1px solid rgb(8 8 8 / 0.14);
   background: white;
   padding-inline: 1rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   outline: none;
   transition:
     border-color 180ms ease,
@@ -193,7 +240,7 @@ img {
   border: 1px solid var(--ruzo-border);
   background: rgba(255, 255, 255, 0.76);
   padding-inline: 0.875rem;
-  font-size: 0.875rem;
+  font-size: 1rem;
   outline: none;
   transition:
     border-color 180ms ease,
@@ -225,7 +272,7 @@ img {
 
 .admin-page-heading {
   margin-top: 0.35rem;
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(1.875rem, 1.6rem + 1vw, 2.25rem);
   font-weight: 600;
   line-height: 1.1;
@@ -455,7 +502,7 @@ img {
 }
 
 .admin-confirm-title {
-  font-family: var(--font-display);
+  font-family: var(--font-body);
   font-size: clamp(1.35rem, 4vw, 1.7rem);
   font-weight: 600;
   line-height: 1.2;

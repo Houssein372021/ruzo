@@ -48,7 +48,7 @@ export function AdminLayout() {
   );
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#FFFFFF] text-[#080808] xl:grid xl:grid-cols-[240px_minmax(0,1fr)]">
+    <div className="admin-shell min-h-screen overflow-x-hidden bg-[#FFFFFF] text-[#080808] xl:grid xl:grid-cols-[240px_minmax(0,1fr)]">
       <Seo title="Admin | Rüzo" description="Rüzo admin area." path="/admin" robots="noindex,nofollow" />
       <div className="xl:hidden">
         <TopBar

@@ -58,9 +58,13 @@ export const adminApi = {
     return response.data;
   },
 
-  async updateFeaturedMenu(productIds: string[]) {
-    const response = await apiClient.put<Product[]>("/admin/products/featured-menu", { productIds });
-    return response.data;
+  async updateHomeSections(sections: {
+    bestSellers: string[];
+    newArrivals: string[];
+    discoverCollections: string[];
+    featuredPieces: string[];
+  }) {
+    await apiClient.put("/admin/products/home-sections", sections);
   },
 
   async deleteProduct(id: string) {

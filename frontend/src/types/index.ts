@@ -52,7 +52,11 @@ export type Product = {
   discountPercentage?: number | null;
   badge?: string | null;
   isNew?: boolean | null;
+  newArrivalOrder?: number | null;
   isBestSeller?: boolean | null;
+  bestSellerOrder?: number | null;
+  discoverCollection?: boolean | null;
+  discoverCollectionOrder?: number | null;
   featuredMenu?: boolean | null;
   featuredMenuOrder?: number | null;
   active?: boolean | null;

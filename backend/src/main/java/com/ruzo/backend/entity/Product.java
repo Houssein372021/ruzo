@@ -85,6 +85,24 @@ public class Product {
     @Column(name = "featured_menu_order")
     private Integer featuredMenuOrder;
 
+    @Column(name = "new_arrival")
+    private Boolean newArrival = false;
+
+    @Column(name = "new_arrival_order")
+    private Integer newArrivalOrder;
+
+    @Column(name = "best_seller")
+    private Boolean bestSeller = false;
+
+    @Column(name = "best_seller_order")
+    private Integer bestSellerOrder;
+
+    @Column(name = "discover_collection")
+    private Boolean discoverCollection = false;
+
+    @Column(name = "discover_collection_order")
+    private Integer discoverCollectionOrder;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 

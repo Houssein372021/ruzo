@@ -149,45 +149,86 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/products/featured-menu")
+    @PutMapping("/products/home-sections")
     @Transactional
-    public List<ProductResponse> updateFeaturedMenu(@RequestBody FeaturedMenuRequest request) {
-        List<UUID> productIds = request.productIds() == null ? List.of() : request.productIds().stream()
-                .filter(Objects::nonNull)
-                .toList();
-
-        if (productIds.size() > 4) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Featured menu accepts up to 4 products");
-        }
-        if (productIds.stream().distinct().count() != productIds.size()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Featured menu products must be unique");
+    public ResponseEntity<Void> updateHomeSections(@RequestBody HomeSectionsRequest request) {
+        List<UUID> bestSellerIds = normalizeSectionIds(request.bestSellers(), "Best Sellers");
+        List<UUID> newArrivalIds = normalizeSectionIds(request.newArrivals(), "New Arrivals");
+        List<UUID> discoverCollectionIds = normalizeSectionIds(
+                request.discoverCollections(),
+                "Discover Our Collections");
+        List<UUID> featuredPieceIds = normalizeSectionIds(request.featuredPieces(), "Featured Pieces");
+        if (featuredPieceIds.size() > 4) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Featured Pieces accepts up to 4 products");
         }
 
         List<Product> products = productRepository.findAll();
         products.forEach(product -> {
+            product.setBestSeller(false);
+            product.setBestSellerOrder(null);
+            product.setNewArrival(false);
+            product.setNewArrivalOrder(null);
+            product.setDiscoverCollection(false);
+            product.setDiscoverCollectionOrder(null);
             product.setFeaturedMenu(false);
             product.setFeaturedMenuOrder(null);
         });
 
+        applyHomeSection(products, bestSellerIds, HomeSection.BEST_SELLERS);
+        applyHomeSection(products, newArrivalIds, HomeSection.NEW_ARRIVALS);
+        applyHomeSection(products, discoverCollectionIds, HomeSection.DISCOVER_COLLECTIONS);
+        applyHomeSection(products, featuredPieceIds, HomeSection.FEATURED_PIECES);
+
+        productRepository.saveAll(products);
+        return ResponseEntity.noContent().build();
+    }
+
+    private List<UUID> normalizeSectionIds(List<UUID> productIds, String sectionName) {
+        List<UUID> normalizedIds = productIds == null
+                ? List.of()
+                : productIds.stream().filter(Objects::nonNull).toList();
+        if (normalizedIds.stream().distinct().count() != normalizedIds.size()) {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    sectionName + " products must be unique");
+        }
+        return normalizedIds;
+    }
+
+    private void applyHomeSection(List<Product> products, List<UUID> productIds, HomeSection section) {
         for (int index = 0; index < productIds.size(); index++) {
             UUID productId = productIds.get(index);
             Product product = products.stream()
                     .filter(candidate -> productId.equals(candidate.getId()))
                     .findFirst()
                     .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product not found"));
-            product.setFeaturedMenu(true);
-            product.setFeaturedMenuOrder(index + 1);
+            int order = index + 1;
+            switch (section) {
+                case BEST_SELLERS -> {
+                    product.setBestSeller(true);
+                    product.setBestSellerOrder(order);
+                }
+                case NEW_ARRIVALS -> {
+                    product.setNewArrival(true);
+                    product.setNewArrivalOrder(order);
+                }
+                case DISCOVER_COLLECTIONS -> {
+                    product.setDiscoverCollection(true);
+                    product.setDiscoverCollectionOrder(order);
+                }
+                case FEATURED_PIECES -> {
+                    product.setFeaturedMenu(true);
+                    product.setFeaturedMenuOrder(order);
+                }
+            }
         }
+    }
 
-        productRepository.saveAll(products);
-
-        return products.stream()
-                .filter(product -> Boolean.TRUE.equals(product.getFeaturedMenu()))
-                .sorted((first, second) -> Integer.compare(
-                        first.getFeaturedMenuOrder() == null ? Integer.MAX_VALUE : first.getFeaturedMenuOrder(),
-                        second.getFeaturedMenuOrder() == null ? Integer.MAX_VALUE : second.getFeaturedMenuOrder()))
-                .map(ProductResponse::from)
-                .toList();
+    private enum HomeSection {
+        BEST_SELLERS,
+        NEW_ARRIVALS,
+        DISCOVER_COLLECTIONS,
+        FEATURED_PIECES
     }
 
     @GetMapping("/categories")
@@ -620,7 +661,11 @@ public class AdminController {
         }
     }
 
-    public record FeaturedMenuRequest(List<UUID> productIds) {
+    public record HomeSectionsRequest(
+            List<UUID> bestSellers,
+            List<UUID> newArrivals,
+            List<UUID> discoverCollections,
+            List<UUID> featuredPieces) {
     }
 
     public record ImageRequest(
@@ -859,6 +904,12 @@ public class AdminController {
             Integer discountPercentage,
             String badge,
             Boolean active,
+            Boolean isNew,
+            Integer newArrivalOrder,
+            Boolean isBestSeller,
+            Integer bestSellerOrder,
+            Boolean discoverCollection,
+            Integer discoverCollectionOrder,
             Boolean featuredMenu,
             Integer featuredMenuOrder,
             String videoUrl,
@@ -882,6 +933,12 @@ public class AdminController {
                     ProductPricing.discountPercentage(product),
                     product.getBadge(),
                     product.getActive(),
+                    product.getNewArrival(),
+                    product.getNewArrivalOrder(),
+                    product.getBestSeller(),
+                    product.getBestSellerOrder(),
+                    product.getDiscoverCollection(),
+                    product.getDiscoverCollectionOrder(),
                     product.getFeaturedMenu(),
                     product.getFeaturedMenuOrder(),
                     product.getVideoUrl(),

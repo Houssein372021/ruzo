@@ -10,7 +10,7 @@ import { ProductCard } from "../../components/product/ProductCard";
 import { INSTAGRAM_URL } from "../../config/brand";
 import { useI18n } from "../../hooks/useI18n";
 import type { Category, Product } from "../../types";
-// import { getProductImage } from "../../utils/product";
+import { getProductImage, getProductName } from "../../utils/product";
 
 const heroVideoMp4Url = "/hero-ruzo.mp4";
 const heroVideoWebmUrl = "/hero-ruzo.webm";
@@ -36,14 +36,6 @@ const composedRealityImages = [
   },
 ] as const;
 
-const categoryImageFallbacks: Record<string, string> = {
-  sets: "/products/ruzo/metallic-magenta-set-01.webp",
-  dresses: "/products/ruzo/black-midi-dress-01.webp",
-  bottoms: "/products/ruzo/ivory-satin-trouser-set-02.webp",
-  tops: "/products/ruzo/black-satin-short-set-02.webp",
-  outerwear: "/products/ruzo/sheer-shirt-trouser-set-02.webp",
-};
-
 function useAutoCarousel(itemCount: number, intervalMs = 3800) {
   const [index, setIndex] = useState(0);
   const [visibleCount, setVisibleCount] = useState(1);
@@ -63,10 +55,7 @@ function useAutoCarousel(itemCount: number, intervalMs = 3800) {
   }, []);
 
   const maxIndex = Math.max(itemCount - visibleCount, 0);
-
-  useEffect(() => {
-    setIndex((current) => Math.min(current, maxIndex));
-  }, [maxIndex]);
+  const boundedIndex = Math.min(index, maxIndex);
 
   useEffect(() => {
     if (itemCount <= visibleCount) {
@@ -83,11 +72,17 @@ function useAutoCarousel(itemCount: number, intervalMs = 3800) {
   }, [itemCount, visibleCount, maxIndex, intervalMs]);
 
   return {
-    index,
+    index: boundedIndex,
     visibleCount,
     canScroll: itemCount > visibleCount,
-    previous: () => setIndex((current) => (current <= 0 ? maxIndex : current - 1)),
-    next: () => setIndex((current) => (current >= maxIndex ? 0 : current + 1)),
+    previous: () => setIndex((current) => {
+      const safeIndex = Math.min(current, maxIndex);
+      return safeIndex <= 0 ? maxIndex : safeIndex - 1;
+    }),
+    next: () => setIndex((current) => {
+      const safeIndex = Math.min(current, maxIndex);
+      return safeIndex >= maxIndex ? 0 : safeIndex + 1;
+    }),
   };
 }
 
@@ -144,13 +139,24 @@ export function HomePage() {
   }, []);
 
   const newArrivals = useMemo(() => {
-    const flagged = products.filter((product) => product.isNew);
-    return (flagged.length > 0 ? flagged : products).slice(0, 4);
+    return products
+      .filter((product) => product.isNew)
+      .sort((first, second) => (first.newArrivalOrder ?? 999) - (second.newArrivalOrder ?? 999));
   }, [products]);
 
   const bestSellers = useMemo(() => {
-    const flagged = products.filter((product) => product.isBestSeller);
-    return (flagged.length > 0 ? flagged : products.slice(4)).slice(0, 8);
+    return products
+      .filter((product) => product.isBestSeller)
+      .sort((first, second) => (first.bestSellerOrder ?? 999) - (second.bestSellerOrder ?? 999));
+  }, [products]);
+
+  const discoverCollections = useMemo(() => {
+    return products
+      .filter((product) => product.discoverCollection)
+      .sort(
+        (first, second) =>
+          (first.discoverCollectionOrder ?? 999) - (second.discoverCollectionOrder ?? 999),
+      );
   }, [products]);
 
   // const heroProductImage = useMemo(() => {
@@ -205,7 +211,7 @@ export function HomePage() {
             "Rüzo is a Beirut-born womenswear label shaped around satin sets, fluid dresses, sharp tops, tailored bottoms, and outerwear made to move from day to night.",
           storyCopy:
             "From metallic sets to clean black dresses and sheer layers, each piece is curated for a confident silhouette, soft shine, and a wardrobe that feels ready without trying too hard.",
-          newInTitle: "New in: Rüzo edit",
+          newInTitle: "New in: Rüzo collection",
           journalTitle: "Notes on modern movement",
           journalCta: "Read more",
           summerTitle: "Rüzo ss26",
@@ -226,17 +232,10 @@ export function HomePage() {
           composedTitle: "Composed Realities: Notes on Modern Dressing",
         };
 
-  const categoryCards = categories.map((category) => {
-    return {
-      slug: category.slug,
-      title: language === "ar" ? category.nameAr : category.nameEn,
-      image: category.imageUrl ?? categoryImageFallbacks[category.slug] ?? null,
-    };
-  });
-  const primaryCollectionPath = categoryCards[0] ? `/collections/${categoryCards[0].slug}` : "/";
+  const primaryCollectionPath = categories[0] ? `/collections/${categories[0].slug}` : "/";
 
   const newArrivalsCarousel = useAutoCarousel(newArrivals.length);
-  const collectionsCarousel = useAutoCarousel(categoryCards.length);
+  const collectionsCarousel = useAutoCarousel(discoverCollections.length);
   const bestSellersCarousel = useAutoCarousel(bestSellers.length);
   const productPreviousLabel = language === "ar" ? "المنتج السابق" : "Previous product";
   const productNextLabel = language === "ar" ? "المنتج التالي" : "Next product";
@@ -531,7 +530,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {categoryCards.length > 0 ? (
+      {discoverCollections.length > 0 ? (
       <section className="border-y border-[#080808]/10 bg-[#FFFFFF] px-5 py-16 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-[1500px]">
           <div className="mx-auto max-w-2xl text-center">
@@ -551,43 +550,52 @@ export function HomePage() {
                   transform: `translateX(-${collectionsCarousel.index * (100 / collectionsCarousel.visibleCount)}%)`,
                 }}
               >
-                {categoryCards.map((category, categoryIndex) => (
-                  <div key={category.slug} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
-                    <Link
-                      to={`/collections/${category.slug}`}
-                      className="group relative block aspect-[3/4] overflow-hidden bg-[#080808]"
-                    >
-                      {category.image ? (
-                        <img
-                          src={category.image}
-                          alt=""
-                          loading={categoryIndex < collectionsCarousel.visibleCount ? "eager" : "lazy"}
-                          fetchPriority={categoryIndex < collectionsCarousel.visibleCount ? "high" : "auto"}
-                          decoding="async"
-                          width={900}
-                          height={1200}
-                          sizes="(min-width: 1024px) 31vw, (min-width: 640px) 50vw, 100vw"
-                          className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
-                        />
-                      ) : (
-                        <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#080808_35%,#080808_100%)]" />
-                      )}
-                      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.78),rgba(8,8,8,0.22),rgba(8,8,8,0.02))]" />
-                      <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF] sm:p-6">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/78">
-                          {t("ruzoEdit")}
-                        </p>
-                        <h3 className="font-display mt-2 text-3xl leading-tight sm:text-4xl lg:text-3xl xl:text-4xl">
-                          {category.title}
-                        </h3>
-                        <span className="mt-5 inline-flex min-h-9 items-center gap-3 border border-[#FFFFFF]/78 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition group-hover:border-[#080808] group-hover:bg-[#080808]">
-                          {t("shopNow")}
-                          <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
-                        </span>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                {discoverCollections.map((product, productIndex) => {
+                  const productImage = getProductImage(product);
+                  const productName = getProductName(product, language);
+
+                  return (
+                    <div key={product.id} className="min-w-0 shrink-0 basis-full px-1.5 sm:px-2 lg:basis-1/3 lg:px-4">
+                      <Link
+                        to={`/products/${product.slug}`}
+                        className="group relative block aspect-[3/4] overflow-hidden bg-[#080808]"
+                      >
+                        {productImage ? (
+                          <img
+                            src={productImage}
+                            alt={productName}
+                            loading={productIndex < collectionsCarousel.visibleCount ? "eager" : "lazy"}
+                            fetchPriority={productIndex < collectionsCarousel.visibleCount ? "high" : "auto"}
+                            decoding="async"
+                            width={900}
+                            height={1200}
+                            sizes="(min-width: 1024px) 31vw, (min-width: 640px) 50vw, 100vw"
+                            className="product-image absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-[1.04]"
+                          />
+                        ) : (
+                          <div className="absolute inset-0 bg-[linear-gradient(145deg,#FFFFFF_0%,#FFFFFF_34%,#080808_35%,#080808_100%)]" />
+                        )}
+                        <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(8,8,8,0.78),rgba(8,8,8,0.22),rgba(8,8,8,0.02))]" />
+                        <div className="absolute inset-x-0 bottom-0 p-5 text-[#FFFFFF] sm:p-6">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/78">
+                            {product.category
+                              ? language === "ar"
+                                ? product.category.nameAr
+                                : product.category.nameEn
+                              : t("ruzoEdit")}
+                          </p>
+                          <h3 className="font-display mt-2 text-3xl leading-tight sm:text-4xl lg:text-3xl xl:text-4xl">
+                            {productName}
+                          </h3>
+                          <span className="mt-5 inline-flex min-h-9 items-center gap-3 border border-[#FFFFFF]/78 px-4 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#FFFFFF] transition group-hover:border-[#080808] group-hover:bg-[#080808]">
+                            {t("shopNow")}
+                            <ArrowRight className={isRtl ? "h-3.5 w-3.5 rotate-180" : "h-3.5 w-3.5"} />
+                          </span>
+                        </div>
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

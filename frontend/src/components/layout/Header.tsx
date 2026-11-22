@@ -22,7 +22,6 @@ export function Header() {
   const favoriteCount = useFavoritesStore((state) => state.items.length);
   const [categories, setCategories] = useState<Category[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const isArabic = language === "ar";
@@ -44,17 +43,15 @@ export function Header() {
   useEffect(() => {
     let isMounted = true;
 
-    Promise.all([productsApi.getAll(), productsApi.getFeaturedMenu()])
-      .then(([allProducts, menuProducts]) => {
+    productsApi.getAll()
+      .then((allProducts) => {
         if (isMounted) {
           setProducts(allProducts);
-          setFeaturedProducts(menuProducts);
         }
       })
       .catch(() => {
         if (isMounted) {
           setProducts([]);
-          setFeaturedProducts([]);
         }
       });
 
@@ -105,11 +102,15 @@ export function Header() {
 
   const featuredMenuLinks = useMemo(
     () =>
-      featuredProducts.slice(0, 4).map((product) => ({
+      products
+        .filter((product) => product.featuredMenu)
+        .sort((first, second) => (first.featuredMenuOrder ?? 999) - (second.featuredMenuOrder ?? 999))
+        .slice(0, 4)
+        .map((product) => ({
         to: `/products/${product.slug}`,
         label: getProductName(product, language),
       })),
-    [featuredProducts, language],
+    [products, language],
   );
 
   const searchResults = useMemo(() => {

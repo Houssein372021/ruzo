@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { Edit3, Plus, Search, Trash2, X } from "lucide-react";
+import { ArrowDown, ArrowUp, Edit3, Plus, Search, Trash2, X } from "lucide-react";
 import { adminApi } from "../../api/admin";
 import { AdminImageUpload } from "../../components/admin/AdminImageUpload";
 import { AdminPanel } from "../../components/admin/AdminPanel";
@@ -41,6 +41,10 @@ type ProductForm = {
   variants: ProductVariantForm[];
 };
 
+type HomeSectionKey = "bestSellers" | "newArrivals" | "discoverCollections" | "featuredPieces";
+
+type HomeSectionSelections = Record<HomeSectionKey, string[]>;
+
 const createImageRow = (sortOrder = 1): ProductImageForm => ({
   imageUrl: "",
   sortOrder: String(sortOrder),
@@ -72,14 +76,34 @@ const createEmptyProductForm = (categoryId = ""): ProductForm => ({
   variants: [createVariantRow()],
 });
 
-const createFeaturedSelection = (products: Product[]) => {
-  const featuredProducts = products
-    .filter((product) => product.featuredMenu)
-    .sort((first, second) => (first.featuredMenuOrder ?? 999) - (second.featuredMenuOrder ?? 999))
-    .slice(0, 4);
-
-  return Array.from({ length: 4 }, (_, index) => featuredProducts[index]?.id ?? "");
+const sortSelectedProducts = (
+  products: Product[],
+  isSelected: (product: Product) => boolean,
+  getOrder: (product: Product) => number | null | undefined,
+  limit?: number,
+) => {
+  const selectedIds = products
+    .filter(isSelected)
+    .sort((first, second) => (getOrder(first) ?? 999) - (getOrder(second) ?? 999))
+    .map((product) => product.id);
+  return limit == null ? selectedIds : selectedIds.slice(0, limit);
 };
+
+const createHomeSectionSelections = (products: Product[]): HomeSectionSelections => ({
+  bestSellers: sortSelectedProducts(products, (product) => Boolean(product.isBestSeller), (product) => product.bestSellerOrder),
+  newArrivals: sortSelectedProducts(products, (product) => Boolean(product.isNew), (product) => product.newArrivalOrder),
+  discoverCollections: sortSelectedProducts(
+    products,
+    (product) => Boolean(product.discoverCollection),
+    (product) => product.discoverCollectionOrder,
+  ),
+  featuredPieces: sortSelectedProducts(
+    products,
+    (product) => Boolean(product.featuredMenu),
+    (product) => product.featuredMenuOrder,
+    4,
+  ),
+});
 
 const colorHexByName: Record<string, string> = {
   beige: "#D8C3A5",
@@ -155,8 +179,13 @@ export function AdminProductsPage() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [search, setSearch] = useState("");
   const [error, setError] = useState("");
-  const [featuredSelection, setFeaturedSelection] = useState<string[]>(["", "", "", ""]);
-  const [featuredStatus, setFeaturedStatus] = useState("");
+  const [homeSections, setHomeSections] = useState<HomeSectionSelections>({
+    bestSellers: [],
+    newArrivals: [],
+    discoverCollections: [],
+    featuredPieces: [],
+  });
+  const [homeSectionsStatus, setHomeSectionsStatus] = useState("");
   const [form, setForm] = useState<ProductForm>(() => createEmptyProductForm());
 
   const loadProducts = useCallback(() => {
@@ -164,7 +193,7 @@ export function AdminProductsPage() {
       .products()
       .then((data) => {
         setProducts(data);
-        setFeaturedSelection(createFeaturedSelection(data));
+        setHomeSections(createHomeSectionSelections(data));
       })
       .catch(() => setError(t("apiUnavailable")));
   }, [t]);
@@ -382,25 +411,52 @@ export function AdminProductsPage() {
     setForm(createEmptyProductForm(form.categoryId || categories[0]?.id || ""));
   };
 
-  const updateFeaturedSlot = (index: number, productId: string) => {
-    setFeaturedStatus("");
-    setFeaturedSelection((current) => current.map((value, valueIndex) => (
-      valueIndex === index ? productId : value
-    )));
+  const updateHomeSection = (section: HomeSectionKey, productIds: string[]) => {
+    setHomeSectionsStatus("");
+    setHomeSections((current) => ({ ...current, [section]: productIds }));
   };
 
-  const saveFeaturedMenu = async () => {
-    setError("");
-    setFeaturedStatus("");
-    const productIds = featuredSelection.filter(Boolean);
-    if (new Set(productIds).size !== productIds.length) {
-      setError("Please choose each featured piece only once.");
+  const addHomeSectionProduct = (section: HomeSectionKey, productId: string) => {
+    if (!productId || homeSections[section].includes(productId)) {
       return;
     }
+    if (section === "featuredPieces" && homeSections.featuredPieces.length >= 4) {
+      return;
+    }
+    updateHomeSection(section, [...homeSections[section], productId]);
+  };
+
+  const replaceHomeSectionProduct = (section: HomeSectionKey, index: number, productId: string) => {
+    if (homeSections[section].some((selectedId, selectedIndex) => selectedIndex !== index && selectedId === productId)) {
+      return;
+    }
+    updateHomeSection(
+      section,
+      homeSections[section].map((selectedId, selectedIndex) => (selectedIndex === index ? productId : selectedId)),
+    );
+  };
+
+  const removeHomeSectionProduct = (section: HomeSectionKey, index: number) => {
+    updateHomeSection(section, homeSections[section].filter((_, selectedIndex) => selectedIndex !== index));
+  };
+
+  const moveHomeSectionProduct = (section: HomeSectionKey, index: number, direction: -1 | 1) => {
+    const targetIndex = index + direction;
+    if (targetIndex < 0 || targetIndex >= homeSections[section].length) {
+      return;
+    }
+    const reorderedIds = [...homeSections[section]];
+    [reorderedIds[index], reorderedIds[targetIndex]] = [reorderedIds[targetIndex], reorderedIds[index]];
+    updateHomeSection(section, reorderedIds);
+  };
+
+  const saveHomeSections = async () => {
+    setError("");
+    setHomeSectionsStatus("");
 
     try {
-      await adminApi.updateFeaturedMenu(productIds);
-      setFeaturedStatus("Featured pieces saved.");
+      await adminApi.updateHomeSections(homeSections);
+      setHomeSectionsStatus(t("homeSectionsSaved"));
       loadProducts();
     } catch {
       setError(t("apiUnavailable"));
@@ -411,39 +467,115 @@ export function AdminProductsPage() {
     <div className="space-y-6">
       <AdminPageHeader title={t("products")} />
       {error ? <p className="admin-notice">{error}</p> : null}
-      <AdminPanel title="Featured pieces menu">
-        <div className="grid gap-4">
-          <p className="text-sm leading-6 text-[#080808]/65">
-            Choose up to 4 products to show in the header menu.
-          </p>
-          <div className="grid gap-3 md:grid-cols-4">
-            {featuredSelection.map((productId, index) => (
-              <AdminSelect
-                key={`featured-slot-${index}`}
-                label={`Slot ${index + 1}`}
-                value={productId}
-                onChange={(value) => updateFeaturedSlot(index, value)}
-              >
-                <option value="">No product</option>
-                {products.map((product) => {
-                  const isSelectedElsewhere = featuredSelection.some(
-                    (selectedId, selectedIndex) => selectedIndex !== index && selectedId === product.id,
-                  );
+      <AdminPanel title={t("homeSections")}>
+        <div className="grid gap-5">
+          <p className="text-sm leading-6 text-[#080808]/65">{t("homeSectionsHint")}</p>
+          <div className="grid gap-4 xl:grid-cols-2">
+            {([
+              { key: "bestSellers", label: t("bestSellers") },
+              { key: "newArrivals", label: t("newArrivals") },
+              { key: "discoverCollections", label: t("discoverCollectionsAdmin") },
+              { key: "featuredPieces", label: t("featuredPieces") },
+            ] as Array<{ key: HomeSectionKey; label: string }>).map(({ key, label }) => {
+              const selectedIds = homeSections[key];
+              const maxReached = key === "featuredPieces" && selectedIds.length >= 4;
+              const availableProducts = products.filter((product) => !selectedIds.includes(product.id));
 
-                  return (
-                    <option key={product.id} value={product.id} disabled={isSelectedElsewhere}>
-                      {language === "ar" ? product.nameAr : product.nameEn}
-                    </option>
-                  );
-                })}
-              </AdminSelect>
-            ))}
+              return (
+                <section key={key} className="grid content-start gap-3 border border-[#E5E5E5] p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <h3 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#080808]">{label}</h3>
+                    {key === "featuredPieces" ? (
+                      <span className="text-xs text-[#444444]">{selectedIds.length}/4</span>
+                    ) : null}
+                  </div>
+
+                  {selectedIds.length > 0 ? (
+                    <div className="grid gap-2">
+                      {selectedIds.map((productId, index) => (
+                        <div key={`${key}-${productId}`} className="grid grid-cols-[1fr_auto] gap-2">
+                          <select
+                            value={productId}
+                            aria-label={`${label} ${index + 1}`}
+                            onChange={(event) => replaceHomeSectionProduct(key, index, event.target.value)}
+                            className="admin-select min-w-0 w-full"
+                          >
+                            {products.map((product) => (
+                              <option
+                                key={product.id}
+                                value={product.id}
+                                disabled={selectedIds.some(
+                                  (selectedId, selectedIndex) => selectedIndex !== index && selectedId === product.id,
+                                )}
+                              >
+                                {language === "ar" ? product.nameAr : product.nameEn}
+                                {product.active === false ? ` (${t("inactive")})` : ""}
+                              </option>
+                            ))}
+                          </select>
+                          <div className="flex gap-1">
+                            <button
+                              type="button"
+                              className="admin-icon-button disabled:cursor-default disabled:opacity-30"
+                              aria-label={t("moveUp")}
+                              disabled={index === 0}
+                              onClick={() => moveHomeSectionProduct(key, index, -1)}
+                            >
+                              <ArrowUp className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              className="admin-icon-button disabled:cursor-default disabled:opacity-30"
+                              aria-label={t("moveDown")}
+                              disabled={index === selectedIds.length - 1}
+                              onClick={() => moveHomeSectionProduct(key, index, 1)}
+                            >
+                              <ArrowDown className="h-4 w-4" />
+                            </button>
+                            <button
+                              type="button"
+                              className="admin-icon-button"
+                              aria-label={t("remove")}
+                              onClick={() => removeHomeSectionProduct(key, index)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-[#444444]">{t("noSelectedProducts")}</p>
+                  )}
+
+                  {!maxReached && availableProducts.length > 0 ? (
+                    <select
+                      value=""
+                      aria-label={t("addProductToSection")}
+                      onChange={(event) => addHomeSectionProduct(key, event.target.value)}
+                      className="admin-select w-full"
+                    >
+                      <option value="">{t("addProductToSection")}</option>
+                      {availableProducts.map((product) => (
+                        <option key={product.id} value={product.id}>
+                          {language === "ar" ? product.nameAr : product.nameEn}
+                          {product.active === false ? ` (${t("inactive")})` : ""}
+                        </option>
+                      ))}
+                    </select>
+                  ) : null}
+                  {maxReached ? <p className="text-xs text-[#444444]">{t("maximumFourProducts")}</p> : null}
+                </section>
+              );
+            })}
           </div>
           <div className="flex flex-wrap items-center gap-3">
-            <button type="button" className="admin-primary-button" onClick={saveFeaturedMenu}>
+            <button type="button" className="admin-primary-button" onClick={saveHomeSections}>
               {t("save")}
             </button>
-            {featuredStatus ? <span className="text-sm font-semibold text-[#080808]">{featuredStatus}</span> : null}
+            {homeSectionsStatus ? (
+              <span className="text-sm font-semibold text-[#080808]">{homeSectionsStatus}</span>
+            ) : null}
           </div>
         </div>
       </AdminPanel>

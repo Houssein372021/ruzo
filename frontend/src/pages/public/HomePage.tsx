@@ -450,7 +450,7 @@ export function HomePage() {
 
       <section className="border-b border-[#080808]/10 bg-[#FFFFFF] px-3 py-14 sm:px-5 sm:py-16 lg:px-5">
         <div className="mx-auto max-w-[1880px]">
-          <h2 className="text-center text-xl font-medium uppercase leading-tight tracking-[0.03em] text-[#080808] sm:text-2xl lg:text-3xl">
+          <h2 className="composed-title font-display text-center normal-case text-[#080808]">
             {copy.composedTitle}
           </h2>
 

@@ -136,7 +136,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <div className="min-w-0">
             <Link
               to={`/products/${product.slug}`}
-              className="luxury-link-underline block truncate text-sm font-medium text-[#080808]"
+              className="luxury-link-underline font-display block truncate text-[1.375rem] font-normal leading-[1.22] text-[#080808] sm:text-2xl"
             >
               {getProductName(product, language)}
             </Link>

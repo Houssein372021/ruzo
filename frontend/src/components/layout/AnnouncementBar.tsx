@@ -8,7 +8,7 @@ export function AnnouncementBar() {
   return (
     <div
       aria-label={messages.join(" | ")}
-      className="relative z-50 flex h-[35px] overflow-hidden border-b border-[#080808]/10 bg-[#080808] text-[11px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]"
+      className="font-display relative z-50 flex h-[35px] overflow-hidden border-b border-[#080808]/10 bg-[#080808] text-[1.2rem] font-normal tracking-[0.04em] text-[#FFFFFF] sm:text-[1.3rem]"
     >
       <div aria-hidden="true" className="announcement-marquee flex min-w-max items-center">
         {marqueeGroups.map((group) => (

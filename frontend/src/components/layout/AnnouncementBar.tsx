@@ -8,7 +8,7 @@ export function AnnouncementBar() {
   return (
     <div
       aria-label={messages.join(" | ")}
-      className="font-display relative z-50 flex h-[35px] overflow-hidden border-b border-[#080808]/10 bg-[#080808] text-[1.2rem] font-normal tracking-[0.04em] text-[#FFFFFF] sm:text-[1.3rem]"
+      className="font-display relative z-50 flex h-[35px] overflow-hidden border-b border-[#E5E5E5] bg-[#F7F7F7] text-[1.2rem] font-normal tracking-[0.04em] text-[#080808] sm:text-[1.3rem]"
     >
       <div aria-hidden="true" className="announcement-marquee flex min-w-max items-center">
         {marqueeGroups.map((group) => (
@@ -16,7 +16,7 @@ export function AnnouncementBar() {
             {messages.map((message, index) => (
               <span key={`${group}-${message}-${index}`} className="flex items-center whitespace-nowrap px-7">
                 {message}
-                <span className="ms-7 h-1 w-1 rounded-full bg-[#FFFFFF]/70" />
+                <span className="ms-7 h-1 w-1 rounded-full bg-[#080808]/45" />
               </span>
             ))}
           </div>

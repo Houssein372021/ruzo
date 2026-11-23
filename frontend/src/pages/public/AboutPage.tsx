@@ -30,7 +30,7 @@ export function AboutPage() {
     };
   }, []);
 
-  const primaryCollectionPath = categories[0] ? `/collections/${categories[0].slug}` : "/";
+  const primaryCollectionPath = "/collections/all";
 
   const copy =
     language === "ar"

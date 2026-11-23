@@ -95,7 +95,7 @@ export function Header() {
   const collectionsColumn: TopBarMegaMenuColumn | null =
     categoryLinks.length > 0
       ? {
-          title: t("collectionsNav"),
+          title: "",
           links: categoryLinks,
         }
       : null;
@@ -138,12 +138,12 @@ export function Header() {
       title: isArabic ? "Discover" : "Discover",
       links: [
         {
-          to: categoryLinks[0]?.to ?? "/",
+          to: "/collections/new-arrivals",
           label: t("newArrivals"),
           description: isArabic ? "Newest RUZO pieces" : "The newest RUZO pieces",
         },
         {
-          to: categoryLinks[0]?.to ?? "/",
+          to: "/collections/best-sellers",
           label: t("bestSellers"),
           description: isArabic ? "Customer favorite silhouettes" : "Customer favorite silhouettes",
         },
@@ -166,12 +166,12 @@ export function Header() {
 
   const navItems: TopBarItem[] = [
     {
-      to: categoryLinks[0]?.to ?? "/",
+      to: "/collections/all",
       label: t("shop"),
       megaMenu: shopMegaMenu,
     },
     {
-      to: categoryLinks[0]?.to ?? "/",
+      to: "/collections/all",
       label: t("collectionsNav"),
       megaMenu: collectionsColumn ? [collectionsColumn] : undefined,
     },

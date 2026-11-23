@@ -2,14 +2,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Ban, ChevronLeft, ChevronRight, CreditCard, Headphones, Leaf, Package, Shirt, Truck } from "lucide-react";
-import { categoriesApi } from "../../api/categories";
 import { productsApi } from "../../api/products";
 import { Seo } from "../../components/common/Seo";
 import { ProductSkeletonGrid } from "../../components/common/Skeleton";
 import { ProductCard } from "../../components/product/ProductCard";
 import { INSTAGRAM_URL } from "../../config/brand";
 import { useI18n } from "../../hooks/useI18n";
-import type { Category, Product } from "../../types";
+import type { Product } from "../../types";
 import { getProductImage, getProductName } from "../../utils/product";
 
 const heroVideoMp4Url = "/hero-ruzo.mp4";
@@ -114,17 +113,15 @@ function CarouselArrowButton({ direction, label, onClick }: CarouselArrowButtonP
 export function HomePage() {
   const { language, dir, t } = useI18n();
   const [products, setProducts] = useState<Product[]>([]);
-  const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let isMounted = true;
 
-    Promise.all([productsApi.getAll(), categoriesApi.getAll()])
-      .then(([productsData, categoriesData]) => {
+    productsApi.getAll()
+      .then((productsData) => {
         if (isMounted) {
           setProducts(productsData);
-          setCategories(categoriesData.filter((category) => category.isActive !== false));
         }
       })
       .finally(() => {
@@ -232,7 +229,7 @@ export function HomePage() {
           composedTitle: "Composed Realities: Notes on Modern Dressing",
         };
 
-  const primaryCollectionPath = categories[0] ? `/collections/${categories[0].slug}` : "/";
+  const primaryCollectionPath = "/collections/all";
 
   const newArrivalsCarousel = useAutoCarousel(newArrivals.length);
   const collectionsCarousel = useAutoCarousel(discoverCollections.length);
@@ -392,7 +389,7 @@ export function HomePage() {
             </h2>
           </div>
           <Link
-            to={primaryCollectionPath}
+            to="/collections/best-sellers"
             className="luxury-link-underline shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
           >
             {copy.viewAll}
@@ -480,7 +477,7 @@ export function HomePage() {
             </h2>
           </div>
           <Link
-            to={primaryCollectionPath}
+            to="/collections/new-arrivals"
             className="luxury-link-underline shrink-0 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#080808]"
           >
             {copy.viewAll}

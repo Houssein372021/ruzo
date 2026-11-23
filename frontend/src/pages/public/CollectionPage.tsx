@@ -18,6 +18,9 @@ type CollectionPageProps = {
 };
 
 const collectionTitleKeys: Record<string, TranslationKey> = {
+  all: "allProducts",
+  "new-arrivals": "newArrivals",
+  "best-sellers": "bestSellers",
   sets: "sets",
   dresses: "dresses",
   bottoms: "bottoms",
@@ -31,6 +34,7 @@ export function DynamicCollectionPage() {
 
   return (
     <CollectionPage
+      key={categorySlug}
       categorySlug={categorySlug}
       titleKey={collectionTitleKeys[categorySlug] ?? "shopByCategory"}
     />
@@ -105,24 +109,39 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
     };
   }, [isFilterOpen]);
 
-  const categoryProducts = useMemo(
-    () => products.filter((product) => product.category?.slug === normalizedCategorySlug),
-    [normalizedCategorySlug, products],
-  );
+  const collectionProducts = useMemo(() => {
+    if (normalizedCategorySlug === "all") {
+      return products;
+    }
+
+    if (normalizedCategorySlug === "new-arrivals") {
+      return products
+        .filter((product) => product.isNew)
+        .sort((first, second) => (first.newArrivalOrder ?? 999) - (second.newArrivalOrder ?? 999));
+    }
+
+    if (normalizedCategorySlug === "best-sellers") {
+      return products
+        .filter((product) => product.isBestSeller)
+        .sort((first, second) => (first.bestSellerOrder ?? 999) - (second.bestSellerOrder ?? 999));
+    }
+
+    return products.filter((product) => product.category?.slug === normalizedCategorySlug);
+  }, [normalizedCategorySlug, products]);
 
   const sizes = useMemo(
-    () => uniqueValues(categoryProducts.flatMap((product) => product.variants.map((variant) => variant.size))),
-    [categoryProducts],
+    () => uniqueValues(collectionProducts.flatMap((product) => product.variants.map((variant) => variant.size))),
+    [collectionProducts],
   );
 
   const colors = useMemo(
-    () => uniqueValues(categoryProducts.flatMap((product) => product.variants.map((variant) => variant.color))),
-    [categoryProducts],
+    () => uniqueValues(collectionProducts.flatMap((product) => product.variants.map((variant) => variant.color))),
+    [collectionProducts],
   );
 
   const filteredProducts = useMemo(() => {
     const normalizedSearch = searchQuery.trim().toLowerCase();
-    const filtered = categoryProducts.filter((product) => {
+    const filtered = collectionProducts.filter((product) => {
       const matchesSize = size === "all" || product.variants.some((variant) => variant.size === size);
       const matchesColor = color === "all" || product.variants.some((variant) => variant.color === color);
       const matchesAvailability =
@@ -159,7 +178,7 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
       }
       return 0;
     });
-  }, [availability, categoryProducts, color, price, searchQuery, size, sort]);
+  }, [availability, collectionProducts, color, price, searchQuery, size, sort]);
 
   const currentCategory = categories.find((category) => category.slug === normalizedCategorySlug);
   const collectionName = currentCategory
@@ -245,7 +264,7 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
             {
               "@type": "ItemList",
               name: `${collectionName} products`,
-              itemListElement: categoryProducts.slice(0, 12).map((product, index) => ({
+              itemListElement: collectionProducts.slice(0, 12).map((product, index) => ({
                 "@type": "ListItem",
                 position: index + 1,
                 url: `https://www.xn--rzo-hoa.com/products/${product.slug}`,

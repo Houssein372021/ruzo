@@ -172,8 +172,12 @@ function TopBarNavLink({
                 className="overflow-hidden"
               >
                 <div className="grid gap-5 border-s border-[#080808]/20 pb-5 ps-4 normal-case tracking-normal">
-                  {item.megaMenu.map((column) => (
-                    <MobileMegaMenuColumn key={column.title} column={column} onClick={onClick} />
+                  {item.megaMenu.map((column, columnIndex) => (
+                    <MobileMegaMenuColumn
+                      key={`${column.title || "links"}-${columnIndex}`}
+                      column={column}
+                      onClick={onClick}
+                    />
                   ))}
                 </div>
               </motion.div>
@@ -226,6 +230,23 @@ function MobileMegaMenuColumn({
 }) {
   const [isOpen, setIsOpen] = useState(false);
 
+  if (!column.title) {
+    return (
+      <div className="grid gap-1">
+        {column.links.map((link) => (
+          <Link
+            key={link.to}
+            to={link.to}
+            onClick={onClick}
+            className="-ms-2 block px-2 py-2.5 text-sm text-[#080808]/72 transition hover:bg-[#080808]/5 hover:text-[#080808]"
+          >
+            {link.label}
+          </Link>
+        ))}
+      </div>
+    );
+  }
+
   return (
     <div>
       <button
@@ -272,12 +293,14 @@ function TopBarMegaMenu({ columns }: { columns: TopBarMegaMenuColumn[] }) {
   return (
     <div className="pointer-events-none absolute left-0 right-0 top-[calc(100%-1px)] hidden border-t border-[#080808]/10 bg-[#FFFFFF] opacity-0 shadow-[0_28px_70px_rgba(8,8,8,0.10)] transition duration-200 group-hover:pointer-events-auto group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:opacity-100 lg:block">
       <div className="mx-auto grid max-w-[1500px] gap-12 px-8 py-10 lg:grid-cols-3">
-        {columns.map((column) => (
-          <div key={column.title}>
-            <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#080808]">
-              {column.title}
-            </p>
-            <div className="mt-6 grid gap-3">
+        {columns.map((column, columnIndex) => (
+          <div key={`${column.title || "links"}-${columnIndex}`}>
+            {column.title ? (
+              <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#080808]">
+                {column.title}
+              </p>
+            ) : null}
+            <div className={`${column.title ? "mt-6" : ""} grid gap-3`}>
               {column.links.map((link) => (
                 <Link
                   key={`${column.title}-${link.to}`}

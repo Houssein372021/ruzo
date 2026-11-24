@@ -125,7 +125,6 @@ export function Header() {
       megaMenu: collectionsColumn ? [collectionsColumn] : undefined,
     },
     { to: "/about#ruzo-story", label: t("ruzoStory") },
-    { to: "/about", label: t("aboutNav") },
     { to: "/contact", label: t("contact") },
   ];
 

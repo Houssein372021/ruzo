@@ -29,26 +29,26 @@ export function Footer() {
   ];
 
   return (
-    <footer className="border-t border-[#FFFFFF]/12 bg-[#080808] text-[#FFFFFF]">
-      <section className="border-t border-[#FFFFFF]/12 bg-[#080808] text-[#FFFFFF]">
+    <footer className="font-display border-t border-[#E5E5E5] bg-[#F7F7F7] text-[#080808]">
+      <section className="border-t border-[#E5E5E5] bg-[#F7F7F7] text-[#080808]">
         <div className="mx-auto grid max-w-[1500px] grid-cols-2 gap-x-8 gap-y-12 px-5 py-14 lg:grid-cols-[1.15fr_0.65fr_0.95fr_0.7fr] lg:px-8">
           <div className="col-span-2 lg:col-span-1">
             <Link
               to="/"
-              className="font-display text-[2rem] uppercase leading-none tracking-[0.36em] text-white"
+              className="font-display text-[2rem] uppercase leading-none tracking-[0.12em] text-[#080808]"
             >
               RÜZO
             </Link>
-            <p className="mt-6 max-w-xs text-sm leading-7 text-[#FFFFFF]/72">
+            <p className="font-display mt-6 max-w-xs text-[1.2rem] leading-7 text-[#080808]/68">
               {t("footerCopy")}
             </p>
           </div>
 
           <div>
-            <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF]/70">
+            <h3 className="text-[1.2rem] font-normal tracking-[0.04em] text-[#080808]/72">
               {t("menu")}
             </h3>
-            <div className="mt-5 grid gap-3 text-sm text-[#FFFFFF]">
+            <div className="mt-5 grid gap-3 text-[1.2rem] text-[#080808]">
               {menuLinks.map((link) => (
                 <Link key={link.label} to={link.to} className="luxury-link-underline w-fit">
                   {link.label}
@@ -58,12 +58,12 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF]/70">
+            <h3 className="text-[1.2rem] font-normal tracking-[0.04em] text-[#080808]/72">
               {t("reachUs")}
             </h3>
-            <div className="mt-5 grid gap-4 text-sm text-[#FFFFFF]">
+            <div className="mt-5 grid gap-4 text-[1.2rem] text-[#080808]">
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/52">
+                <p className="font-display text-base font-normal tracking-[0.04em] text-[#080808]/55">
                   Email
                 </p>
                 <a href="mailto:contact@rüzo.com" className="luxury-link-underline mt-1 inline-flex w-fit">
@@ -71,7 +71,7 @@ export function Footer() {
                 </a>
               </div>
               <div>
-                <p className="text-[10px] font-semibold uppercase tracking-[0.2em] text-[#FFFFFF]/52">
+                <p className="font-display text-base font-normal tracking-[0.04em] text-[#080808]/55">
                   {t("whatsapp")}
                 </p>
                 <a
@@ -87,10 +87,10 @@ export function Footer() {
           </div>
 
           <div className="col-span-2 lg:col-span-1">
-            <h3 className="text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF]/70">
+            <h3 className="text-[1.2rem] font-normal tracking-[0.04em] text-[#080808]/72">
               {t("social")}
             </h3>
-            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm text-[#FFFFFF] lg:grid lg:gap-3">
+            <div className="mt-5 flex flex-wrap items-center gap-x-6 gap-y-3 text-[1.2rem] text-[#080808] lg:grid lg:gap-3">
               <a
                 href={INSTAGRAM_URL}
                 target="_blank"
@@ -116,8 +116,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-[#FFFFFF]/12">
-          <div className="mx-auto flex max-w-[1500px] px-5 py-5 text-[11px] uppercase tracking-[0.18em] text-[#FFFFFF]/62 lg:px-8">
+        <div className="border-t border-[#E5E5E5]">
+          <div className="mx-auto flex max-w-[1500px] px-5 py-5 text-base tracking-[0.04em] text-[#080808]/62 lg:px-8">
             <span>{t("footerTagline")}</span>
           </div>
         </div>

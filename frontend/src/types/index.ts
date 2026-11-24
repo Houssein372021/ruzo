@@ -16,6 +16,7 @@ export type Category = {
   imageUrl?: string | null;
   isActive?: boolean | null;
   sortOrder?: number | null;
+  highlighted?: boolean | null;
   createdAt?: string | null;
 };
 
@@ -39,6 +40,7 @@ export type Product = {
   id: string;
   slug: string;
   category: Category | null;
+  categories?: Category[];
   nameEn: string;
   nameAr: string;
   shortDescriptionEn?: string | null;
@@ -66,6 +68,26 @@ export type Product = {
   reviewCount?: number | null;
   images: ProductImage[];
   variants: ProductVariant[];
+};
+
+export type HeroMediaType = "IMAGE" | "VIDEO";
+
+export type HeroMedia = {
+  id: string;
+  mediaType: HeroMediaType;
+  mediaUrl: string;
+  posterUrl?: string | null;
+  originalFileName?: string | null;
+  createdAt?: string | null;
+};
+
+export type HomepageSettings = {
+  discoverUrl: string;
+  heroMedia: HeroMedia | null;
+};
+
+export type HomepageAdminSettings = HomepageSettings & {
+  archive: HeroMedia[];
 };
 
 export type FavoriteItem = {

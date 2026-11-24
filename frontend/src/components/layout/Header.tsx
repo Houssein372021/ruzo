@@ -80,17 +80,10 @@ export function Header() {
       categories.map((category) => ({
         to: `/collections/${category.slug}`,
         label: getCategoryLabel(category, isArabic),
+        highlighted: Boolean(category.highlighted),
       })),
     [categories, isArabic],
   );
-
-  const categoryColumn: TopBarMegaMenuColumn | null =
-    categoryLinks.length > 0
-      ? {
-          title: isArabic ? "Ready to wear" : "Ready to wear",
-          links: categoryLinks,
-        }
-      : null;
 
   const collectionsColumn: TopBarMegaMenuColumn | null =
     categoryLinks.length > 0
@@ -100,19 +93,6 @@ export function Header() {
         }
       : null;
 
-  const featuredMenuLinks = useMemo(
-    () =>
-      products
-        .filter((product) => product.featuredMenu)
-        .sort((first, second) => (first.featuredMenuOrder ?? 999) - (second.featuredMenuOrder ?? 999))
-        .slice(0, 4)
-        .map((product) => ({
-        to: `/products/${product.slug}`,
-        label: getProductName(product, language),
-      })),
-    [products, language],
-  );
-
   const searchResults = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLowerCase();
     if (!normalizedQuery) {
@@ -121,9 +101,14 @@ export function Header() {
 
     return products
       .filter((product) => {
-        const categoryName = product.category
-          ? `${product.category.nameEn} ${product.category.nameAr} ${product.category.slug}`
-          : "";
+        const productCategories = product.categories?.length
+          ? product.categories
+          : product.category
+            ? [product.category]
+            : [];
+        const categoryName = productCategories
+          .map((category) => `${category.nameEn} ${category.nameAr} ${category.slug}`)
+          .join(" ");
         const variants = product.variants.map((variant) => `${variant.color} ${variant.size}`).join(" ");
         return `${product.nameEn} ${product.nameAr} ${product.slug} ${product.descriptionEn ?? ""} ${product.descriptionAr ?? ""} ${categoryName} ${variants}`
           .toLowerCase()
@@ -132,50 +117,16 @@ export function Header() {
       .slice(0, 8);
   }, [products, searchQuery]);
 
-  const shopMegaMenu: TopBarMegaMenuColumn[] = [
-    ...(categoryColumn ? [categoryColumn] : []),
-    {
-      title: isArabic ? "Discover" : "Discover",
-      links: [
-        {
-          to: "/collections/new-arrivals",
-          label: t("newArrivals"),
-          description: isArabic ? "Newest RUZO pieces" : "The newest RUZO pieces",
-        },
-        {
-          to: "/collections/best-sellers",
-          label: t("bestSellers"),
-          description: isArabic ? "Customer favorite silhouettes" : "Customer favorite silhouettes",
-        },
-        {
-          to: "/about",
-          label: isArabic ? "The RUZO story" : "The RUZO story",
-          description: isArabic ? "About the brand" : "Beirut womenswear, softly polished",
-        },
-      ],
-    },
-    ...(featuredMenuLinks.length > 0
-      ? [
-          {
-            title: isArabic ? "Featured pieces" : "Featured pieces",
-            links: featuredMenuLinks,
-          },
-        ]
-      : []),
-  ];
-
   const navItems: TopBarItem[] = [
+    { to: "/", label: t("home") },
     {
       to: "/collections/all",
       label: t("shop"),
-      megaMenu: shopMegaMenu,
-    },
-    {
-      to: "/collections/all",
-      label: t("collectionsNav"),
       megaMenu: collectionsColumn ? [collectionsColumn] : undefined,
     },
+    { to: "/about#ruzo-story", label: t("ruzoStory") },
     { to: "/about", label: t("aboutNav") },
+    { to: "/contact", label: t("contact") },
   ];
 
   return (

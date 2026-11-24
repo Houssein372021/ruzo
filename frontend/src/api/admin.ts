@@ -4,6 +4,9 @@ import type {
   AdminDashboard,
   AdminLoginResponse,
   Category,
+  HeroMedia,
+  HeroMediaType,
+  HomepageAdminSettings,
   Product,
 } from "../types";
 
@@ -21,6 +24,41 @@ export const adminApi = {
         "Content-Type": "multipart/form-data",
       },
     });
+    return response.data;
+  },
+
+  async uploadMedia(file: File) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const response = await apiClient.post<{
+      url: string;
+      mediaType: HeroMediaType;
+      originalFileName: string;
+    }>("/admin/uploads/media", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  },
+
+  async homepageSettings() {
+    const response = await apiClient.get<HomepageAdminSettings>("/admin/homepage");
+    return response.data;
+  },
+
+  async updateHomepageSettings(payload: { discoverUrl: string; activeHeroMediaId?: string }) {
+    const response = await apiClient.put<HomepageAdminSettings>("/admin/homepage", payload);
+    return response.data;
+  },
+
+  async createHeroMedia(payload: {
+    mediaType: HeroMediaType;
+    mediaUrl: string;
+    posterUrl?: string;
+    originalFileName?: string;
+  }) {
+    const response = await apiClient.post<HeroMedia>("/admin/homepage/media", payload);
     return response.data;
   },
 

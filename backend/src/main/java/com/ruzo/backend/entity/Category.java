@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
@@ -45,10 +46,17 @@ public class Category {
     @Column(name = "sort_order")
     private Integer sortOrder;
 
+    @Column(name = "highlighted")
+    private Boolean highlighted = false;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @JsonIgnore
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "categories")
+    private List<Product> categorizedProducts = new ArrayList<>();
 }

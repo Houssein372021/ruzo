@@ -21,6 +21,7 @@ import com.ruzo.backend.util.ProductPricing;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -259,12 +260,22 @@ public class AdminController {
     }
 
     @DeleteMapping("/categories/{id}")
+    @Transactional
     public ResponseEntity<Void> deleteCategory(@PathVariable @NonNull UUID id) {
         UUID categoryId = Objects.requireNonNull(id, "Category id is required");
         if (!categoryRepository.existsById(categoryId)) {
             return ResponseEntity.notFound().build();
         }
 
+        List<Product> products = productRepository.findAll();
+        products.forEach(product -> {
+            product.getCategories().removeIf(category -> categoryId.equals(category.getId()));
+            if (product.getCategory() != null && categoryId.equals(product.getCategory().getId())) {
+                product.setCategory(product.getCategories().stream().findFirst().orElse(null));
+            }
+        });
+        productRepository.saveAll(products);
+        productRepository.flush();
         categoryRepository.deleteById(categoryId);
         return ResponseEntity.noContent().build();
     }
@@ -449,13 +460,7 @@ public class AdminController {
 
     private void applyProductRequest(Product product, ProductRequest request) {
         product.setSlug(request.slug());
-        if (request.categoryId() != null) {
-            UUID categoryId = Objects.requireNonNull(request.categoryId(), "Category id is required");
-            product.setCategory(categoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found")));
-        } else if (product.getCategory() == null) {
-            categoryRepository.findBySlug("sets").ifPresent(product::setCategory);
-        }
+        applyProductCategories(product, request);
         product.setTitleEn(request.nameEn());
         product.setTitleAr(request.nameAr());
         product.setNameEn(request.nameEn());
@@ -479,6 +484,38 @@ public class AdminController {
             product.setCreatedAt(LocalDateTime.now());
         }
         product.setUpdatedAt(LocalDateTime.now());
+    }
+
+    private void applyProductCategories(Product product, ProductRequest request) {
+        List<UUID> requestedCategoryIds = request.categoryIds().stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .toList();
+
+        if (requestedCategoryIds.isEmpty() && request.categoryId() != null) {
+            requestedCategoryIds = List.of(request.categoryId());
+        }
+
+        if (requestedCategoryIds.isEmpty()) {
+            if (product.getCategories().isEmpty() && product.getCategory() != null) {
+                product.getCategories().add(product.getCategory());
+            } else if (product.getCategory() == null) {
+                categoryRepository.findBySlug("sets").ifPresent(category -> {
+                    product.setCategory(category);
+                    product.getCategories().add(category);
+                });
+            }
+            return;
+        }
+
+        List<Category> selectedCategories = requestedCategoryIds.stream()
+                .map(categoryId -> categoryRepository.findById(categoryId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Category not found")))
+                .toList();
+
+        product.getCategories().clear();
+        product.getCategories().addAll(selectedCategories);
+        product.setCategory(selectedCategories.getFirst());
     }
 
     private void replaceProductMedia(Product product, ProductRequest request) {
@@ -526,6 +563,7 @@ public class AdminController {
         category.setImageUrl(request.imageUrl());
         category.setSortOrder(request.sortOrder());
         category.setIsActive(request.isActive());
+        category.setHighlighted(Boolean.TRUE.equals(request.highlighted()));
     }
 
     private List<CustomerResponse> getCustomerResponses() {
@@ -650,12 +688,14 @@ public class AdminController {
             Boolean onSale,
             BigDecimal salePrice,
             UUID categoryId,
+            List<UUID> categoryIds,
             String videoUrl,
             String imageUrl,
             Boolean active,
             List<ImageRequest> images,
             List<VariantRequest> variants) {
         public ProductRequest {
+            categoryIds = categoryIds == null ? List.of() : categoryIds;
             images = images == null ? List.of() : images;
             variants = variants == null ? List.of() : variants;
         }
@@ -687,7 +727,8 @@ public class AdminController {
             String nameAr,
             String imageUrl,
             Boolean isActive,
-            Integer sortOrder) {
+            Integer sortOrder,
+            Boolean highlighted) {
     }
 
     public record OrderStatusRequest(OrderStatus status) {
@@ -891,6 +932,7 @@ public class AdminController {
             UUID id,
             String slug,
             ProductController.CategoryResponse category,
+            List<ProductController.CategoryResponse> categories,
             String nameEn,
             String nameAr,
             String shortDescriptionEn,
@@ -920,6 +962,7 @@ public class AdminController {
                     product.getId(),
                     product.getSlug(),
                     ProductController.CategoryResponse.from(product.getCategory()),
+                    categoryResponses(product),
                     product.getNameEn(),
                     product.getNameAr(),
                     product.getShortDescriptionEn(),
@@ -944,6 +987,21 @@ public class AdminController {
                     product.getVideoUrl(),
                     product.getImages().stream().map(ProductController.ProductImageResponse::from).toList(),
                     product.getVariants().stream().map(ProductController.ProductVariantResponse::from).toList());
+        }
+
+        private static List<ProductController.CategoryResponse> categoryResponses(Product product) {
+            List<Category> selectedCategories = product.getCategories();
+            if (selectedCategories == null || selectedCategories.isEmpty()) {
+                return product.getCategory() == null
+                        ? List.of()
+                        : List.of(ProductController.CategoryResponse.from(product.getCategory()));
+            }
+
+            return selectedCategories.stream()
+                    .sorted(Comparator.comparing(
+                            category -> category.getSortOrder() == null ? Integer.MAX_VALUE : category.getSortOrder()))
+                    .map(ProductController.CategoryResponse::from)
+                    .toList();
         }
     }
 }

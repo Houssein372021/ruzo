@@ -45,6 +45,9 @@ public class CategorySeeder implements CommandLineRunner {
         category.setImageUrl(null);
         category.setIsActive(true);
         category.setSortOrder(sortOrder);
+        if (category.getHighlighted() == null) {
+            category.setHighlighted(false);
+        }
         if (category.getCreatedAt() == null) {
             category.setCreatedAt(LocalDateTime.now());
         }

@@ -126,7 +126,14 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
         .sort((first, second) => (first.bestSellerOrder ?? 999) - (second.bestSellerOrder ?? 999));
     }
 
-    return products.filter((product) => product.category?.slug === normalizedCategorySlug);
+    return products.filter((product) => {
+      const productCategories = product.categories?.length
+        ? product.categories
+        : product.category
+          ? [product.category]
+          : [];
+      return productCategories.some((category) => category.slug === normalizedCategorySlug);
+    });
   }, [normalizedCategorySlug, products]);
 
   const sizes = useMemo(
@@ -150,15 +157,18 @@ export function CollectionPage({ categorySlug, titleKey }: CollectionPageProps) 
       const matchesPrice =
         price === "all" ||
         (price === "under-50" ? effectivePrice < 50 : effectivePrice >= 50);
+      const productCategories = product.categories?.length
+        ? product.categories
+        : product.category
+          ? [product.category]
+          : [];
       const searchableProduct = [
         product.nameEn,
         product.nameAr,
         product.slug,
         product.descriptionEn,
         product.descriptionAr,
-        product.category?.nameEn,
-        product.category?.nameAr,
-        product.category?.slug,
+        ...productCategories.flatMap((category) => [category.nameEn, category.nameAr, category.slug]),
         ...product.variants.flatMap((variant) => [variant.color, variant.size]),
       ]
         .filter(Boolean)

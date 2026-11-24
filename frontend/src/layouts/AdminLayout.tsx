@@ -1,5 +1,5 @@
 import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
-import { BarChart3, FolderTree, LogOut, Package, ShoppingBag, Star, Users } from "lucide-react";
+import { BarChart3, FolderTree, ImagePlay, LogOut, Package, ShoppingBag, Star, Users } from "lucide-react";
 import { AdminLanguageButton } from "../components/admin/AdminLanguageButton";
 import { Seo } from "../components/common/Seo";
 import { TopBar } from "../components/layout/TopBar";
@@ -8,6 +8,7 @@ import { useAuthStore } from "../store/authStore";
 
 const adminNav = [
   { to: "/admin/dashboard", key: "dashboard", icon: BarChart3 },
+  { to: "/admin/homepage", key: "homepageAdmin", icon: ImagePlay },
   { to: "/admin/products", key: "products", icon: Package },
   { to: "/admin/categories", key: "categories", icon: FolderTree },
   { to: "/admin/orders", key: "orders", icon: ShoppingBag },

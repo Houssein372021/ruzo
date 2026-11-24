@@ -22,7 +22,8 @@ import org.springframework.web.server.ResponseStatusException;
 @RequestMapping("/api/admin/uploads")
 public class UploadController {
 
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp", "gif");
+    private static final Set<String> ALLOWED_IMAGE_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp", "gif");
+    private static final Set<String> ALLOWED_VIDEO_EXTENSIONS = Set.of("mp4", "webm");
 
     private final Path uploadsDirectory;
 
@@ -37,14 +38,42 @@ public class UploadController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Image file is required.");
         }
 
-        String contentType = file.getContentType();
-        if (contentType == null || !contentType.toLowerCase(Locale.ROOT).startsWith("image/")) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only image files are allowed.");
+        return new UploadResponse(storeFile(file, ALLOWED_IMAGE_EXTENSIONS, "image/"));
+    }
+
+    @PostMapping("/media")
+    @ResponseStatus(HttpStatus.CREATED)
+    public MediaUploadResponse uploadMedia(@RequestParam("file") MultipartFile file) {
+        if (file.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Media file is required.");
+        }
+
+        String contentType = normalizedContentType(file);
+        if (contentType.startsWith("image/")) {
+            return new MediaUploadResponse(
+                    storeFile(file, ALLOWED_IMAGE_EXTENSIONS, "image/"),
+                    "IMAGE",
+                    file.getOriginalFilename());
+        }
+        if (contentType.startsWith("video/")) {
+            return new MediaUploadResponse(
+                    storeFile(file, ALLOWED_VIDEO_EXTENSIONS, "video/"),
+                    "VIDEO",
+                    file.getOriginalFilename());
+        }
+
+        throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only image and video files are allowed.");
+    }
+
+    private String storeFile(MultipartFile file, Set<String> allowedExtensions, String requiredContentTypePrefix) {
+        String contentType = normalizedContentType(file);
+        if (!contentType.startsWith(requiredContentTypePrefix)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid media type.");
         }
 
         String extension = extensionFrom(file.getOriginalFilename());
-        if (!ALLOWED_EXTENSIONS.contains(extension)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported image format.");
+        if (!allowedExtensions.contains(extension)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Unsupported media format.");
         }
 
         try {
@@ -60,10 +89,15 @@ public class UploadController {
                 Files.copy(inputStream, target, StandardCopyOption.REPLACE_EXISTING);
             }
 
-            return new UploadResponse("/api/uploads/" + fileName);
+            return "/api/uploads/" + fileName;
         } catch (IOException exception) {
-            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to save image.");
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Unable to save media.");
         }
+    }
+
+    private String normalizedContentType(MultipartFile file) {
+        String contentType = file.getContentType();
+        return contentType == null ? "" : contentType.toLowerCase(Locale.ROOT);
     }
 
     private String extensionFrom(String fileName) {
@@ -75,5 +109,8 @@ public class UploadController {
     }
 
     public record UploadResponse(String url) {
+    }
+
+    public record MediaUploadResponse(String url, String mediaType, String originalFileName) {
     }
 }

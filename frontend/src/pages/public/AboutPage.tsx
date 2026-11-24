@@ -103,7 +103,7 @@ export function AboutPage() {
       />
 
       <main className="bg-[#FFFFFF] text-[#080808]">
-        <section className="border-b border-[#080808]/10">
+        <section id="ruzo-story" className="scroll-mt-20 border-b border-[#080808]/10">
           <div className="mx-auto grid max-w-[1500px] gap-10 px-5 py-14 sm:py-20 lg:grid-cols-[0.92fr_1.08fr] lg:px-8">
             <div className="relative min-h-[520px] overflow-hidden bg-[#080808] lg:min-h-[680px]">
               <img src={heroImage} alt="" className="product-image h-full w-full object-cover" />

@@ -18,6 +18,7 @@ import { AdminCategoriesPage } from "../pages/admin/AdminCategoriesPage";
 import { AdminOrdersPage } from "../pages/admin/AdminOrdersPage";
 import { AdminCustomersPage } from "../pages/admin/AdminCustomersPage";
 import { AdminReviewsPage } from "../pages/admin/AdminReviewsPage";
+import { AdminHomepagePage } from "../pages/admin/AdminHomepagePage";
 
 export function AppRoutes() {
   return (
@@ -48,6 +49,7 @@ export function AppRoutes() {
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboardPage />} />
+          <Route path="homepage" element={<AdminHomepagePage />} />
           <Route path="products" element={<AdminProductsPage />} />
           <Route path="categories" element={<AdminCategoriesPage />} />
           <Route path="orders" element={<AdminOrdersPage />} />

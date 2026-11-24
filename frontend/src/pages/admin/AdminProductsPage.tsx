@@ -34,7 +34,7 @@ type ProductForm = {
   price: string;
   onSale: boolean;
   salePrice: string;
-  categoryId: string;
+  categoryIds: string[];
   videoUrl: string;
   active: boolean;
   images: ProductImageForm[];
@@ -69,7 +69,7 @@ const createEmptyProductForm = (categoryId = ""): ProductForm => ({
   price: "",
   onSale: false,
   salePrice: "",
-  categoryId,
+  categoryIds: categoryId ? [categoryId] : [],
   videoUrl: "",
   active: true,
   images: [createImageRow()],
@@ -204,9 +204,9 @@ export function AdminProductsPage() {
       .then((data) => {
         setCategories(data);
         setForm((current) => (
-          current.categoryId || data.length === 0
+          current.categoryIds.length > 0 || data.length === 0
             ? current
-            : { ...current, categoryId: data[0].id }
+            : { ...current, categoryIds: [data[0].id] }
         ));
       })
       .catch(() => setError(t("apiUnavailable")));
@@ -220,9 +220,14 @@ export function AdminProductsPage() {
   const filteredProducts = useMemo(
     () =>
       products.filter((product) => {
-        const categoryName = product.category
-          ? `${product.category.nameEn} ${product.category.nameAr}`
-          : "";
+        const productCategories = product.categories?.length
+          ? product.categories
+          : product.category
+            ? [product.category]
+            : [];
+        const categoryName = productCategories
+          .map((category) => `${category.nameEn} ${category.nameAr}`)
+          .join(" ");
         return `${product.nameEn} ${product.nameAr} ${product.slug} ${categoryName}`
           .toLowerCase()
           .includes(search.toLowerCase());
@@ -238,8 +243,12 @@ export function AdminProductsPage() {
 
   const handleSave = async () => {
     setError("");
-    const categoryId = form.categoryId || categories[0]?.id;
-    if (!categoryId) {
+    const categoryIds = form.categoryIds.length > 0
+      ? form.categoryIds
+      : categories[0]?.id
+        ? [categories[0].id]
+        : [];
+    if (categoryIds.length === 0) {
       setError(t("required"));
       return;
     }
@@ -282,7 +291,8 @@ export function AdminProductsPage() {
       price,
       onSale: form.onSale,
       salePrice: form.salePrice.trim() ? salePrice : undefined,
-      categoryId,
+      categoryId: categoryIds[0],
+      categoryIds,
       videoUrl: form.videoUrl.trim() || undefined,
       active: form.active,
       images,
@@ -295,7 +305,7 @@ export function AdminProductsPage() {
       } else {
         await adminApi.createProduct(payload);
       }
-      setForm(createEmptyProductForm(categoryId));
+      setForm(createEmptyProductForm(categoryIds[0]));
       loadProducts();
     } catch {
       setError(t("apiUnavailable"));
@@ -324,7 +334,13 @@ export function AdminProductsPage() {
       price: String(product.price),
       onSale: Boolean(product.onSale),
       salePrice: product.salePrice == null ? "" : String(product.salePrice),
-      categoryId: product.category?.id ?? categories[0]?.id ?? "",
+      categoryIds: product.categories?.length
+        ? product.categories.map((category) => category.id)
+        : product.category?.id
+          ? [product.category.id]
+          : categories[0]?.id
+            ? [categories[0].id]
+            : [],
       videoUrl: product.videoUrl ?? "",
       active: product.active ?? product.isActive ?? true,
       images: product.images.length
@@ -408,7 +424,7 @@ export function AdminProductsPage() {
   };
 
   const resetForm = () => {
-    setForm(createEmptyProductForm(form.categoryId || categories[0]?.id || ""));
+    setForm(createEmptyProductForm(form.categoryIds[0] || categories[0]?.id || ""));
   };
 
   const updateHomeSection = (section: HomeSectionKey, productIds: string[]) => {
@@ -612,11 +628,12 @@ export function AdminProductsPage() {
                     <div className="text-xs text-[#444444]">{product.slug}</div>
                   </td>
                   <td>
-                    {product.category
-                      ? language === "ar"
-                        ? product.category.nameAr
-                        : product.category.nameEn
-                      : "-"}
+                    {(product.categories?.length
+                      ? product.categories
+                      : product.category
+                        ? [product.category]
+                        : []
+                    ).map((category) => language === "ar" ? category.nameAr : category.nameEn).join(", ") || "-"}
                   </td>
                   <td>
                     {getDiscountPercentage(product) ? (
@@ -659,18 +676,38 @@ export function AdminProductsPage() {
 
         <AdminPanel title={form.id ? t("edit") : t("addProduct")}>
           <div className="grid gap-3">
-            <AdminSelect
-              label={t("category")}
-              value={form.categoryId}
-              onChange={(value) => setForm({ ...form, categoryId: value })}
-            >
-              <option value="">{t("category")}</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {language === "ar" ? category.nameAr : category.nameEn}
-                </option>
-              ))}
-            </AdminSelect>
+            <fieldset className="border border-[#E5E5E5] p-3">
+              <legend className="px-1 text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
+                {t("productCategories")}
+              </legend>
+              <p className="mb-3 text-xs leading-5 text-[#080808]/60">{t("productCategoriesHint")}</p>
+              <div className="grid gap-2 sm:grid-cols-2">
+                {categories.map((category) => {
+                  const isChecked = form.categoryIds.includes(category.id);
+                  return (
+                    <label
+                      key={category.id}
+                      className={`flex cursor-pointer items-center gap-3 border px-3 py-2 text-sm transition ${
+                        isChecked ? "border-[#080808] bg-[#080808] text-white" : "border-[#E5E5E5] bg-white text-[#080808]"
+                      }`}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        className="h-4 w-4 accent-[#080808]"
+                        onChange={() => setForm((current) => ({
+                          ...current,
+                          categoryIds: isChecked
+                            ? current.categoryIds.filter((id) => id !== category.id)
+                            : [...current.categoryIds, category.id],
+                        }))}
+                      />
+                      <span>{language === "ar" ? category.nameAr : category.nameEn}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </fieldset>
             <AdminInput label={t("slug")} value={form.slug} onChange={(value) => setForm({ ...form, slug: value })} />
             <AdminInput label={t("nameEn")} value={form.nameEn} onChange={(value) => setForm({ ...form, nameEn: value })} />
             <AdminInput label={t("nameAr")} value={form.nameAr} onChange={(value) => setForm({ ...form, nameAr: value })} />
@@ -886,33 +923,6 @@ function AdminTextarea({ label, value, onChange }: AdminInputProps) {
         onChange={(event) => onChange(event.target.value)}
         className="admin-input min-h-24 py-3"
       />
-    </label>
-  );
-}
-
-function AdminSelect({
-  label,
-  value,
-  onChange,
-  children,
-}: {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  children: ReactNode;
-}) {
-  return (
-    <label className="block">
-      <span className="mb-1 block text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
-        {label}
-      </span>
-      <select
-        value={value}
-        onChange={(event) => onChange(event.target.value)}
-        className="admin-select w-full"
-      >
-        {children}
-      </select>
     </label>
   );
 }

@@ -20,6 +20,7 @@ export type TopBarMegaMenuLink = {
   to: string;
   label: string;
   description?: string;
+  highlighted?: boolean;
 };
 
 type TopBarProps = {
@@ -57,8 +58,8 @@ export function TopBar({
 
   return (
     <header className={`${positionClass} relative z-40 border-b border-[#080808]/10 bg-[#FFFFFF] text-[#080808] shadow-[0_1px_0_rgba(8,8,8,0.04)]`}>
-      <div className="mx-auto grid h-[70px] w-full max-w-[1500px] grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 sm:gap-4 sm:px-5 lg:px-8">
-        <div className="flex h-full min-w-0 items-center gap-4">
+      <div className="mx-auto grid h-[70px] w-full max-w-[1500px] grid-cols-[1fr_auto_1fr] items-center gap-2 px-4 sm:gap-4 sm:px-5 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:gap-10 lg:px-8">
+        <div className="flex h-full min-w-0 items-center gap-4 lg:col-start-2 lg:row-start-1 lg:justify-self-center">
           {hasMobileMenu ? (
             <button
               type="button"
@@ -81,7 +82,7 @@ export function TopBar({
 
         <Link
           to={brandTo}
-          className="font-display text-center text-[1.45rem] uppercase leading-none tracking-[0.12em] text-[#080808] transition hover:text-[#080808] sm:text-[2.25rem] sm:tracking-[0.18em]"
+          className="font-display text-center text-[1.45rem] uppercase leading-none tracking-[0.12em] text-[#080808] transition hover:text-[#080808] sm:text-[2.25rem] sm:tracking-[0.18em] lg:col-start-1 lg:row-start-1 lg:justify-self-start"
         >
           RÜZO
           {eyebrow ? (
@@ -91,7 +92,7 @@ export function TopBar({
           ) : null}
         </Link>
 
-        <div className="flex min-w-0 items-center justify-end text-[#080808]">
+        <div className="flex min-w-0 items-center justify-end text-[#080808] lg:col-start-3 lg:row-start-1">
           {actions}
         </div>
       </div>
@@ -238,7 +239,9 @@ function MobileMegaMenuColumn({
             key={link.to}
             to={link.to}
             onClick={onClick}
-            className="-ms-2 block px-2 py-2.5 text-sm text-[#080808]/72 transition hover:bg-[#080808]/5 hover:text-[#080808]"
+            className={`-ms-2 block px-2 py-2.5 text-sm transition hover:bg-[#080808]/5 ${
+              link.highlighted ? "text-[#6B0F1A] hover:text-[#6B0F1A]" : "text-[#080808]/72 hover:text-[#080808]"
+            }`}
           >
             {link.label}
           </Link>
@@ -276,7 +279,9 @@ function MobileMegaMenuColumn({
                   key={`${column.title}-${link.to}`}
                   to={link.to}
                   onClick={onClick}
-                  className="-ms-2 block px-2 py-2.5 text-sm text-[#080808]/72 transition hover:bg-[#080808]/5 hover:text-[#080808]"
+                  className={`-ms-2 block px-2 py-2.5 text-sm transition hover:bg-[#080808]/5 ${
+                    link.highlighted ? "text-[#6B0F1A] hover:text-[#6B0F1A]" : "text-[#080808]/72 hover:text-[#080808]"
+                  }`}
                 >
                   {link.label}
                 </Link>
@@ -305,7 +310,9 @@ function TopBarMegaMenu({ columns }: { columns: TopBarMegaMenuColumn[] }) {
                 <Link
                   key={`${column.title}-${link.to}`}
                   to={link.to}
-                  className="group/link -mx-3 flex min-h-[54px] items-center justify-between gap-5 border border-transparent px-3 py-2 text-[13px] uppercase tracking-[0.08em] text-[#080808]/80 transition hover:border-[#080808]/15 hover:bg-[#080808]/5 hover:text-[#080808]"
+                  className={`group/link -mx-3 flex min-h-[54px] items-center justify-between gap-5 border border-transparent px-3 py-2 text-[13px] uppercase tracking-[0.08em] transition hover:border-[#080808]/15 hover:bg-[#080808]/5 ${
+                    link.highlighted ? "text-[#6B0F1A] hover:text-[#6B0F1A]" : "text-[#080808]/80 hover:text-[#080808]"
+                  }`}
                 >
                   <span className="min-w-0">
                     <span className="block">{link.label}</span>

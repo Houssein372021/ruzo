@@ -7,6 +7,7 @@ import com.ruzo.backend.entity.ProductVariant;
 import com.ruzo.backend.repository.ProductRepository;
 import com.ruzo.backend.util.ProductPricing;
 import java.math.BigDecimal;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import org.springframework.http.ResponseEntity;
@@ -58,6 +59,7 @@ public class ProductController {
             UUID id,
             String slug,
             CategoryResponse category,
+            List<CategoryResponse> categories,
             String nameEn,
             String nameAr,
             String shortDescriptionEn,
@@ -89,6 +91,7 @@ public class ProductController {
                     product.getId(),
                     product.getSlug(),
                     CategoryResponse.from(product.getCategory()),
+                    categoryResponses(product),
                     product.getNameEn(),
                     product.getNameAr(),
                     product.getShortDescriptionEn(),
@@ -115,6 +118,21 @@ public class ProductController {
                     product.getVariants().stream().map(ProductVariantResponse::from).toList()
             );
         }
+
+        private static List<CategoryResponse> categoryResponses(Product product) {
+            List<Category> selectedCategories = product.getCategories();
+            if (selectedCategories == null || selectedCategories.isEmpty()) {
+                return product.getCategory() == null
+                        ? List.of()
+                        : List.of(CategoryResponse.from(product.getCategory()));
+            }
+
+            return selectedCategories.stream()
+                    .sorted(Comparator.comparing(
+                            category -> category.getSortOrder() == null ? Integer.MAX_VALUE : category.getSortOrder()))
+                    .map(CategoryResponse::from)
+                    .toList();
+        }
     }
 
     public record CategoryResponse(
@@ -124,7 +142,8 @@ public class ProductController {
             String nameAr,
             String imageUrl,
             Boolean isActive,
-            Integer sortOrder
+            Integer sortOrder,
+            Boolean highlighted
     ) {
 
         static CategoryResponse from(Category category) {
@@ -139,7 +158,8 @@ public class ProductController {
                     category.getNameAr(),
                     category.getImageUrl(),
                     category.getIsActive(),
-                    category.getSortOrder()
+                    category.getSortOrder(),
+                    category.getHighlighted()
             );
         }
     }

@@ -2,38 +2,30 @@ import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight, Ban, ChevronLeft, ChevronRight, CreditCard, Headphones, Leaf, Package, Shirt, Truck } from "lucide-react";
+import { homepageApi } from "../../api/homepage";
 import { productsApi } from "../../api/products";
 import { Seo } from "../../components/common/Seo";
 import { ProductSkeletonGrid } from "../../components/common/Skeleton";
 import { ProductCard } from "../../components/product/ProductCard";
 import { INSTAGRAM_URL } from "../../config/brand";
 import { useI18n } from "../../hooks/useI18n";
-import type { Product } from "../../types";
+import type { HomepageSettings, Product } from "../../types";
 import { getProductImage, getProductName } from "../../utils/product";
 
 const heroVideoMp4Url = "/hero-ruzo.mp4";
-const heroVideoWebmUrl = "/hero-ruzo.webm";
 const heroPosterUrl = "/hero-ruzo-poster.webp";
 const storyImageUrl = "/products/ruzo/metallic-magenta-set-01.webp";
 
-const composedRealityImages = [
-  {
-    src: "/home/composed-realities-01.webp",
-    alt: "RÜZO taupe dress portrait by the coastline",
+const defaultHomepageSettings: HomepageSettings = {
+  discoverUrl: "/collections/all",
+  heroMedia: {
+    id: "default-hero",
+    mediaType: "VIDEO",
+    mediaUrl: heroVideoMp4Url,
+    posterUrl: heroPosterUrl,
+    originalFileName: "hero-ruzo.mp4",
   },
-  {
-    src: "/home/composed-realities-02.webp",
-    alt: "RÜZO red satin dress detail",
-  },
-  {
-    src: "/home/composed-realities-03.webp",
-    alt: "RÜZO summer dress portrait at a Beirut market",
-  },
-  {
-    src: "/home/composed-realities-04.webp",
-    alt: "RÜZO yellow satin set detail at a cafe",
-  },
-] as const;
+};
 
 function useAutoCarousel(itemCount: number, intervalMs = 3800) {
   const [index, setIndex] = useState(0);
@@ -114,6 +106,7 @@ export function HomePage() {
   const { language, dir, t } = useI18n();
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [homepageSettings, setHomepageSettings] = useState<HomepageSettings>(defaultHomepageSettings);
 
   useEffect(() => {
     let isMounted = true;
@@ -129,6 +122,14 @@ export function HomePage() {
           setIsLoading(false);
         }
       });
+
+    homepageApi.getSettings()
+      .then((settings) => {
+        if (isMounted) {
+          setHomepageSettings(settings);
+        }
+      })
+      .catch(() => undefined);
 
     return () => {
       isMounted = false;
@@ -194,8 +195,6 @@ export function HomePage() {
           detailCopy:
             "من القصات إلى التغليف، نركز على الجودة والوضوح وتجربة شراء تشعرين معها بالثقة.",
           productFallback: "منتجات مختارة",
-          composedEyebrow: "افتتاحية",
-          composedTitle: "وقائع مؤلفة: ملاحظات حول الأناقة العصرية",
         }
       : {
           discoverCollection: "Discover the collection",
@@ -225,11 +224,11 @@ export function HomePage() {
           detailCopy:
             "From fit to packaging, Rüzo focuses on quality, clarity, and a shopping experience made to feel considered.",
           productFallback: "Selected pieces",
-          composedEyebrow: "Editorial",
-          composedTitle: "Composed Realities: Notes on Modern Dressing",
         };
 
-  const primaryCollectionPath = "/collections/all";
+  const primaryCollectionPath = homepageSettings.discoverUrl || "/collections/all";
+  const heroMedia = homepageSettings.heroMedia ?? defaultHomepageSettings.heroMedia;
+  const isExternalCollectionPath = /^https?:\/\//i.test(primaryCollectionPath);
 
   const newArrivalsCarousel = useAutoCarousel(newArrivals.length);
   const collectionsCarousel = useAutoCarousel(discoverCollections.length);
@@ -340,19 +339,27 @@ export function HomePage() {
       />
 
       <section className="relative min-h-[calc(100vh-104px)] overflow-hidden bg-[#080808]">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="metadata"
-          poster={heroPosterUrl}
-          aria-label={t("heroVideoLabel")}
-          className="absolute inset-0 h-full w-full object-cover object-center"
-        >
-          <source src={heroVideoMp4Url} type="video/mp4" />
-          <source src={heroVideoWebmUrl} type="video/webm" />
-        </video>
+        {heroMedia?.mediaType === "IMAGE" ? (
+          <img
+            src={heroMedia.mediaUrl}
+            alt=""
+            fetchPriority="high"
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          />
+        ) : (
+          <video
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="metadata"
+            poster={heroMedia?.posterUrl || heroPosterUrl}
+            aria-label={t("heroVideoLabel")}
+            className="absolute inset-0 h-full w-full object-cover object-center"
+          >
+            <source src={heroMedia?.mediaUrl || heroVideoMp4Url} />
+          </video>
+        )}
         <div className="absolute inset-0 bg-[#080808]/34" />
         <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(to_top,rgba(8,8,8,0.82),rgba(8,8,8,0.2),rgba(8,8,8,0))]" />
         <div className="relative z-10 mx-auto flex min-h-[calc(100vh-104px)] max-w-[1500px] items-end justify-center px-5 pb-14 text-center sm:pb-20 lg:px-8">
@@ -368,12 +375,21 @@ export function HomePage() {
                 {heroCopy}
               </p>
             ) : null}
-            <Link
-              to={primaryCollectionPath}
-              className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#080808] hover:bg-[#080808]"
-            >
-              {copy.discoverCollection}
-            </Link>
+            {isExternalCollectionPath ? (
+              <a
+                href={primaryCollectionPath}
+                className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#080808] hover:bg-[#080808]"
+              >
+                {copy.discoverCollection}
+              </a>
+            ) : (
+              <Link
+                to={primaryCollectionPath}
+                className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#080808] hover:bg-[#080808]"
+              >
+                {copy.discoverCollection}
+              </Link>
+            )}
           </motion.div>
         </div>
       </section>
@@ -442,27 +458,6 @@ export function HomePage() {
               {t("noProducts")}
             </p>
           )}
-        </div>
-      </section>
-
-      <section className="border-b border-[#080808]/10 bg-[#FFFFFF] px-3 py-14 sm:px-5 sm:py-16 lg:px-5">
-        <div className="mx-auto max-w-[1880px]">
-          <h2 className="composed-title font-display text-center normal-case text-[#080808]">
-            {copy.composedTitle}
-          </h2>
-
-          <div className="mt-12 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-            {composedRealityImages.map((image) => (
-              <figure key={image.src} className="bg-[#F7F7F7]">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  loading="lazy"
-                  className="product-image h-auto w-full object-contain"
-                />
-              </figure>
-            ))}
-          </div>
         </div>
       </section>
 

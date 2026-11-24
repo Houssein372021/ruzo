@@ -14,6 +14,7 @@ type CategoryForm = {
   imageUrl: string;
   sortOrder: string;
   isActive: boolean;
+  highlighted: boolean;
 };
 
 const emptyCategoryForm: CategoryForm = {
@@ -23,6 +24,7 @@ const emptyCategoryForm: CategoryForm = {
   imageUrl: "",
   sortOrder: "0",
   isActive: true,
+  highlighted: false,
 };
 
 export function AdminCategoriesPage() {
@@ -59,6 +61,7 @@ export function AdminCategoriesPage() {
       imageUrl: form.imageUrl,
       sortOrder: Number(form.sortOrder),
       isActive: form.isActive,
+      highlighted: form.highlighted,
     };
 
     try {
@@ -142,6 +145,7 @@ export function AdminCategoriesPage() {
                             imageUrl: category.imageUrl ?? "",
                             sortOrder: String(category.sortOrder ?? 0),
                             isActive: category.isActive !== false,
+                            highlighted: Boolean(category.highlighted),
                           })
                         }
                       >
@@ -181,6 +185,31 @@ export function AdminCategoriesPage() {
               />
               {form.isActive ? t("active") : t("inactive")}
             </label>
+            <div className="flex items-center justify-between gap-4 border border-[#E5E5E5] p-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#444444]">
+                  {t("highlightedCategory")}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-[#080808]/60">
+                  {t("highlightedCategoryHint")}
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={form.highlighted}
+                className={`relative h-7 w-12 shrink-0 border transition ${
+                  form.highlighted ? "border-[#080808] bg-[#080808]" : "border-[#E5E5E5] bg-white"
+                }`}
+                onClick={() => setForm({ ...form, highlighted: !form.highlighted })}
+              >
+                <span
+                  className={`absolute top-1 h-[18px] w-[18px] bg-white shadow-sm transition ${
+                    form.highlighted ? "left-6" : "left-1 border border-[#E5E5E5]"
+                  }`}
+                />
+              </button>
+            </div>
             <button type="button" className="admin-primary-button" onClick={handleSave}>
               <Plus className="h-4 w-4" />
               {t("save")}

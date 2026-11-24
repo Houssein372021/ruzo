@@ -1,5 +1,6 @@
 import { Link, Navigate, NavLink, Outlet, useNavigate } from "react-router-dom";
 import { BarChart3, FolderTree, ImagePlay, LogOut, Package, ShoppingBag, Star, Users } from "lucide-react";
+import { adminApi } from "../api/admin";
 import { AdminLanguageButton } from "../components/admin/AdminLanguageButton";
 import { Seo } from "../components/common/Seo";
 import { TopBar } from "../components/layout/TopBar";
@@ -19,6 +20,7 @@ const adminNav = [
 export function AdminLayout() {
   const { t } = useI18n();
   const token = useAuthStore((state) => state.token);
+  const email = useAuthStore((state) => state.email);
   const logout = useAuthStore((state) => state.logout);
   const navigate = useNavigate();
 
@@ -27,6 +29,7 @@ export function AdminLayout() {
   }
 
   const handleLogout = () => {
+    void adminApi.logout().catch(() => undefined);
     logout();
     navigate("/admin/login");
   };
@@ -92,7 +95,7 @@ export function AdminLayout() {
         </nav>
 
         <div className="mt-auto border-t border-[#E5E5E5] px-5 py-5">
-          <p className="mb-3 text-xs text-[#555555]">admin@ruzo.local</p>
+          {email ? <p className="mb-3 break-all text-xs text-[#555555]">{email}</p> : null}
           <AdminLanguageButton className="mb-3 w-full justify-start bg-[#FFFFFF]" />
           <button
             type="button"

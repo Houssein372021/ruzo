@@ -9,23 +9,85 @@ import { ProductSkeletonGrid } from "../../components/common/Skeleton";
 import { ProductCard } from "../../components/product/ProductCard";
 import { INSTAGRAM_URL } from "../../config/brand";
 import { useI18n } from "../../hooks/useI18n";
-import type { HomepageSettings, Product } from "../../types";
+import type { HeroMedia, HomepageSettings, Product } from "../../types";
 import { getProductImage, getProductName } from "../../utils/product";
 
 const heroVideoMp4Url = "/hero-ruzo.mp4";
 const heroPosterUrl = "/hero-ruzo-poster.webp";
 const storyImageUrl = "/products/ruzo/metallic-magenta-set-01.webp";
 
+const defaultHeroMedia: HeroMedia = {
+  id: "default-hero",
+  mediaType: "VIDEO",
+  mediaUrl: heroVideoMp4Url,
+  posterUrl: heroPosterUrl,
+};
+
 const defaultHomepageSettings: HomepageSettings = {
   discoverUrl: "/collections/all",
-  heroMedia: {
-    id: "default-hero",
-    mediaType: "VIDEO",
-    mediaUrl: heroVideoMp4Url,
-    posterUrl: heroPosterUrl,
-    originalFileName: "hero-ruzo.mp4",
-  },
+  heroMedia: defaultHeroMedia,
 };
+
+function HomeHero({
+  media, discoverUrl, buttonLabel, videoLabel, copy, primary = false,
+}: {
+  media: HeroMedia;
+  discoverUrl: string;
+  buttonLabel: string;
+  videoLabel: string;
+  copy?: string;
+  primary?: boolean;
+}) {
+  const buttonClassName = "mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#080808] hover:bg-[#080808]";
+  const mediaClassName = "absolute inset-0 h-full w-full object-cover object-center";
+
+  return (
+    <section className="relative min-h-[calc(100vh-104px)] overflow-hidden bg-[#080808]">
+      {media.mediaType === "IMAGE" ? (
+        <img
+          src={media.mediaUrl}
+          alt=""
+          loading={primary ? "eager" : "lazy"}
+          fetchPriority={primary ? "high" : "auto"}
+          className={mediaClassName}
+        />
+      ) : (
+        <video
+          src={media.mediaUrl}
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster={media.posterUrl || undefined}
+          aria-label={videoLabel}
+          className={mediaClassName}
+        />
+      )}
+      <div className="absolute inset-0 bg-[#080808]/34" />
+      <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(to_top,rgba(8,8,8,0.82),rgba(8,8,8,0.2),rgba(8,8,8,0))]" />
+      <div className="relative z-10 mx-auto flex min-h-[calc(100vh-104px)] max-w-[1500px] items-end justify-center px-5 pb-14 text-center sm:pb-20 lg:px-8">
+        <motion.div
+          initial={primary ? { opacity: 0, y: 24 } : false}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="max-w-5xl text-[#FFFFFF]"
+        >
+          {copy ? (
+            <p className="mx-auto mt-5 max-w-xl text-sm font-medium leading-7 text-[#FFFFFF]/86 sm:text-base">
+              {copy}
+            </p>
+          ) : null}
+          {/^https?:\/\//i.test(discoverUrl) ? (
+            <a href={discoverUrl} className={buttonClassName}>{buttonLabel}</a>
+          ) : (
+            <Link to={discoverUrl} className={buttonClassName}>{buttonLabel}</Link>
+          )}
+        </motion.div>
+      </div>
+    </section>
+  );
+}
 
 function useAutoCarousel(itemCount: number, intervalMs = 3800) {
   const [index, setIndex] = useState(0);
@@ -227,8 +289,8 @@ export function HomePage() {
         };
 
   const primaryCollectionPath = homepageSettings.discoverUrl || "/collections/all";
-  const heroMedia = homepageSettings.heroMedia ?? defaultHomepageSettings.heroMedia;
-  const isExternalCollectionPath = /^https?:\/\//i.test(primaryCollectionPath);
+  const heroMedia = homepageSettings.heroMedia ?? defaultHeroMedia;
+  const secondaryHero = homepageSettings.secondaryHero;
 
   const newArrivalsCarousel = useAutoCarousel(newArrivals.length);
   const collectionsCarousel = useAutoCarousel(discoverCollections.length);
@@ -338,61 +400,22 @@ export function HomePage() {
         }}
       />
 
-      <section className="relative min-h-[calc(100vh-104px)] overflow-hidden bg-[#080808]">
-        {heroMedia?.mediaType === "IMAGE" ? (
-          <img
-            src={heroMedia.mediaUrl}
-            alt=""
-            fetchPriority="high"
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          />
-        ) : (
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="metadata"
-            poster={heroMedia?.posterUrl || heroPosterUrl}
-            aria-label={t("heroVideoLabel")}
-            className="absolute inset-0 h-full w-full object-cover object-center"
-          >
-            <source src={heroMedia?.mediaUrl || heroVideoMp4Url} />
-          </video>
-        )}
-        <div className="absolute inset-0 bg-[#080808]/34" />
-        <div className="absolute inset-x-0 bottom-0 h-2/3 bg-[linear-gradient(to_top,rgba(8,8,8,0.82),rgba(8,8,8,0.2),rgba(8,8,8,0))]" />
-        <div className="relative z-10 mx-auto flex min-h-[calc(100vh-104px)] max-w-[1500px] items-end justify-center px-5 pb-14 text-center sm:pb-20 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
-            className="max-w-5xl text-[#FFFFFF]"
-          >
-            
-            {heroCopy ? (
-              <p className="mx-auto mt-5 max-w-xl text-sm font-medium leading-7 text-[#FFFFFF]/86 sm:text-base">
-                {heroCopy}
-              </p>
-            ) : null}
-            {isExternalCollectionPath ? (
-              <a
-                href={primaryCollectionPath}
-                className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#080808] hover:bg-[#080808]"
-              >
-                {copy.discoverCollection}
-              </a>
-            ) : (
-              <Link
-                to={primaryCollectionPath}
-                className="mt-8 inline-flex min-h-12 items-center justify-center border border-[#FFFFFF]/85 bg-[#080808]/10 px-7 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#FFFFFF] backdrop-blur-sm transition hover:border-[#080808] hover:bg-[#080808]"
-              >
-                {copy.discoverCollection}
-              </Link>
-            )}
-          </motion.div>
-        </div>
-      </section>
+      <HomeHero
+        primary
+        media={heroMedia}
+        discoverUrl={primaryCollectionPath}
+        buttonLabel={copy.discoverCollection}
+        videoLabel={t("heroVideoLabel")}
+        copy={heroCopy}
+      />
+      {secondaryHero?.enabled && secondaryHero.heroMedia ? (
+        <HomeHero
+          media={secondaryHero.heroMedia}
+          discoverUrl={secondaryHero.discoverUrl}
+          buttonLabel={copy.discoverCollection}
+          videoLabel={t("heroVideoLabel")}
+        />
+      ) : null}
 
       <section className="mx-auto max-w-[1500px] px-5 py-16 sm:py-20 lg:px-8">
         <div className="flex items-end justify-between gap-5">

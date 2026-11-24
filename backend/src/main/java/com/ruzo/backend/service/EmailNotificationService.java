@@ -105,6 +105,17 @@ public class EmailNotificationService {
     runSafely("customer review request", order, () -> sendReviewRequestEmailToCustomer(order));
   }
 
+  public void sendAdminPasswordReset(String email, String token) {
+    // Keep the token out of HTTP requests and reverse-proxy logs.
+    String link = smtpEmailConfig.publicUrl().replaceAll("/+$", "") + "/admin/reset-password#token=" + token;
+    String instructions = "This link expires in 30 minutes and can be used once. Ignore this email if you did not request it.";
+    sendEmail(
+        new EmailRecipient(email, "RÜZO Admin"),
+        "RÜZO Admin: Reset your password",
+        "<p><a href=\"" + HtmlUtils.htmlEscape(link) + "\">Reset your password</a></p><p>" + instructions + "</p>",
+        "Reset your password: " + link + "\n\n" + instructions);
+  }
+
   private void sendEmail(EmailRecipient recipient, String subject, String htmlContent, String textContent) {
     if (!smtpEmailConfig.isEnabled()) {
       LOGGER.warn("Skipping SMTP email '{}' to {} because SMTP credentials are not configured", subject,

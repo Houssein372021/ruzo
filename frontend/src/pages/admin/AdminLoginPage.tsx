@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router-dom";
+import { isAxiosError } from "axios";
+import { Link, Navigate, useLocation, useNavigate } from "react-router-dom";
 import { adminApi } from "../../api/admin";
-import { AdminLanguageButton } from "../../components/admin/AdminLanguageButton";
-import { Seo } from "../../components/common/Seo";
-import { TopBar } from "../../components/layout/TopBar";
+import { AdminAuthPanel } from "../../components/admin/AdminAuthPanel";
 import { useI18n } from "../../hooks/useI18n";
 import { useAuthStore } from "../../store/authStore";
 
@@ -16,6 +15,7 @@ type LoginForm = {
 export function AdminLoginPage() {
   const { t } = useI18n();
   const navigate = useNavigate();
+  const { state } = useLocation();
   const token = useAuthStore((state) => state.token);
   const setToken = useAuthStore((state) => state.setToken);
   const { register, handleSubmit, formState } = useForm<LoginForm>();
@@ -29,53 +29,33 @@ export function AdminLoginPage() {
     setError("");
     try {
       const response = await adminApi.login(values.email, values.password);
-      setToken(response.token);
+      setToken(response.token, response.user.email);
       navigate("/admin/dashboard");
-    } catch {
-      setError(t("apiUnavailable"));
+    } catch (error) {
+      setError(t(isAxiosError(error) && error.response?.status === 401 ? "adminLoginInvalid" : "apiUnavailable"));
     }
   };
 
   return (
-    <div className="admin-shell min-h-screen bg-[#F7F7F7]">
-      <Seo
-        title="Admin Login | Rüzo"
-        description="Rüzo admin login."
-        path="/admin/login"
-        robots="noindex,nofollow"
-      />
-      <TopBar eyebrow={t("admin")} navItems={[]} actions={<AdminLanguageButton />} />
-      <main className="grid min-h-[calc(100vh-4rem)] place-items-center px-4 py-10">
-        <section className="w-full max-w-[384px] border border-[#E5E5E5] bg-[#FFFFFF] px-8 py-9">
-          <div className="text-center">
-            <p className="text-xl uppercase tracking-[0.34em]">RÜZO</p>
-            <p className="mt-2 text-[0.68rem] uppercase tracking-[0.28em] text-[#444444]">{t("admin")}</p>
-          </div>
-          <form className="mt-7 grid gap-5" onSubmit={handleSubmit(onSubmit)}>
-            <p className="font-display text-lg text-[#080808]">{t("adminLogin")}</p>
-            <input
-              type="email"
-              placeholder="email"
-              {...register("email", { required: true })}
-              className="admin-input min-h-11 bg-[#FFFFFF]"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              {...register("password", { required: true })}
-              className="admin-input min-h-11 bg-[#FFFFFF]"
-            />
-            {error ? <p className="border border-[#080808]/20 bg-[#F7F7F7] px-4 py-3 text-sm text-[#080808]">{error}</p> : null}
-            <button
-              type="submit"
-              disabled={formState.isSubmitting}
-              className="admin-primary-button w-full"
-            >
-              {formState.isSubmitting ? t("loading") : t("adminLogin")}
-            </button>
-          </form>
-        </section>
-      </main>
-    </div>
+    <AdminAuthPanel title={t("adminLogin")} path="/admin/login">
+      {state?.passwordReset === true ? <p className="admin-notice mt-4" role="status">{t("adminPasswordResetSaved")}</p> : null}
+      <form className="mt-5 grid gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <label className="grid gap-1 text-sm">
+          {t("email")}
+          <input type="email" autoComplete="username" required {...register("email", { required: true })} className="admin-input min-h-11" />
+        </label>
+        <label className="grid gap-1 text-sm">
+          {t("adminPassword")}
+          <input type="password" autoComplete="current-password" required {...register("password", { required: true })} className="admin-input min-h-11" />
+        </label>
+        <Link to="/admin/forgot-password" className="w-fit text-sm underline underline-offset-4">
+          {t("adminForgotPassword")}
+        </Link>
+        {error ? <p className="admin-notice" role="alert">{error}</p> : null}
+        <button type="submit" disabled={formState.isSubmitting} className="admin-primary-button w-full">
+          {formState.isSubmitting ? t("loading") : t("adminLogin")}
+        </button>
+      </form>
+    </AdminAuthPanel>
   );
 }

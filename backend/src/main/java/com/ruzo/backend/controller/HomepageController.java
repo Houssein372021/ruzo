@@ -26,11 +26,22 @@ public class HomepageController {
         return HomepageResponse.from(homepageSettingsService.getOrCreateSettings());
     }
 
-    public record HomepageResponse(String discoverUrl, HeroMediaResponse heroMedia) {
+    public record HomepageResponse(String discoverUrl, HeroMediaResponse heroMedia, SecondaryHeroResponse secondaryHero) {
         static HomepageResponse from(HomepageSettings settings) {
             return new HomepageResponse(
                     settings.getDiscoverUrl(),
-                    HeroMediaResponse.from(settings.getActiveHeroMedia()));
+                    HeroMediaResponse.from(settings.getActiveHeroMedia()),
+                    Boolean.TRUE.equals(settings.getSecondaryHeroEnabled()) ? SecondaryHeroResponse.from(settings) : null);
+        }
+    }
+
+    public record SecondaryHeroResponse(String discoverUrl, HeroMediaResponse heroMedia, boolean enabled) {
+        static SecondaryHeroResponse from(HomepageSettings settings) {
+            String url = settings.getSecondaryDiscoverUrl();
+            return new SecondaryHeroResponse(
+                    url == null ? HomepageSettingsService.DEFAULT_DISCOVER_URL : url,
+                    HeroMediaResponse.from(settings.getSecondaryHeroMedia()),
+                    Boolean.TRUE.equals(settings.getSecondaryHeroEnabled()));
         }
     }
 

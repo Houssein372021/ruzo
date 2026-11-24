@@ -1,6 +1,7 @@
 package com.ruzo.backend.controller;
 
 import com.ruzo.backend.controller.HomepageController.HeroMediaResponse;
+import com.ruzo.backend.controller.HomepageController.SecondaryHeroResponse;
 import com.ruzo.backend.entity.HeroMedia;
 import com.ruzo.backend.entity.HeroMediaType;
 import com.ruzo.backend.entity.HomepageSettings;
@@ -40,6 +41,13 @@ public class HomepageAdminController {
                 request.activeHeroMediaId()));
     }
 
+    @PutMapping("/secondary")
+    @Transactional
+    public HomepageAdminResponse updateSecondaryHero(@RequestBody SecondaryHeroRequest request) {
+        return toResponse(homepageSettingsService.updateSecondaryHero(
+                request.discoverUrl(), request.activeHeroMediaId(), request.enabled()));
+    }
+
     @PostMapping("/media")
     @Transactional
     public HeroMediaArchiveResponse createMedia(@RequestBody HeroMediaRequest request) {
@@ -55,12 +63,16 @@ public class HomepageAdminController {
         return new HomepageAdminResponse(
                 settings.getDiscoverUrl(),
                 HeroMediaResponse.from(settings.getActiveHeroMedia()),
+                SecondaryHeroResponse.from(settings),
                 homepageSettingsService.getArchive().stream()
                         .map(HeroMediaArchiveResponse::from)
                         .toList());
     }
 
     public record HomepageSettingsRequest(String discoverUrl, UUID activeHeroMediaId) {
+    }
+
+    public record SecondaryHeroRequest(String discoverUrl, UUID activeHeroMediaId, boolean enabled) {
     }
 
     public record HeroMediaRequest(
@@ -73,6 +85,7 @@ public class HomepageAdminController {
     public record HomepageAdminResponse(
             String discoverUrl,
             HeroMediaResponse heroMedia,
+            SecondaryHeroResponse secondaryHero,
             List<HeroMediaArchiveResponse> archive) {
     }
 

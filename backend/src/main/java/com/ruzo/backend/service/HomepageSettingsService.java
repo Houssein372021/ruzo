@@ -79,12 +79,31 @@ public class HomepageSettingsService {
         settings.setDiscoverUrl(validateDiscoverUrl(discoverUrl));
 
         if (activeHeroMediaId != null) {
-            settings.setActiveHeroMedia(heroMediaRepository.findById(activeHeroMediaId)
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hero media not found")));
+            settings.setActiveHeroMedia(findMedia(activeHeroMediaId));
         }
 
         settings.setUpdatedAt(LocalDateTime.now());
         return settingsRepository.save(settings);
+    }
+
+    @Transactional
+    public HomepageSettings updateSecondaryHero(String discoverUrl, UUID mediaId, boolean enabled) {
+        HomepageSettings settings = getOrCreateSettings();
+        settings.setSecondaryDiscoverUrl(validateDiscoverUrl(discoverUrl));
+        if (mediaId != null) {
+            settings.setSecondaryHeroMedia(findMedia(mediaId));
+        }
+        if (enabled && settings.getSecondaryHeroMedia() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Select a media file first");
+        }
+        settings.setSecondaryHeroEnabled(enabled);
+        settings.setUpdatedAt(LocalDateTime.now());
+        return settingsRepository.save(settings);
+    }
+
+    private HeroMedia findMedia(UUID id) {
+        return heroMediaRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Hero media not found"));
     }
 
     String validateDiscoverUrl(String value) {
@@ -93,12 +112,11 @@ public class HomepageSettingsService {
         }
 
         String url = value.trim();
-        if (url.startsWith("/") && !url.startsWith("//")) {
-            return url;
-        }
-
         try {
             URI uri = new URI(url);
+            if (url.startsWith("/") && !url.startsWith("//") && uri.getRawAuthority() == null) {
+                return url;
+            }
             if (("https".equalsIgnoreCase(uri.getScheme()) || "http".equalsIgnoreCase(uri.getScheme()))
                     && uri.getHost() != null) {
                 return url;

@@ -12,6 +12,7 @@ import { ContactPage } from "../pages/public/ContactPage";
 import { NotFoundPage } from "../pages/public/NotFoundPage";
 import { AdminLayout } from "../layouts/AdminLayout";
 import { AdminLoginPage } from "../pages/admin/AdminLoginPage";
+import { AdminPasswordPage } from "../pages/admin/AdminPasswordPage";
 import { AdminDashboardPage } from "../pages/admin/AdminDashboardPage";
 import { AdminProductsPage } from "../pages/admin/AdminProductsPage";
 import { AdminCategoriesPage } from "../pages/admin/AdminCategoriesPage";
@@ -46,6 +47,8 @@ export function AppRoutes() {
         </Route>
 
         <Route path="admin/login" element={<AdminLoginPage />} />
+        <Route path="admin/forgot-password" element={<AdminPasswordPage key="forgot" />} />
+        <Route path="admin/reset-password" element={<AdminPasswordPage key="reset" reset />} />
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<Navigate to="/admin/dashboard" replace />} />
           <Route path="dashboard" element={<AdminDashboardPage />} />

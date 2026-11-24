@@ -36,6 +36,14 @@ For email notifications, set `SMTP_PASSWORD` to the password of the IONOS mailbo
 `noreply@rüzo.com`. The default SMTP server is `smtp.ionos.com` on port `587`
 with STARTTLS.
 
+For the admin account, set `RUZO_ADMIN_EMAIL=Ruzobeirut@gmail.com` in the existing
+`.env.production`, and set `SITE_PUBLIC_URL` to your public HTTPS URL. The reset
+email is sent by the configured IONOS mailbox to the admin address.
+Leave `RUZO_ADMIN_PASSWORD` empty to set the password via **Forgot password?**
+at `/admin/login`, or set a private initial password. This variable is only
+read when the account is first created; later changes are made by email reset.
+`RUZO_ADMIN_TOKEN` is no longer used. Sign in again after deploying.
+
 Start production:
 
 ```bash

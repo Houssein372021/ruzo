@@ -13,10 +13,39 @@ type PendingMedia = {
 };
 
 export function AdminHomepagePage() {
+  const { t } = useI18n();
+  const [isSecondary, setIsSecondary] = useState(false);
+
+  return (
+    <div className="space-y-6">
+      <div className="admin-page-header">
+        <p className="admin-page-eyebrow">RÜZO</p>
+        <h1 className="admin-page-heading">{t("homepageAdmin")}</h1>
+      </div>
+      <div role="group" aria-label={t("homepageSettings")} className="flex flex-wrap gap-2">
+        {[false, true].map((secondary) => (
+          <button
+            key={String(secondary)}
+            type="button"
+            aria-pressed={isSecondary === secondary}
+            onClick={() => setIsSecondary(secondary)}
+            className={isSecondary === secondary ? "admin-primary-button" : "admin-secondary-button"}
+          >
+            {t(secondary ? "secondaryHero" : "primaryHero")}
+          </button>
+        ))}
+      </div>
+      <HeroSettingsEditor key={String(isSecondary)} isSecondary={isSecondary} />
+    </div>
+  );
+}
+
+function HeroSettingsEditor({ isSecondary }: { isSecondary: boolean }) {
   const { language, t } = useI18n();
   const inputId = useId();
   const [settings, setSettings] = useState<HomepageAdminSettings | null>(null);
   const [discoverUrl, setDiscoverUrl] = useState("/collections/all");
+  const [enabled, setEnabled] = useState(false);
   const [pendingMedia, setPendingMedia] = useState<PendingMedia | null>(null);
   const [posterUrl, setPosterUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
@@ -28,28 +57,37 @@ export function AdminHomepagePage() {
     adminApi.homepageSettings()
       .then((data) => {
         setSettings(data);
-        setDiscoverUrl(data.discoverUrl || "/collections/all");
+        setDiscoverUrl((isSecondary ? data.secondaryHero.discoverUrl : data.discoverUrl) || "/collections/all");
+        setEnabled(isSecondary && data.secondaryHero.enabled);
       })
       .catch(() => setError(t("apiUnavailable")));
-  }, [t]);
+  }, [isSecondary, t]);
 
   useEffect(() => {
     loadSettings();
   }, [loadSettings]);
 
-  const saveSettings = async (activeHeroMediaId = settings?.heroMedia?.id) => {
+  const currentMedia = isSecondary ? settings?.secondaryHero.heroMedia : settings?.heroMedia;
+  const isBusy = isUploading || isSaving || !settings;
+
+  const persistSettings = async (activeHeroMediaId?: string) => {
+    const payload = { discoverUrl, activeHeroMediaId };
+    const updated = isSecondary
+      ? await adminApi.updateSecondaryHero({ ...payload, enabled })
+      : await adminApi.updateHomepageSettings(payload);
+    setSettings(updated);
+    setDiscoverUrl(isSecondary ? updated.secondaryHero.discoverUrl : updated.discoverUrl);
+    setStatus(t("homepageSaved"));
+  };
+
+  const saveSettings = async (activeHeroMediaId?: string) => {
     setError("");
     setStatus("");
     setIsSaving(true);
     try {
-      const updated = await adminApi.updateHomepageSettings({ discoverUrl, activeHeroMediaId });
-      setSettings(updated);
-      setDiscoverUrl(updated.discoverUrl);
-      setStatus(t("homepageSaved"));
-      return updated;
+      await persistSettings(activeHeroMediaId);
     } catch {
       setError(t("apiUnavailable"));
-      return null;
     } finally {
       setIsSaving(false);
     }
@@ -91,14 +129,9 @@ export function AdminHomepagePage() {
         ...pendingMedia,
         posterUrl: posterUrl || undefined,
       });
-      const updated = await adminApi.updateHomepageSettings({
-        discoverUrl,
-        activeHeroMediaId: media.id,
-      });
-      setSettings(updated);
+      await persistSettings(media.id);
       setPendingMedia(null);
       setPosterUrl("");
-      setStatus(t("homepageSaved"));
     } catch {
       setError(t("apiUnavailable"));
     } finally {
@@ -111,14 +144,9 @@ export function AdminHomepagePage() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="admin-page-header">
-        <p className="admin-page-eyebrow">RÜZO</p>
-        <h1 className="admin-page-heading">{t("homepageAdmin")}</h1>
-      </div>
-
-      {error ? <p className="admin-notice">{error}</p> : null}
-      {status ? <p className="admin-notice">{status}</p> : null}
+    <>
+      {error ? <p className="admin-notice" role="alert">{error}</p> : null}
+      {status ? <p className="admin-notice" role="status">{status}</p> : null}
 
       <AdminPanel title={t("homepageSettings")}>
         <div className="grid max-w-3xl gap-4">
@@ -132,12 +160,27 @@ export function AdminHomepagePage() {
               onChange={(event) => setDiscoverUrl(event.target.value)}
               placeholder="/collections/all"
               className="admin-input"
+              disabled={isBusy}
             />
           </label>
+          {isSecondary ? (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={enabled}
+                disabled={isBusy}
+                onChange={(event) => setEnabled(event.target.checked)}
+              />
+              {t("showSecondaryHero")}
+            </label>
+          ) : null}
+          {isSecondary && enabled && !currentMedia ? (
+            <p className="text-sm">{t("secondaryHeroRequiresMedia")}</p>
+          ) : null}
           <button
             type="button"
             className="admin-primary-button w-fit"
-            disabled={isSaving}
+            disabled={isBusy || (isSecondary && enabled && !currentMedia)}
             onClick={() => saveSettings()}
           >
             <Save className="h-4 w-4" />
@@ -157,8 +200,11 @@ export function AdminHomepagePage() {
             type="file"
             accept="image/*,video/mp4,video/webm"
             className="sr-only"
-            disabled={isUploading}
-            onChange={(event) => uploadMedia(event.target.files?.[0])}
+            disabled={isBusy}
+            onChange={(event) => {
+              void uploadMedia(event.target.files?.[0]);
+              event.target.value = "";
+            }}
           />
 
           {pendingMedia ? (
@@ -175,7 +221,7 @@ export function AdminHomepagePage() {
               <button
                 type="button"
                 className="admin-primary-button w-fit"
-                disabled={isSaving}
+                disabled={isBusy}
                 onClick={archiveAndActivateMedia}
               >
                 <ImageUp className="h-4 w-4" />
@@ -190,7 +236,7 @@ export function AdminHomepagePage() {
         {settings?.archive.length ? (
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {settings.archive.map((media) => {
-              const isActive = media.id === settings.heroMedia?.id;
+              const isActive = media.id === currentMedia?.id;
               return (
                 <article key={media.id} className="grid content-start gap-3 border border-[#E5E5E5] p-3">
                   <MediaPreview media={media} posterUrl={media.posterUrl ?? ""} />
@@ -210,13 +256,13 @@ export function AdminHomepagePage() {
                   {isActive ? (
                     <span className="inline-flex w-fit items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#080808]">
                       <Check className="h-4 w-4" />
-                      {t("activeMedia")}
+                        {t(isSecondary && !settings.secondaryHero.enabled ? "selectedHeroMedia" : "activeMedia")}
                     </span>
                   ) : (
                     <button
                       type="button"
                       className="admin-secondary-button w-fit"
-                      disabled={isSaving}
+                      disabled={isBusy}
                       onClick={() => activateArchivedMedia(media.id)}
                     >
                       {t("activateMedia")}
@@ -227,10 +273,10 @@ export function AdminHomepagePage() {
             })}
           </div>
         ) : (
-          <p className="text-sm text-[#080808]/60">{t("noSelectedProducts")}</p>
+          <p className="text-sm text-[#080808]/60">{settings ? t("emptyHeroArchive") : t("loading")}</p>
         )}
       </AdminPanel>
-    </div>
+    </>
   );
 }
 

@@ -34,6 +34,16 @@ public class HomepageSettings {
     @JoinColumn(name = "active_hero_media_id")
     private HeroMedia activeHeroMedia;
 
+    @Column(name = "secondary_discover_url", columnDefinition = "TEXT")
+    private String secondaryDiscoverUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "secondary_hero_media_id")
+    private HeroMedia secondaryHeroMedia;
+
+    @Column(name = "secondary_hero_enabled")
+    private Boolean secondaryHeroEnabled;
+
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 }

@@ -81,12 +81,19 @@ export type HeroMedia = {
   createdAt?: string | null;
 };
 
-export type HomepageSettings = {
+export type HeroSettings = {
   discoverUrl: string;
   heroMedia: HeroMedia | null;
 };
 
+export type SecondaryHeroSettings = HeroSettings & { enabled: boolean };
+
+export type HomepageSettings = HeroSettings & {
+  secondaryHero?: SecondaryHeroSettings | null;
+};
+
 export type HomepageAdminSettings = HomepageSettings & {
+  secondaryHero: SecondaryHeroSettings;
   archive: HeroMedia[];
 };
 
@@ -154,9 +161,9 @@ export type OrderResponse = {
 
 export type AdminLoginResponse = {
   token: string;
-  user?: {
-    name?: string;
-    email?: string;
+  user: {
+    name: string;
+    email: string;
   };
 };
 

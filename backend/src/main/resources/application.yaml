@@ -46,8 +46,7 @@ site:
 
 ruzo:
   admin:
-    email: ${RUZO_ADMIN_EMAIL:admin@ruzo.local}
-    password: ${RUZO_ADMIN_PASSWORD:Ruzo@2026}
-    token: ${RUZO_ADMIN_TOKEN:ruzo-admin-token}
+    email: ${RUZO_ADMIN_EMAIL:Ruzobeirut@gmail.com}
+    password: ${RUZO_ADMIN_PASSWORD:}
   uploads:
     directory: ${RUZO_UPLOADS_DIRECTORY:uploads}

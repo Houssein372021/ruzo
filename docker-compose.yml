@@ -32,9 +32,8 @@ services:
       SPRING_DATASOURCE_PASSWORD: Ruzo2026
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_JPA_SHOW_SQL: "true"
-      RUZO_ADMIN_EMAIL: admin@ruzo.local
-      RUZO_ADMIN_PASSWORD: Ruzo@2026
-      RUZO_ADMIN_TOKEN: ruzo-admin-token
+      RUZO_ADMIN_EMAIL: ${RUZO_ADMIN_EMAIL:-Ruzobeirut@gmail.com}
+      RUZO_ADMIN_PASSWORD: ${RUZO_ADMIN_PASSWORD:-}
       RUZO_UPLOADS_DIRECTORY: /app/uploads
       SMTP_HOST: ${SMTP_HOST:-smtp.ionos.com}
       SMTP_PORT: ${SMTP_PORT:-587}

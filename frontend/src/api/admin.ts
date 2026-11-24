@@ -16,6 +16,18 @@ export const adminApi = {
     return response.data;
   },
 
+  async logout() {
+    await apiClient.post("/auth/logout");
+  },
+
+  async forgotPassword(email: string) {
+    await apiClient.post("/auth/forgot-password", { email });
+  },
+
+  async resetPassword(token: string, password: string) {
+    await apiClient.post("/auth/reset-password", { token, password });
+  },
+
   async uploadImage(file: File) {
     const formData = new FormData();
     formData.append("file", file);
@@ -49,6 +61,11 @@ export const adminApi = {
 
   async updateHomepageSettings(payload: { discoverUrl: string; activeHeroMediaId?: string }) {
     const response = await apiClient.put<HomepageAdminSettings>("/admin/homepage", payload);
+    return response.data;
+  },
+
+  async updateSecondaryHero(payload: { discoverUrl: string; activeHeroMediaId?: string; enabled: boolean }) {
+    const response = await apiClient.put<HomepageAdminSettings>("/admin/homepage/secondary", payload);
     return response.data;
   },
 

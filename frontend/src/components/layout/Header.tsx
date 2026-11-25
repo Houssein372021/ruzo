@@ -131,6 +131,7 @@ export function Header() {
   return (
     <>
       <TopBar
+        brandClassName="font-brand"
         navItems={navItems}
         actions={
           <div className="flex flex-col items-end gap-1.5">

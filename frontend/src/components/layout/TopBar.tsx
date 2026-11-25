@@ -25,6 +25,7 @@ export type TopBarMegaMenuLink = {
 
 type TopBarProps = {
   brandTo?: string;
+  brandClassName?: string;
   eyebrow?: string;
   navItems: TopBarItem[];
   actions?: ReactNode;
@@ -34,6 +35,7 @@ type TopBarProps = {
 
 export function TopBar({
   brandTo = "/",
+  brandClassName = "font-display tracking-[0.12em] sm:tracking-[0.18em]",
   eyebrow,
   navItems,
   actions,
@@ -82,7 +84,7 @@ export function TopBar({
 
         <Link
           to={brandTo}
-          className="font-display text-center text-[1.45rem] uppercase leading-none tracking-[0.12em] text-[#080808] transition hover:text-[#080808] sm:text-[2.25rem] sm:tracking-[0.18em] lg:col-start-1 lg:row-start-1 lg:justify-self-start"
+          className={`${brandClassName} text-center text-[1.45rem] uppercase leading-none text-[#080808] transition hover:text-[#080808] sm:text-[2.25rem] lg:col-start-1 lg:row-start-1 lg:justify-self-start`}
         >
           RÜZO
           {eyebrow ? (

@@ -409,12 +409,14 @@ export function HomePage() {
         copy={heroCopy}
       />
       {secondaryHero?.enabled && secondaryHero.heroMedia ? (
-        <HomeHero
-          media={secondaryHero.heroMedia}
-          discoverUrl={secondaryHero.discoverUrl}
-          buttonLabel={copy.discoverCollection}
-          videoLabel={t("heroVideoLabel")}
-        />
+        <div className="bg-white pt-3 sm:pt-4">
+          <HomeHero
+            media={secondaryHero.heroMedia}
+            discoverUrl={secondaryHero.discoverUrl}
+            buttonLabel={copy.discoverCollection}
+            videoLabel={t("heroVideoLabel")}
+          />
+        </div>
       ) : null}
 
       <section className="mx-auto max-w-[1500px] px-5 py-16 sm:py-20 lg:px-8">

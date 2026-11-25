@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -61,6 +62,12 @@ class AdminHomepageFlowTest {
                         {"mediaType":"IMAGE","mediaUrl":"/hero-ruzo-poster.webp","originalFileName":"cover.webp"}
                         """)).andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
         String mediaId = json.readTree(uploaded).path("id").asText();
+        mvc.perform(delete("/api/admin/homepage/media/{id}", mediaId)).andExpect(status().isUnauthorized());
+        String homepage = mvc.perform(get("/api/admin/homepage").header(HttpHeaders.AUTHORIZATION, bearer))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
+        String primaryMediaId = json.readTree(homepage).path("heroMedia").path("id").asText();
+        mvc.perform(delete("/api/admin/homepage/media/{id}", primaryMediaId).header(HttpHeaders.AUTHORIZATION, bearer))
+                .andExpect(status().isConflict());
         mvc.perform(put("/api/admin/homepage/secondary").header(HttpHeaders.AUTHORIZATION, bearer)
                 .contentType(MediaType.APPLICATION_JSON).content("""
                         {"discoverUrl":"/collections/sets","enabled":true,"activeHeroMediaId":"%s"}
@@ -69,12 +76,27 @@ class AdminHomepageFlowTest {
                 .andExpect(jsonPath("$.discoverUrl").value("/collections/all"))
                 .andExpect(jsonPath("$.secondaryHero.discoverUrl").value("/collections/sets"))
                 .andExpect(jsonPath("$.secondaryHero.heroMedia.id").value(mediaId));
+        mvc.perform(delete("/api/admin/homepage/media/{id}", mediaId).header(HttpHeaders.AUTHORIZATION, bearer))
+                .andExpect(status().isConflict());
         mvc.perform(put("/api/admin/homepage/secondary").header(HttpHeaders.AUTHORIZATION, bearer)
                 .contentType(MediaType.APPLICATION_JSON).content("""
                         {"discoverUrl":"/collections/sets","enabled":false}
                         """)).andExpect(status().isOk())
                 .andExpect(jsonPath("$.secondaryHero.heroMedia.id").value(mediaId));
         mvc.perform(get("/api/homepage")).andExpect(jsonPath("$.secondaryHero").doesNotExist());
+        mvc.perform(delete("/api/admin/homepage/media/{id}", mediaId).header(HttpHeaders.AUTHORIZATION, bearer))
+                .andExpect(status().isConflict());
+        mvc.perform(put("/api/admin/homepage/secondary").header(HttpHeaders.AUTHORIZATION, bearer)
+                .contentType(MediaType.APPLICATION_JSON).content("""
+                        {"discoverUrl":"/collections/sets","enabled":false,"activeHeroMediaId":"%s"}
+                        """.formatted(primaryMediaId))).andExpect(status().isOk());
+        mvc.perform(delete("/api/admin/homepage/media/{id}", mediaId).header(HttpHeaders.AUTHORIZATION, bearer))
+                .andExpect(status().isNoContent());
+        mvc.perform(get("/api/admin/homepage").header(HttpHeaders.AUTHORIZATION, bearer))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.archive[?(@.id == '%s')]".formatted(mediaId)).isEmpty())
+                .andExpect(jsonPath("$.heroMedia.id").value(primaryMediaId))
+                .andExpect(jsonPath("$.secondaryHero.heroMedia.id").value(primaryMediaId));
 
         mvc.perform(post("/api/auth/forgot-password").contentType(MediaType.APPLICATION_JSON)
                 .content("{\"email\":\"unknown@example.invalid\"}")).andExpect(status().isAccepted());

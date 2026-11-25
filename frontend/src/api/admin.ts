@@ -59,6 +59,10 @@ export const adminApi = {
     return response.data;
   },
 
+  async deleteHeroMedia(id: string) {
+    await apiClient.delete(`/admin/homepage/media/${id}`);
+  },
+
   async updateHomepageSettings(payload: { discoverUrl: string; activeHeroMediaId?: string }) {
     const response = await apiClient.put<HomepageAdminSettings>("/admin/homepage", payload);
     return response.data;

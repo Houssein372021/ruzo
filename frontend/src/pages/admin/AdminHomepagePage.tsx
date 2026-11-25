@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useId, useState } from "react";
-import { Check, ImageUp, Save, Upload } from "lucide-react";
+import { isAxiosError } from "axios";
+import { Check, ImageUp, Save, Trash2, Upload } from "lucide-react";
 import { adminApi } from "../../api/admin";
+import { AdminConfirmDialog } from "../../components/admin/AdminConfirmDialog";
 import { AdminImageUpload } from "../../components/admin/AdminImageUpload";
 import { AdminPanel } from "../../components/admin/AdminPanel";
 import { useI18n } from "../../hooks/useI18n";
@@ -50,6 +52,8 @@ function HeroSettingsEditor({ isSecondary }: { isSecondary: boolean }) {
   const [posterUrl, setPosterUrl] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [mediaToDelete, setMediaToDelete] = useState<HeroMedia | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [status, setStatus] = useState("");
   const [error, setError] = useState("");
 
@@ -68,7 +72,7 @@ function HeroSettingsEditor({ isSecondary }: { isSecondary: boolean }) {
   }, [loadSettings]);
 
   const currentMedia = isSecondary ? settings?.secondaryHero.heroMedia : settings?.heroMedia;
-  const isBusy = isUploading || isSaving || !settings;
+  const isBusy = isUploading || isSaving || isDeleting || !settings;
 
   const persistSettings = async (activeHeroMediaId?: string) => {
     const payload = { discoverUrl, activeHeroMediaId };
@@ -141,6 +145,31 @@ function HeroSettingsEditor({ isSecondary }: { isSecondary: boolean }) {
 
   const activateArchivedMedia = async (mediaId: string) => {
     await saveSettings(mediaId);
+  };
+
+  const confirmDeleteMedia = async () => {
+    if (!mediaToDelete || isBusy) {
+      return;
+    }
+
+    const { id } = mediaToDelete;
+    setError("");
+    setStatus("");
+    setIsDeleting(true);
+    try {
+      await adminApi.deleteHeroMedia(id);
+      setSettings((current) => current && {
+        ...current,
+        archive: current.archive.filter((media) => media.id !== id),
+      });
+      setStatus(t("heroMediaDeleted"));
+    } catch (error) {
+      const inUse = isAxiosError(error) && error.response?.status === 409;
+      setError(t(inUse ? "heroMediaInUse" : "apiUnavailable"));
+    } finally {
+      setMediaToDelete(null);
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -237,12 +266,15 @@ function HeroSettingsEditor({ isSecondary }: { isSecondary: boolean }) {
           <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
             {settings.archive.map((media) => {
               const isActive = media.id === currentMedia?.id;
+              const inUse = media.id === settings.heroMedia?.id || media.id === settings.secondaryHero.heroMedia?.id;
+              const mediaName = media.originalFileName || media.mediaUrl;
+              const deleteLabel = t(inUse ? "heroMediaInUse" : "delete");
               return (
                 <article key={media.id} className="grid content-start gap-3 border border-[#E5E5E5] p-3">
                   <MediaPreview media={media} posterUrl={media.posterUrl ?? ""} />
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold text-[#080808]">
-                      {media.originalFileName || media.mediaUrl}
+                      {mediaName}
                     </p>
                     {media.createdAt ? (
                       <p className="mt-1 text-xs text-[#080808]/55">
@@ -253,21 +285,34 @@ function HeroSettingsEditor({ isSecondary }: { isSecondary: boolean }) {
                       </p>
                     ) : null}
                   </div>
-                  {isActive ? (
-                    <span className="inline-flex w-fit items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#080808]">
-                      <Check className="h-4 w-4" />
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    {isActive ? (
+                      <span className="inline-flex w-fit items-center gap-2 text-xs font-semibold uppercase tracking-[0.12em] text-[#080808]">
+                        <Check className="h-4 w-4" />
                         {t(isSecondary && !settings.secondaryHero.enabled ? "selectedHeroMedia" : "activeMedia")}
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        className="admin-secondary-button w-fit"
+                        disabled={isBusy}
+                        onClick={() => activateArchivedMedia(media.id)}
+                      >
+                        {t("activateMedia")}
+                      </button>
+                    )}
+                    <span title={deleteLabel}>
+                      <button
+                        type="button"
+                        className="admin-icon-button disabled:cursor-not-allowed disabled:opacity-40"
+                        disabled={isBusy || inUse}
+                        aria-label={inUse ? deleteLabel : `${deleteLabel}: ${mediaName}`}
+                        onClick={() => setMediaToDelete(media)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </span>
-                  ) : (
-                    <button
-                      type="button"
-                      className="admin-secondary-button w-fit"
-                      disabled={isBusy}
-                      onClick={() => activateArchivedMedia(media.id)}
-                    >
-                      {t("activateMedia")}
-                    </button>
-                  )}
+                  </div>
                 </article>
               );
             })}
@@ -276,6 +321,17 @@ function HeroSettingsEditor({ isSecondary }: { isSecondary: boolean }) {
           <p className="text-sm text-[#080808]/60">{settings ? t("emptyHeroArchive") : t("loading")}</p>
         )}
       </AdminPanel>
+      {mediaToDelete ? (
+        <AdminConfirmDialog
+          title={t("confirmDeleteHeroMediaTitle")}
+          body={t("confirmDeleteHeroMediaBody", { mediaName: mediaToDelete.originalFileName || mediaToDelete.mediaUrl })}
+          cancelLabel={t("cancel")}
+          confirmLabel={t("delete")}
+          isPending={isDeleting}
+          onCancel={() => setMediaToDelete(null)}
+          onConfirm={confirmDeleteMedia}
+        />
+      ) : null}
     </>
   );
 }

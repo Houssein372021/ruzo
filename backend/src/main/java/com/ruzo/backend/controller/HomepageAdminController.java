@@ -9,8 +9,11 @@ import com.ruzo.backend.service.HomepageSettingsService;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -57,6 +60,12 @@ public class HomepageAdminController {
                 request.posterUrl(),
                 request.originalFileName());
         return HeroMediaArchiveResponse.from(media);
+    }
+
+    @DeleteMapping("/media/{id}")
+    public ResponseEntity<Void> deleteMedia(@PathVariable UUID id) {
+        homepageSettingsService.deleteArchivedMedia(id);
+        return ResponseEntity.noContent().build();
     }
 
     private HomepageAdminResponse toResponse(HomepageSettings settings) {

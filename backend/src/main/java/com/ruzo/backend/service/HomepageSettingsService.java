@@ -74,8 +74,18 @@ public class HomepageSettingsService {
     }
 
     @Transactional
+    public void deleteArchivedMedia(UUID mediaId) {
+        HomepageSettings settings = getSettingsForUpdate();
+        if (hasMediaId(settings.getActiveHeroMedia(), mediaId)
+                || hasMediaId(settings.getSecondaryHeroMedia(), mediaId)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Media is still selected for a hero");
+        }
+        heroMediaRepository.deleteById(mediaId);
+    }
+
+    @Transactional
     public HomepageSettings updateSettings(String discoverUrl, UUID activeHeroMediaId) {
-        HomepageSettings settings = getOrCreateSettings();
+        HomepageSettings settings = getSettingsForUpdate();
         settings.setDiscoverUrl(validateDiscoverUrl(discoverUrl));
 
         if (activeHeroMediaId != null) {
@@ -88,7 +98,7 @@ public class HomepageSettingsService {
 
     @Transactional
     public HomepageSettings updateSecondaryHero(String discoverUrl, UUID mediaId, boolean enabled) {
-        HomepageSettings settings = getOrCreateSettings();
+        HomepageSettings settings = getSettingsForUpdate();
         settings.setSecondaryDiscoverUrl(validateDiscoverUrl(discoverUrl));
         if (mediaId != null) {
             settings.setSecondaryHeroMedia(findMedia(mediaId));
@@ -99,6 +109,14 @@ public class HomepageSettingsService {
         settings.setSecondaryHeroEnabled(enabled);
         settings.setUpdatedAt(LocalDateTime.now());
         return settingsRepository.save(settings);
+    }
+
+    private HomepageSettings getSettingsForUpdate() {
+        return settingsRepository.findForUpdate(SETTINGS_KEY).orElseGet(this::getOrCreateSettings);
+    }
+
+    private static boolean hasMediaId(HeroMedia media, UUID id) {
+        return media != null && id.equals(media.getId());
     }
 
     private HeroMedia findMedia(UUID id) {

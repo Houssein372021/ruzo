@@ -16,7 +16,7 @@ export function ContactPage() {
   const { t } = useI18n();
   const contactItems: ContactItem[] = [
     { icon: Mail, label: t("email"), value: "contact@rüzo.com", href: "mailto:contact@rüzo.com" },
-    { icon: MessageCircle, label: t("whatsapp"), value: "+96178707979" },
+    { icon: MessageCircle, label: t("whatsapp"), value: "+961 78 707 979" },
     { icon: InstagramIcon, label: t("instagram"), value: INSTAGRAM_HANDLE, href: INSTAGRAM_URL },
   ];
 
